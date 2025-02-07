@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontSize :{
+       'responsive' :'clamp(2rem,3.5vw,3rem)'
+      }
     },
   },
   plugins: [],
