@@ -1,0 +1,22 @@
+"filename", "language", "JSON with Comments", "TypeScript", "XML", "Markdown", "JSON", "TypeScript JSX", "CSS", "JavaScript", "comment", "blank", "total"
+"c:\Users\User1\Desktop\cvbuilder\README.md", "Markdown", 0, 0, 0, 23, 0, 0, 0, 0, 0, 14, 37
+"c:\Users\User1\Desktop\cvbuilder\app\fonts\fonts.ts", "TypeScript", 0, 6, 0, 0, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\User1\Desktop\cvbuilder\app\globals.css", "CSS", 0, 0, 0, 0, 0, 0, 3, 0, 0, 2, 5
+"c:\Users\User1\Desktop\cvbuilder\app\layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 22, 0, 0, 0, 6, 28
+"c:\Users\User1\Desktop\cvbuilder\app\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 140, 0, 0, 4, 19, 163
+"c:\Users\User1\Desktop\cvbuilder\eslint.config.mjs", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 12, 0, 5, 17
+"c:\Users\User1\Desktop\cvbuilder\next.config.ts", "TypeScript", 0, 4, 0, 0, 0, 0, 0, 0, 1, 3, 8
+"c:\Users\User1\Desktop\cvbuilder\package-lock.json", "JSON", 0, 0, 0, 0, 5912, 0, 0, 0, 0, 1, 5913
+"c:\Users\User1\Desktop\cvbuilder\package.json", "JSON", 0, 0, 0, 0, 27, 0, 0, 0, 0, 1, 28
+"c:\Users\User1\Desktop\cvbuilder\postcss.config.mjs", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 6, 1, 2, 9
+"c:\Users\User1\Desktop\cvbuilder\public\branch.svg", "XML", 0, 0, 96, 0, 0, 0, 0, 0, 0, 1, 97
+"c:\Users\User1\Desktop\cvbuilder\public\branch2.svg", "XML", 0, 0, 10, 0, 0, 0, 0, 0, 0, 1, 11
+"c:\Users\User1\Desktop\cvbuilder\public\branch3.svg", "XML", 0, 0, 58, 0, 0, 0, 0, 0, 0, 1, 59
+"c:\Users\User1\Desktop\cvbuilder\public\cv.svg", "XML", 0, 0, 14, 0, 0, 0, 0, 0, 0, 1, 15
+"c:\Users\User1\Desktop\cvbuilder\public\file.svg", "XML", 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"c:\Users\User1\Desktop\cvbuilder\public\globe.svg", "XML", 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"c:\Users\User1\Desktop\cvbuilder\public\greenCheck.svg", "XML", 0, 0, 4, 0, 0, 0, 0, 0, 0, 1, 5
+"c:\Users\User1\Desktop\cvbuilder\public\hline1.svg", "XML", 0, 0, 74, 0, 0, 0, 0, 0, 0, 1, 75
+"c:\Users\User1\Desktop\cvbuilder\tailwind.config.ts", "TypeScript", 0, 20, 0, 0, 0, 0, 0, 0, 0, 2, 22
+"c:\Users\User1\Desktop\cvbuilder\tsconfig.json", "JSON with Comments", 27, 0, 0, 0, 0, 0, 0, 0, 0, 1, 28
+"Total", "-", 27, 30, 258, 23, 5939, 162, 3, 18, 6, 65, 6531

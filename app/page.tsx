@@ -40,7 +40,21 @@ export default function Home() {
             width={100}
             height={100}
             alt="branch3"
-            className=" mt-[55vw] scale-[]"
+            className=" mt-[55vw] "
+          />
+          <Image
+            src="/branch4.svg"
+            width={90}
+            height={100}
+            alt="branch3"
+            className=" mt-[5vw] ml-[-5px] "
+          />
+          <Image
+            src="/branch5.svg"
+            width={90}
+            height={100}
+            alt="branch3"
+            className=" mt-[60vw] ml-[-5px] "
           />
         </div>
 
@@ -93,7 +107,7 @@ export default function Home() {
       </div>
 
       {/* Simplicity */}
-      <div className="w-full  h-[3000px] bg-[#0D1117]  ">
+      <div className="w-full  h-[1700px] bg-[#0D1117]  ">
         <div className=" ml-[9vw] mt-[3.5rem] z-50 ">
           <p className="text-white text-[50px] font-[700]">Simplicity</p>
           <p className="font-[500] text-[27px]">
@@ -115,18 +129,14 @@ export default function Home() {
             alt="Image"
             className=""
           />
-             
-      
-       
 
           <div className="left-[9vw] bottom-[6rem]   absolute ">
             <p className="text-[20px] ">
               {" "}
               <span className="text-[#7EE787] ">Our CV builder</span> makes the
               process <br />
-              seamless, guiding you step-by-step to <br /> 
-              create a professional
-              CV in just minutes — 
+              seamless, guiding you step-by-step to <br />
+              create a professional CV in just minutes —
               <br />
               perfect for all career levels.
             </p>
@@ -141,21 +151,81 @@ export default function Home() {
               Did you know?
             </div>
             <p className="text-inherit text-[45px] font-[500]">50% faster</p>
-            <p className="text-white">create and download your professional CV <br /> 
-            in half the time compared to traditional <br />
-             methods.</p>
+            <p className="text-white">
+              create and download your professional CV <br />
+              in half the time compared to traditional <br />
+              methods.
+            </p>
           </div>
           <div className="w-[80%] h-auto absolute bottom-[-600px] right-0">
-       <Image
-        src='/bg-stars.png'
-        width={0}
-        height={0}
-        layout="responsive"
-        alt="Image"
-        className=""/>
-       </div>
+            <Image
+              src="/bg-stars.png"
+              width={0}
+              height={0}
+              layout="responsive"
+              alt="Image"
+              className=""
+            />
+          </div>
         </div>
-    
+      </div>
+
+      {/* Customization */}
+      <div className="w-full h-[1700px] bg-[#0D1117] mt-[7vw]">
+        <div className=" ml-[9vw]  z-50 ">
+          <p className="text-white text-[45px] font-[700]">Customization</p>
+          <p className="font-[500] text-[25px]">
+            Tailor your CV to suit your specific career <br />
+            goals and industry with personalized <br />
+            templates, flexible formatting options, <br />
+            and expert guidance
+            <span className="text-[#FFA28B] ml-1">
+              — ensuring the perfect <br />
+              match every time and setting you apart <br />
+              from the competition.
+            </span>
+          </p>
+        </div>
+
+        <div className="w-[100%] place-self-center relative  mt-[5rem] z-[10003] h-auto ">
+          <Image
+            src="/customImg.png"
+            width={0}
+            height={0}
+            layout="responsive"
+            alt="Image"
+            className=""
+          />
+
+          <div className="left-[9vw] bottom-[6rem]   absolute ">
+            <p className="text-[20px] ">
+              <span className="text-[#FFA28B] ">
+                {" "}
+                CV builder helps you stand out with
+              </span>{" "}
+              <br />
+              customizable tools to adjust every detail— <br />
+              layout, font, sections, and colors—ensuring <br />
+              your CV meets industry standards and leaves <br />a lasting
+              impression.
+            </p>
+
+            <p className="underline mt-[17px] ">
+              Generate Your World Cloud Instantly
+            </p>
+          </div>
+
+          <div className="absolute left-[10vw] text-[#FFA28B] pl-5">
+            <div className="w-fit h-fit rounded-2xl bg-transparent  py-[3px] px-[15px] border-[1px] border-[#FFA28B] text-inherit text-[10px]">
+              Did you know?
+            </div>
+            <p className="text-inherit text-[45px] font-[500]">92% success</p>
+            <p className="text-white">
+            users report a 92% improvement in landing <br />
+             interviews with a polished, tailored CV.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
