@@ -1,7 +1,17 @@
 import Image from "next/image";
 import { notoSans } from "./fonts/fonts";
+import List from "./components/list";
 
 export default function Home() {
+
+const footerItems = [
+  ["Features", "Pricing", "Blog", "Testimonials", "FAQs"],
+  ["Sign Up", "Sign In", "Privacy Policy", "Terms of Service"],
+  ["Help Center", "Contact Us", "Live Chat", "Resources"],
+  ["About Us", "Careers", "Press", "Instagram", "Facebook", "Twitter"]
+]
+
+
   return (
     <div className="w-full h-full  bg-[#0D1117]">
       {/* Hero Section */}
@@ -322,7 +332,8 @@ export default function Home() {
         </div>
       </div>
 
-<div className="w-full bg-[url(/bg-stars-image.png)] h-[1000px] gap-3 bg-contain bg-center bg-no-repeat flex flex-col items-center justify-center">
+{/* Sign Up */}
+<div className="w-full bg-[url(/bg-stars-image.png)] h-[700px] gap-3 bg-contain bg-center bg-no-repeat flex flex-col items-center justify-center">
 <p className="text-responsive  font-[700] text-center ">The tool for everyone, everywhere, to <br />
  craft their perfect CV.</p>
 
@@ -333,6 +344,33 @@ export default function Home() {
     <button className="bg-white w-[300px] text-black px-[16px] py-[12px]  rounded-md font-[700]">Sign Up for CV Builder  ›</button>
     <button className="bg-transparent w-[300px] text-white px-[16px] py-[12px] rounded-md border-[1px] border-white font-[700]">Sign in to CV Builder</button>
   </div>
+</div>
+
+{/* Footer */}
+<div className="w-full relative  justify-center items-center flex  h-[400px] bg-[#0D1117] ">
+  <div className=" w-[90%] flex flex-row justify-between gap-4">
+    <div className="flex h-fit w-fit flex-col">
+      <p className="text-responsive font-[700] ">CV Builder</p>
+      <div className={`${notoSans.className} text-[#C9D1D9]`}>
+      <p>Subscribe to our newsletter</p>
+      <p className=" text-[#8B949E] text-[14px]">Get product updates, company news, and more.</p>
+       <button className="px-[16px] py-[12px] rounded-md bg-transparent border-[1px] mt-3 border-white">Subscribe</button>
+      </div>
+  
+    </div>
+
+
+    {footerItems.map((item,key) => (
+   <List key={key} list={item}/>
+    ))
+    }
+  </div>
+
+</div>
+<div className={`${notoSans.className} pl-[100px] w-full h-[50px] flex flex-row text-[#8B949E] text-[13px] text-center gap-4 items-center bg-[#161B22]`}>
+<p>© 2025 CV Builder, Inc.</p>
+<p>Terms</p>
+<p>Privacy(Updated 01/2025)</p>
 </div>
       
     </div>
