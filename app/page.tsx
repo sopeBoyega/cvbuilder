@@ -3,7 +3,7 @@ import { notoSans } from "./fonts/fonts";
 
 export default function Home() {
   return (
-    <div className="w-full h-full flex  flex-col bg-[#0D1117]">
+    <div className="w-full h-full  bg-[#0D1117]">
       {/* Hero Section */}
       <div className="w-full h-[100vh] lg:h-[750px]  bg-[url(/hero.png)] bg-cover bg-center bg-no-repeat  flex items-start justify-center relative">
         {/* Navbar */}
@@ -47,14 +47,14 @@ export default function Home() {
             width={90}
             height={100}
             alt="branch3"
-            className=" mt-[5vw] ml-[-5px] "
+            className=" mt-[15vw] ml-[-5px] "
           />
           <Image
             src="/branch5.svg"
             width={90}
             height={100}
-            alt="branch3"
-            className=" mt-[60vw] ml-[-5px] "
+            alt="branch5"
+            className=" mt-[55vw] ml-[-5px] "
           />
         </div>
 
@@ -171,9 +171,9 @@ export default function Home() {
       </div>
 
       {/* Customization */}
-      <div className="w-full h-[1700px] bg-[#0D1117] mt-[7vw]">
-        <div className=" ml-[9vw]  z-50 ">
-          <p className="text-white text-[45px] font-[700]">Customization</p>
+      <div className="w-full block h-[1850px] bg-[#0D1117] mt-[5vw]">
+        <div className=" ml-[9vw]   mt-[7rem]  z-50 ">
+          <p className=" text-responsive font-[700]">Customization</p>
           <p className="font-[500] text-[25px]">
             Tailor your CV to suit your specific career <br />
             goals and industry with personalized <br />
@@ -221,12 +221,120 @@ export default function Home() {
             </div>
             <p className="text-inherit text-[45px] font-[500]">92% success</p>
             <p className="text-white">
-            users report a 92% improvement in landing <br />
-             interviews with a polished, tailored CV.
+              users report a 92% improvement in landing <br />
+              interviews with a polished, tailored CV.
             </p>
+          </div>
+
+          <div className="w-[80%] h-auto absolute bottom-[-600px] right-0">
+            <Image
+              src="/bg-stars.png"
+              width={0}
+              height={0}
+              layout="responsive"
+              alt="Image"
+              className=""
+            />
           </div>
         </div>
       </div>
+
+      <div className="w-full h-[1850px] mt-[80px] bg-inherit">
+        <div className=" ml-[3vw] mt-[3.5rem]  flex flex-row  z-50 ">
+          <Image
+            src="/branch6.svg"
+            width={90}
+            height={100}
+            alt="branch5"
+            className="  ml-[-5px] "
+          />
+          <div className="">
+            <p className="text-white text-[50px] font-[700]">Intelligence</p>
+            <p className="font-[500] text-[27px]">
+              <span className="text-[#939AFF]">CV Builder uses AI</span> to
+              analyze your input <br /> and automatically generate a
+              professional <br />
+              CV tailored to your industry and career <br />
+              goals. Save time and get optimized results <br />
+              effortlessly.
+            </p>
+          </div>
+        </div>
+
+        <div className="w-[100%] place-self-center relative   z-[10003] h-auto ">
+          <Image
+            src="/intelliImg.png"
+            width={0}
+            height={0}
+            layout="responsive"
+            alt="Imatext-[#939AFF] "
+            className=""
+          />
+
+          <div className="bottom-[-270px] absolute">
+             <Image
+             src='branch7.svg'
+             width={100}
+             height={100}
+             alt="Image"/>
+
+          </div>
+
+          <div className="left-[9vw] bottom-[3rem]   absolute ">
+            <p className="text-[20px] ">
+              <span className="text-[#939AFF] ">
+                {" "}
+                CV builder uses AI
+              </span>{" "}
+              goes beyond formatting,<br />
+              analyzing your input to suggest action <br />
+              words,key skills, and role-specific <br />
+              keywords—tailoring your CV to impress <br />
+              recruiters and boost interview chances.
+            </p>
+
+            <p className="underline mt-[17px] ">
+              Generate Your World Cloud Instantly
+            </p>
+          </div>
+
+          <div className="absolute left-[10vw] text-[#939AFF] pl-5">
+            <div className="w-fit h-fit rounded-2xl bg-transparent  py-[3px] px-[15px] border-[1px] border-[#939AFF] text-inherit text-[10px]">
+              Did you know?
+            </div>
+            <p className="text-inherit text-[45px] font-[500]">85% success</p>
+            <p className="text-white">
+            say our AI driven CV builder improved<br />
+             their application success rates.
+            </p>
+          </div>
+
+          <div className="w-[80%] h-auto absolute bottom-[-600px] right-0">
+            <Image
+              src="/bg-stars.png"
+              width={0}
+              height={0}
+              layout="responsive"
+              alt="Image"
+              className=""
+            />
+          </div>
+        </div>
+      </div>
+
+<div className="w-full bg-[url(/bg-stars-image.png)] h-[1000px] gap-3 bg-contain bg-center bg-no-repeat flex flex-col items-center justify-center">
+<p className="text-responsive  font-[700] text-center ">The tool for everyone, everywhere, to <br />
+ craft their perfect CV.</p>
+
+ <p className="font-[400] text-[clamp(1rem,2.5vw,1.5rem)] text-center text-[#8B949E]">Join thousands of professionals using CV Builder to create standout resumes. <br />
+  Sign up or log in now and take the first step toward your dream career!"</p>
+
+  <div className="w-fit h-fit flex gap-2 ">
+    <button className="bg-white w-[300px] text-black px-[16px] py-[12px]  rounded-md font-[700]">Sign Up for CV Builder  ›</button>
+    <button className="bg-transparent w-[300px] text-white px-[16px] py-[12px] rounded-md border-[1px] border-white font-[700]">Sign in to CV Builder</button>
+  </div>
+</div>
+      
     </div>
   );
 }
