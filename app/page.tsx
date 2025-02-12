@@ -19,12 +19,12 @@ const footerItems = [
         {/* Navbar */}
         <div className="w-[90%] h-[50px]  flex justify-between items-center absolute z-50 ">
           <div className="">
-            <p className={`${notoSans.className} `}>CV Builder</p>
+            <p className={`${notoSans.className} font-[700] text-[20px] `}>CV Builder</p>
           </div>
 
           <div className="w-fit h-fit flex flex-row gap-2  justify-center items-center">
-            <p className={`${notoSans.className} `}>Sign in</p>
-            <button className="border-[1.5px] rounded-[15px] py-[6.5px] px-[11.5px] border-[#D0D7DE]">
+            <button className={`${notoSans.className}  hover:scale-[1.1]  transition duration-500 ease-in-out `}>Sign in</button>
+            <button className="border-[1.5px] rounded-[15px] py-[6.5px] px-[11.5px] border-[#D0D7DE] bg-white text-black font-[400] hover:scale-[1.1]  transition duration-500 ease-in-out">
               <p>Sign Up</p>
             </button>
           </div>
@@ -87,22 +87,22 @@ const footerItems = [
             Professional Journey
           </p>
 
-          <p className="text-[#8B949E] font-[400] text-[clamp(1rem,2.5vw,1.5rem)]">
+          <p className="lg:text-[#8B949E]   font-[400] text-[clamp(1rem,2.5vw,1.5rem)]">
             Create, customize, and download your perfect CV—no <br />
             fees, no hassle, just results. Fast, easy, and tailored for <br />
             success.
           </p>
 
           <div className="w-full h-fit flex flex-row items-center gap-7 mt-7 justify-start">
-            <div className="flex flex-row justify-center items-center z-[505]  w-fit h-fit">
+            <div className="flex lg:flex-row flex-col  justify-center items-start gap-2 md:gap-0 lg:items-center z-[505]  w-fit h-fit">
               <input
                 type="email"
                 name=""
                 id=""
                 placeholder="Email address"
-                className="placeholder-[#6E7781] text-black p-2 rounded-s-lg"
+                className="placeholder-[#6E7781] text-black p-2 rounded-s-lg  focus:outline-none focus:ring-0"
               />
-              <button className="text-center p-[7.3px]  bg-black rounded-e-lg border-[1px] border-white ">
+              <button className="text-center p-[7.3px]  bg-black rounded-e-lg border-[1px] border-white hover:opacity-50 ">
                 Sign Up for CV
               </button>
             </div>
@@ -117,8 +117,8 @@ const footerItems = [
       </div>
 
       {/* Simplicity */}
-      <div className="w-full  h-[1700px] bg-[#0D1117]  ">
-        <div className=" ml-[9vw] mt-[3.5rem] z-50 ">
+      <div className="w-full h-[1000px]  md:h-[1700px] bg-[#0D1117]  ">
+        <div className=" lg:ml-[9vw] ml-[3vw] mt-[3.5rem] z-50 ">
           <p className="text-white text-[50px] font-[700]">Simplicity</p>
           <p className="font-[500] text-[27px]">
             Build a professional CV in minutes with <br />
@@ -140,8 +140,8 @@ const footerItems = [
             className=""
           />
 
-          <div className="left-[9vw] bottom-[6rem]   absolute ">
-            <p className="text-[20px] ">
+          <div className="lg:left-[9vw] bottom-[6rem] scale-[0.8] lg:scale-[1.0]  lg:absolute ">
+            <p className="text-[20px] center ">
               {" "}
               <span className="text-[#7EE787] ">Our CV builder</span> makes the
               process <br />
@@ -151,12 +151,12 @@ const footerItems = [
               perfect for all career levels.
             </p>
 
-            <p className="underline mt-[17px] ">
+            <p className="underline mt-[17px] cursor-pointer">
               Generate Your World Cloud Instantly
             </p>
           </div>
 
-          <div className="absolute left-[10vw] text-[#8AEB93] pl-5">
+          <div className="absolute lg:left-[10vw] text-[#8AEB93] mt-5 lg:mt-0 pl-5">
             <div className="w-fit h-fit rounded-2xl bg-transparent  py-[3px] px-[15px] border-[1px] border-[#8AEB93] text-inherit text-[10px]">
               Did you know?
             </div>
@@ -181,10 +181,10 @@ const footerItems = [
       </div>
 
       {/* Customization */}
-      <div className="w-full block h-[1850px] bg-[#0D1117] mt-[5vw]">
-        <div className=" ml-[9vw]   mt-[7rem]  z-50 ">
+      <div className="w-full block h-[1000px] md:h-[1850px] bg-[#0D1117] mt-[5vw]">
+        <div className=" lg:ml-[9vw] ml-3   mt-[7rem]  z-50 ">
           <p className=" text-responsive font-[700]">Customization</p>
-          <p className="font-[500] text-[25px]">
+          <p className="font-[500] md:text-[25px] text-[17px]">
             Tailor your CV to suit your specific career <br />
             goals and industry with personalized <br />
             templates, flexible formatting options, <br />
@@ -207,8 +207,8 @@ const footerItems = [
             className=""
           />
 
-          <div className="left-[9vw] bottom-[6rem]   absolute ">
-            <p className="text-[20px] ">
+          <div className="lg:left-[9vw] bottom-[6rem]    lg:absolute ">
+            <p className="lg:text-[20px] scale-[0.9] lg:scale-[1.0] ">
               <span className="text-[#FFA28B] ">
                 {" "}
                 CV builder helps you stand out with
@@ -220,12 +220,12 @@ const footerItems = [
               impression.
             </p>
 
-            <p className="underline mt-[17px] ">
+            <p className="underline mt-[17px] ml-3 cursor-pointer ">
               Generate Your World Cloud Instantly
             </p>
           </div>
 
-          <div className="absolute left-[10vw] text-[#FFA28B] pl-5">
+          <div className="absolute md:left-[10vw] mt-5 md:mt-0 text-[#FFA28B] pl-5">
             <div className="w-fit h-fit rounded-2xl bg-transparent  py-[3px] px-[15px] border-[1px] border-[#FFA28B] text-inherit text-[10px]">
               Did you know?
             </div>
@@ -249,18 +249,18 @@ const footerItems = [
         </div>
       </div>
 
-      <div className="w-full h-[1850px] mt-[80px] bg-inherit">
+      <div className="w-full h-fit md:h-[1850px] mt-[100px] bg-inherit ">
         <div className=" ml-[3vw] mt-[3.5rem]  flex flex-row  z-50 ">
           <Image
             src="/branch6.svg"
             width={90}
             height={100}
             alt="branch5"
-            className="  ml-[-5px] "
+            className="  ml-[-5px] hidden md:flex "
           />
           <div className="">
             <p className="text-white text-[50px] font-[700]">Intelligence</p>
-            <p className="font-[500] text-[27px]">
+            <p className="font-[500] md:text-[27px] ">
               <span className="text-[#939AFF]">CV Builder uses AI</span> to
               analyze your input <br /> and automatically generate a
               professional <br />
@@ -278,10 +278,10 @@ const footerItems = [
             height={0}
             layout="responsive"
             alt="Imatext-[#939AFF] "
-            className=""
+            className="my-7 lg:my-0"
           />
 
-          <div className="bottom-[-270px] absolute">
+          <div className="bottom-[-270px] hidden lg:flex absolute">
              <Image
              src='branch7.svg'
              width={100}
@@ -290,7 +290,7 @@ const footerItems = [
 
           </div>
 
-          <div className="left-[9vw] bottom-[3rem]   absolute ">
+          <div className="left-[9vw] bottom-[3rem] scale-[0.9] lg:scale-[1.0] mt-3 lg:mt-0  lg:absolute ">
             <p className="text-[20px] ">
               <span className="text-[#939AFF] ">
                 {" "}
@@ -303,12 +303,12 @@ const footerItems = [
               recruiters and boost interview chances.
             </p>
 
-            <p className="underline mt-[17px] ">
+            <p className="underline mt-[17px] cursor-pointer">
               Generate Your World Cloud Instantly
             </p>
           </div>
 
-          <div className="absolute left-[10vw] text-[#939AFF] pl-5">
+          <div className="absolute md:left-[10vw] mt-4 md:mt-0 text-[#939AFF] pl-5">
             <div className="w-fit h-fit rounded-2xl bg-transparent  py-[3px] px-[15px] border-[1px] border-[#939AFF] text-inherit text-[10px]">
               Did you know?
             </div>
@@ -333,21 +333,21 @@ const footerItems = [
       </div>
 
 {/* Sign Up */}
-<div className="w-full bg-[url(/bg-stars-image.png)] h-[700px] gap-3 bg-contain bg-center bg-no-repeat flex flex-col items-center justify-center">
+<div className="w-full bg-[url(/bg-stars-image.png)] h-[700px] gap-3 md:bg-contain bg-cover  bg-center bg-no-repeat flex flex-col items-center md:justify-center justify-end">
 <p className="text-responsive  font-[700] text-center ">The tool for everyone, everywhere, to <br />
  craft their perfect CV.</p>
 
  <p className="font-[400] text-[clamp(1rem,2.5vw,1.5rem)] text-center text-[#8B949E]">Join thousands of professionals using CV Builder to create standout resumes. <br />
   Sign up or log in now and take the first step toward your dream career!"</p>
 
-  <div className="w-fit h-fit flex gap-2 ">
-    <button className="bg-white w-[300px] text-black px-[16px] py-[12px]  rounded-md font-[700]">Sign Up for CV Builder  ›</button>
-    <button className="bg-transparent w-[300px] text-white px-[16px] py-[12px] rounded-md border-[1px] border-white font-[700]">Sign in to CV Builder</button>
+  <div className="w-fit h-fit flex flex-col md:flex-row gap-2 ">
+    <button className="bg-white w-[300px] text-black px-[16px] py-[12px]  rounded-md font-[700] hover:bg-transparent  hover:text-white transition duration-300 ease-in-out">Sign Up for CV Builder  ›</button>
+    <button className="bg-transparent w-[300px] text-white px-[16px] py-[12px] rounded-md border-[1px] border-white font-[700] hover:bg-white hover:text-black transition duration-500 ease-in-out">Sign in to CV Builder</button>
   </div>
 </div>
 
 {/* Footer */}
-<div className="w-full relative  justify-center items-center flex  h-[400px] bg-[#0D1117] ">
+<div className="w-full relative  justify-center items-center flex flex-col  h-[400px] bg-[#0D1117] ">
   <div className=" w-[90%] flex flex-row justify-between gap-4">
     <div className="flex h-fit w-fit flex-col">
       <p className="text-responsive font-[700] ">CV Builder</p>
@@ -367,7 +367,7 @@ const footerItems = [
   </div>
 
 </div>
-<div className={`${notoSans.className} pl-[100px] w-full h-[50px] flex flex-row text-[#8B949E] text-[13px] text-center gap-4 items-center bg-[#161B22]`}>
+<div className={`${notoSans.className} md:pl-[100px] pl-[20px] w-full h-[50px] flex flex-row text-[#8B949E] text-[13px] text-center gap-4 items-center bg-[#161B22]`}>
 <p>© 2025 CV Builder, Inc.</p>
 <p>Terms</p>
 <p>Privacy(Updated 01/2025)</p>
