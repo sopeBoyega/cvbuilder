@@ -11,6 +11,7 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        subheading: "#6C7072"
       },
       fontSize :{
        'responsive' :'clamp(2rem,3.5vw,3rem)'

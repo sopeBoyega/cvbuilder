@@ -1,8 +1,17 @@
+"use client"
 import Image from "next/image";
 import { notoSans } from "./fonts/fonts";
 import List from "./components/list";
+import { useState } from "react";
 
 export default function Home() {
+
+  const [email,setEmail] = useState<string>("")
+
+  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+const value = event.target.value;
+setEmail(value)
+  }
 
 const footerItems = [
   ["Features", "Pricing", "Blog", "Testimonials", "FAQs"],
@@ -97,8 +106,8 @@ const footerItems = [
             <div className="flex lg:flex-row flex-col  justify-center items-start gap-2 md:gap-0 lg:items-center z-[505]  w-fit h-fit">
               <input
                 type="email"
-                name=""
-                id=""
+                onChange={onChangeHandler}
+                value={email}
                 placeholder="Email address"
                 className="placeholder-[#6E7781] text-black p-2 rounded-s-lg  focus:outline-none focus:ring-0"
               />
