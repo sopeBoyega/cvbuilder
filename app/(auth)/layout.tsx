@@ -10,7 +10,7 @@ const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     <div className="w-[70%] h-[90vh] bg-[#111827] rounded-[19.33px] flex  ">
         <div className=" w-[430px]  place-self-center relative ">
             <Image
-            src="./resumelady.svg"
+            src="../resumelady.svg"
             width={430}
             height={200}
             alt='resumeLady'
