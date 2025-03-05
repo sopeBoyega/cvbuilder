@@ -2,19 +2,20 @@
 import React, { ReactEventHandler, useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import Image from "next/image";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 import Button from "@/app/components/global/button";
 
-interface LoginDetails {
+interface SignUpDetails {
+  name: string;  
   email: string;
   password: string;
   confirmPassword?: string;
 }
 
 const page = (props: any) => {
-
-  const router = useRouter()
-  const [loginDetails, setLoginDetails] = useState<LoginDetails>({
+  const router = useRouter();
+  const [signUpDetails, setSignUpDetails] = useState<SignUpDetails>({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -23,13 +24,13 @@ const page = (props: any) => {
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
-    setLoginDetails({ ...loginDetails, [name]: value });
+    setSignUpDetails({ ...signUpDetails, [name]: value });
   };
   return (
     <div className="w-[330px] flex flex-col gap-5 h-fit">
       <div className="flex flex-col gap-2=1">
         <p className="text-white text-center font-semibold text-[22.55px] ">
-          Sign In to your account
+        Create your account
         </p>
         <p className="text-subheading text-center text-[12.88px] font-[400]">
           Create your CV effortlessly - completely free!
@@ -53,50 +54,60 @@ const page = (props: any) => {
       </div>
 
       <div className="flex-col ">
-        
+      <input
+          className="w-full text-[13px] h-[39px] rounded-full pl-3 mb-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
+          placeholder="Full Name"
+          name="name"
+          value={signUpDetails.name}
+          onChange={onChangeHandler}
+        />
+
         <input
           className="w-full text-[13px] h-[39px] rounded-full pl-3 mb-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
           placeholder="Email"
           type="email"
           name="email"
-          value={loginDetails.email}
+          value={signUpDetails.email}
           onChange={onChangeHandler}
         />
 
         <div className="flex w-[100%] gap-3 ">
-        <input
-          className="w-[50%] text-[13px] h-[39px] rounded-full pl-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
-          placeholder="Password"
-          type="password"
-          name="password"
-          value={loginDetails.password}
-          onChange={onChangeHandler}
-        />
-        <input
-          className="w-[50%] text-[13px] h-[39px] rounded-full pl-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
-          placeholder="Confirm"
-          type="password"
-          name="password"
-          value={loginDetails.confirmPassword}
-          onChange={onChangeHandler}
-        />
+          <input
+            className="w-[50%] text-[13px] h-[39px] rounded-full pl-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
+            placeholder="Password"
+            type="password"
+            name="password"
+            value={signUpDetails.password}
+            onChange={onChangeHandler}
+          />
+          <input
+            className="w-[50%] text-[13px] h-[39px] rounded-full pl-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
+            placeholder="Confirm"
+            type="password"
+            name="password"
+            value={signUpDetails.confirmPassword}
+            onChange={onChangeHandler}
+          />
         </div>
       </div>
 
-
       <div className="flex gap-2">
-      <p className="font-[400] text-[11.27px]">Remember me for 30 days</p>
+        <input type="checkbox" name="" id=""  className="w-[10px] h-[10px] rounded-full"/>
+        <p className="font-[400] text-[11.27px]">Remember me for 30 days</p>
       </div>
 
-     <Button text="Sign In"/>
+      <Button text="Sign Up" />
 
-
-      <p className="underline hover:cursor-pointer text-[10px] text-center" onClick={() => {
-        router.push("/forgot-password")
-      }}>Forgot your Password?</p>
+    
 
       <div className="place-items-center">
-        <p className="text-[10px]">Don't have an account? <span className="underline text-subheading">Sign Up</span></p>
+        <p className="text-[10px]">
+          Already have an account?{" "}
+          <span className="underline text-subheading"
+          onClick={() => {
+            router.push("/login")
+          }}>Login</span>
+        </p>
       </div>
     </div>
   );
