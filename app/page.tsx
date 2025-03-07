@@ -3,9 +3,11 @@ import Image from "next/image";
 import { notoSans } from "./fonts/fonts";
 import List from "./components/list";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
 
+  const router = useRouter()
   const [email,setEmail] = useState<string>("")
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,9 +34,21 @@ const footerItems = [
           </div>
 
           <div className="w-fit h-fit flex flex-row gap-2  justify-center items-center">
-            <button className={`${notoSans.className}  hover:scale-[1.1]  transition duration-500 ease-in-out `}>Sign in</button>
-            <button className="border-[1.5px] rounded-[15px] py-[6.5px] px-[11.5px] border-[#D0D7DE] bg-white text-black font-[400] hover:scale-[1.1]  transition duration-500 ease-in-out">
-              <p>Sign Up</p>
+            <button className={`${notoSans.className}  hover:scale-[1.1]  transition duration-500 ease-in-out `}
+            onClick={() => {
+              router.push('/login')
+            }}
+            >
+              Sign in
+            </button>
+            <button className="border-[1.5px] rounded-[15px] py-[6.5px] px-[11.5px] border-[#D0D7DE] bg-white text-black font-[400] hover:scale-[1.1]  transition duration-500 ease-in-out"
+            onClick={() => {
+              router.push('/sign-up')
+            }}
+            >
+              <p>
+                Sign Up
+                </p>
             </button>
           </div>
         </div>
@@ -111,14 +125,20 @@ const footerItems = [
                 placeholder="Email address"
                 className="placeholder-[#6E7781] text-black p-2 rounded-s-lg  focus:outline-none focus:ring-0"
               />
-              <button className="text-center p-[7.3px]  bg-black rounded-e-lg border-[1px] border-white hover:opacity-50 ">
+              <button className="text-center p-[7.3px]  bg-black rounded-e-lg border-[1px] border-white hover:opacity-50 "
+              onClick={() => {
+                router.push("/sign-up?name=Mosope")
+              }}>
                 Sign Up for CV
               </button>
             </div>
 
             <hr className=" hidden md:flex h-full  border-[0.4px] " />
 
-            <button className=" hidden md:flex text-center p-[7.3px] bg-black rounded-lg border-[1px]  border-white ">
+            <button className=" hidden md:flex text-center p-[7.3px] bg-black rounded-lg border-[1px]  border-white "
+            onClick={() => {
+              router.push("/login")
+            }}>
               Sign In →{" "}
             </button>
           </div>
