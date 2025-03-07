@@ -1,10 +1,13 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const Page = () => {
   const router = useRouter();
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+  const [user,setUser] = useState<any>({
+
+  })
   const [code, setCode] = useState<string[]>(new Array(6).fill(""));
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -24,10 +27,20 @@ const Page = () => {
 
     if (JSON.stringify(code) === JSON.stringify(["0", "0", "0", "0", "0", "0"])) {
       alert("Correct");
+      router.push('/sign-up/redirect')
     } else {
       alert("Wrong Code");
     }
   };
+
+  useEffect(() => {
+   const user: string | null = localStorage.getItem('user');
+   if (user) {
+     const parsedUser = JSON.parse(user);
+     setUser(parsedUser);
+     console.log(parsedUser.email);
+   }
+  },[])
 
   return (
     <div className="flex flex-col gap-4">
@@ -36,7 +49,7 @@ const Page = () => {
           We've emailed you a code
         </p>
         <p className="text-subheading text-center text-[12.88px] font-[400]">
-          To continue account setup, enter the code we’ve sent to: <br /> User@gmail.com
+          To continue account setup, enter the code we’ve sent to: <br /> {user.email}
         </p>
       </div>
 
@@ -68,6 +81,7 @@ const Page = () => {
           </div>
         </button>
       </form>
+      <p className="text-subheading text-center text-[12.88px] font-[400]">Resend: 60s</p>
     </div>
   );
 };
