@@ -121,7 +121,7 @@ export var Span:FC<BaseElementProps<HTMLSpanElement>  & {Ref?:any}> = function({
  * 
  */
 export var Div:React.FunctionComponent<BaseElementProps<HTMLDivElement>  & {Ref?:any} >= function({className,children,id,Ref,onClick,...props}){
-  return <BaseElement tag="div" display="block" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+  return <BaseElement tag="div"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 export var RDiv:FC<BaseElementProps<HTMLMediaElement>  & {Ref?:any}> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="div"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>

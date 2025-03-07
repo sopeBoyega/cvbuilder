@@ -1,3 +1,4 @@
+"use client"
 export var _cssHelper = {
 accentColor: (value:string)=>{value},
 additiveSymbols: (value:string)=>{value},

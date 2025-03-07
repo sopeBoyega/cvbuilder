@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useRef,FC } from "react"
 import { mergeText } from "./anys"
 
@@ -61,7 +62,7 @@ export class CEXModel{
     )=>{
         self = this?this:self
         self.channels.push(channel)
-        const ref:any = useRef()
+        const ref:any = useRef(null)
         useEffect(
             ()=>{
                 const func = onEvent
