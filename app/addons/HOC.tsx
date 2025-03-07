@@ -1,5 +1,3 @@
-"use client"
-
 import React from "react"
 import { _cssHelper } from "./css"
 import { BaseElementProps, Div } from "./csml"
@@ -40,7 +38,7 @@ export default class BaseHOC<T>{
     protected Component
     constructor ({Component = Div , refee}:{Component?:any ,refee?:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined>}){
         
-        this.ref = refee || React.useRef(undefined) 
+        this.ref = refee || React.useRef((null as any)) 
         this.style = {..._cssHelper}
         this.Component = Component
         this.EffectifyStyle()
@@ -51,7 +49,7 @@ export default class BaseHOC<T>{
         if (element){
             for (const key of Object.keys(style)){
                 element.style[(key as any)] = style[key]
-                console.log(element.style[(key as any)])
+                // console.log(element.style[(key as any)])
             }
         }
     }
@@ -83,7 +81,7 @@ export default class BaseHOC<T>{
      * ```
      * @returns `BaseHOC.Component` 
      */
-    Render(props:BaseElementProps<HTMLDivElement>&{self:BaseHOC<T>} &T){
+    Render(props:BaseElementProps<HTMLDivElement>&{self:BaseHOC<T>}& T){
             return <props.self.Component Ref = {props.self.ref} {...props}>
                 {props.children}
             </props.self.Component>

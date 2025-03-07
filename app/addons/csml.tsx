@@ -64,7 +64,7 @@ export function filterOutStyles(Styles:any = {}){
 export type BaseElementProps<T> =  ICssHelper & React.DetailedHTMLProps<React.HTMLAttributes<T>,T> & React.HTMLAttributes<HTMLBaseElement>  & PropsWithChildren & {comment?:string}
 
 export function Center(props:BaseElementProps<HTMLDivElement>&{Ref?:any}){
-      return <Div  display="flex" justifyContent="center" alignItems="center" width="100%" {...props}>
+      return <Div  display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%" {...props}>
           {props.children}
       </Div>
 }
@@ -138,7 +138,7 @@ export var Button:FC<BaseElementProps<HTMLButtonElement>  & {Ref?:any}> = functi
 export var Input:FC<BaseElementProps<HTMLInputElement>  & {Ref?:any} & React.InputHTMLAttributes<HTMLInputElement>> = function({className,children,id,Ref,type = "text",placeholder,onClick,...props}){
   return <BaseElement tag="input"  {...props} type = {type} placeholder = {placeholder} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export var TextArea:FC<BaseElementProps<HTMLTextAreaElement>  & {Ref?:any}> = function({className,children,id,Ref,onClick,...props}:any){
+export var TextArea:FC<BaseElementProps<HTMLTextAreaElement>  & {Ref?:any,cols?:string,rows?:string,placeholder?:string}> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="textarea"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 export var Img:FC<BaseElementProps<HTMLImageElement>  & {Ref?:any} & React.ImgHTMLAttributes<HTMLImageElement>> = function({className,children,id,Ref,src,onClick,...props}){
@@ -159,4 +159,3 @@ export var Hr:FC<BaseElementProps<HTMLHRElement>  & {Ref?:any}> = function({clas
 export var EButton:FC<BaseElementProps<{}>  & {Ref?:any}> = function({className,children,id,Ref,onClick,...props}:any){
   return <Div borderRadius="8px" paddingInline="22px" paddingBlock="10px" {...props} onClick={onClick} Ref={Ref} id={id} className={className}>{children}</Div>
 }
-
