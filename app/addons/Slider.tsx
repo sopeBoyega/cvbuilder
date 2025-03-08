@@ -126,6 +126,21 @@ export default class SliderHOC{
            var hoc = new BaseHOC<{}>({Component:component})
            this.FrameHocs.push(hoc)
         })
+        var firstReturn = children.map((child:ReactNode,index:number)=>{
+            return<Div key={index} width="100%"
+            
+           height="100%" 
+           display="block"
+           minWidth="100%" 
+           minHeight="100%" 
+           overflow="auto">
+               {child}
+           </Div>
+        
+        })
+        var secondReturn = this.FrameHocs.map((frameHoc:BaseHOC,index:number)=>{
+            return <frameHoc.Render key={index}></frameHoc.Render>
+        })
         useEffect(()=>{
             if (this.fitContent){this.FrameHocs.map(frameHoc=>{
                     frameHoc.style.display("none")
@@ -135,9 +150,7 @@ export default class SliderHOC{
        
         return <Div width="100%" height="100%" {...props} style={Style} >
             <this.innerFrame.Render  style={innerFrameStyle} comment="FlipInnerFrame">
-                {this.FrameHocs.map((frameHoc:BaseHOC<{}>,index:number)=>{
-                    return <frameHoc.Render key={index}></frameHoc.Render>
-                })}
+                {firstReturn}
             </this.innerFrame.Render>
         </Div>
     }
