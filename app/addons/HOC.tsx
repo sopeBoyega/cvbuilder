@@ -1,4 +1,5 @@
-import React from "react"
+"use client"
+import React, { FC, useEffect } from "react"
 import { _cssHelper } from "./css"
 import { BaseElementProps, Div } from "./csml"
 
@@ -31,7 +32,7 @@ import { BaseElementProps, Div } from "./csml"
      * ```
      * *GUDITTON*
      */
-export default class BaseHOC<T>{
+export default class BaseHOC<T = {}>{
     
     protected ref:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined>
     public style
@@ -45,11 +46,12 @@ export default class BaseHOC<T>{
     }
 
     protected Stylilise(style:{[key:string]:any}){
-        var element = this.ref.current
+       var element = this.ref.current
         if (element){
             for (const key of Object.keys(style)){
                 element.style[(key as any)] = style[key]
-                // console.log(element.style[(key as any)])
+                console.log(element)
+                console.log(element.style[(key as any)])
             }
         }
     }
@@ -81,10 +83,10 @@ export default class BaseHOC<T>{
      * ```
      * @returns `BaseHOC.Component` 
      */
-    Render(props:BaseElementProps<HTMLDivElement>&{self:BaseHOC<T>}& T){
-            return <props.self.Component Ref = {props.self.ref} {...props}>
+    Render:FC<BaseElementProps<HTMLDivElement>& T> =(props:BaseElementProps<HTMLDivElement>& T) =>{
+            return <this.Component Ref = {this.ref} {...props}>
                 {props.children}
-            </props.self.Component>
+            </this.Component>
     }
 }
 
@@ -120,9 +122,9 @@ export class MessageLabelHOC{
         }
         
     }
-    Run(props:{self:MessageLabelHOC} & BaseElementProps<HTMLDivElement>){
+    Run = (props: BaseElementProps<HTMLDivElement>) => {
 
-        return <props.self.Com  opacity="0" { ...props} Ref={props.self.PRef}><Div Ref={props.self.Ref}>{props.children}</Div></props.self.Com>
+        return <this.Com  opacity="0" { ...props} Ref={this.PRef}><Div Ref={this.Ref}>{props.children}</Div></this.Com>
     }
 
 }

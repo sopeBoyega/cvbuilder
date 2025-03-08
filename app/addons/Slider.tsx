@@ -1,6 +1,6 @@
-// "use client"
+"use client"
 
-import React, { ReactNode } from "react"
+import React, { FC, ReactNode, useEffect } from "react"
 import { ListChildren } from "./basicrouter"
 import { BaseElementProps, Div } from "./csml"
 import BaseHOC from "./HOC"
@@ -18,15 +18,20 @@ export default class SliderHOC{
     refType:any
     innerFrame:BaseHOC<{}>
     blockLoop:boolean = false
-    constructor({direction="row",slideTime = 300,blockLoop = false,effect = "ease-in-out", refType = React.useRef}){
+    fitContent:boolean = false
+    FrameHocs:BaseHOC<{}>[] = []
+    
+
+    constructor({direction="row",fitContent = false,slideTime = 300,blockLoop = false,effect = "ease-in-out", refType = React.useRef}){
         this.direction = direction
         this.slideTime = slideTime
         this.effect = effect
         this.refType = refType
         this.blockLoop = blockLoop
-        this.control = new BaseHOC<{SELF?:any}>({Component:(
-            {SELF,...props}:BaseElementProps<HTMLDivElement>&{SELF:SliderHOC}
-        )=><this._SliderComponent SELF={SELF} {...props}></this._SliderComponent>,
+        this.fitContent = fitContent
+        this.control = new BaseHOC<{}>({Component:(
+            {...props}:BaseElementProps<HTMLDivElement>
+        )=><this._SliderComponent  {...props}></this._SliderComponent>,
         refee:this.refType((null as any))})
         this.innerFrame = new BaseHOC<{}>({Component:Div,refee:this.refType((null as any))})
     }
@@ -76,19 +81,23 @@ export default class SliderHOC{
                 this.innerFrame.style.transform(`translateY(-${scroll}%)`)
             })
         }
+        if (this.fitContent){this.FrameHocs.map(frameHoc=>{
+            frameHoc.style.display("none")
+        })
+        this.FrameHocs[inputIndex%lengthOf].style.display("block")}
         /* console.log(this.direction)
         console.log(inputIndex) */
         this.currentIndex = inputIndex%lengthOf
     }
 
-    Render({self,...props}:BaseElementProps<HTMLDivElement>&{self:SliderHOC}){
-        return <self.control.Render self={self.control} SELF = {self} {...props}></self.control.Render>
+    Render:FC<BaseElementProps<HTMLDivElement>> = ({...props}:BaseElementProps<HTMLDivElement>)=>{
+        return <this.control.Render  {...props}></this.control.Render>
     }
 
-    protected _SliderComponent({SELF,...props}:BaseElementProps<HTMLDivElement>&{SELF:SliderHOC}){
+    protected _SliderComponent = ({...props}:BaseElementProps<HTMLDivElement>)=>{
         const _children = props.children
         const children:ReactNode[] = ListChildren(_children,{})
-        SELF.children = children
+        this.children = children
         var Style:{[key:string]:any} = {
             ...props.style,
             overflow:"hidden",
@@ -101,33 +110,35 @@ export default class SliderHOC{
             overflow:"visible",
             minWidth:"100%",
             minHeight:"100%",
-            flexDirection:SELF.direction
+            flexDirection:this.direction
             
         }
+        children.map((child:ReactNode,index:number)=>{
+            var component = (props:BaseElementProps<HTMLDivElement>)=><Div key={index} width="100%"
+            
+           height="100%" 
+           display="block"
+           minWidth="100%" 
+           minHeight="100%" 
+           overflow="auto">
+               {child}
+           </Div>
+           var hoc = new BaseHOC<{}>({Component:component})
+           this.FrameHocs.push(hoc)
+        })
+        useEffect(()=>{
+            if (this.fitContent){this.FrameHocs.map(frameHoc=>{
+                    frameHoc.style.display("none")
+                })
+                this.FrameHocs[0].style.display("block")}
+        },[])
        
         return <Div width="100%" height="100%" {...props} style={Style} >
-            <SELF.innerFrame.Render self={SELF.innerFrame} style={innerFrameStyle} comment="FlipInnerFrame">
-                {children.map((child:ReactNode,index:number)=>{
-                    return <Div key={index} width="100%"
-                     padding = {props.padding} 
-                    paddingBlock={props.paddingBlock} 
-                    paddingInline={props.paddingInline} 
-                    paddingTop={props.paddingTop} 
-                    paddingBottom={props.paddingBottom} 
-                    paddingLeft={props.paddingLeft} 
-                    paddingRight={props.paddingRight} 
-                    paddingBlockStart={props.paddingBlockStart} 
-                    paddingBlockEnd={props.paddingBlockEnd} 
-                    paddingInlineStart={props.paddingInlineStart} 
-                    paddingInlineEnd={props.paddingInlineEnd} 
-                    height="100%" 
-                    minWidth="100%" 
-                    minHeight="100%" 
-                    overflow="auto">
-                        {child}
-                    </Div>
+            <this.innerFrame.Render  style={innerFrameStyle} comment="FlipInnerFrame">
+                {this.FrameHocs.map((frameHoc:BaseHOC<{}>,index:number)=>{
+                    return <frameHoc.Render key={index}></frameHoc.Render>
                 })}
-            </SELF.innerFrame.Render>
+            </this.innerFrame.Render>
         </Div>
     }
 }

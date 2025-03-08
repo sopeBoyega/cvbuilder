@@ -57,18 +57,18 @@ export class CEXModel{
       }
     }
 
-    CEventXH:FC<{channel:string,self:CEXModel,Public?:Function,onEvent?:Function,idAdd?:string}> =(
-        {channel = "",self, Public = function(..._arg:any[]){},idAdd="", onEvent = function(..._arg:any[]){}}
+    CEventXH:FC<{channel:string,Public?:Function,onEvent?:Function,idAdd?:string}> =(
+        {channel = "", Public = function(..._arg:any[]){},idAdd="", onEvent = function(..._arg:any[]){}}
     )=>{
-        self = this?this:self
-        self.channels.push(channel)
+       
+        this.channels.push(channel)
         const ref:any = useRef(null)
         useEffect(
             ()=>{
                 const func = onEvent
-                const type = self.uniType
+                const type = this.uniType
                 const el:HTMLBaseElement = ref.current 
-                el.id = `${self.uniType}-${channel}-${idAdd}`
+                el.id = `${this.uniType}-${channel}-${idAdd}`
                 el.addEventListener(type,(e:(CIEvent | Event))=>{
                     Public(e)
                     var E = (e as CIEvent)
@@ -80,6 +80,6 @@ export class CEXModel{
     
             },[]
         )
-        return <div ref={ref} className={mergeText(self.uniType)} style={{display:"none"}} />
+        return <div ref={ref} className={mergeText(this.uniType)} style={{display:"none"}} />
     }
 }

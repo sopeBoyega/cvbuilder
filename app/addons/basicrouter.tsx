@@ -49,16 +49,17 @@ export default class RouterComponent {
         this.changeModel.CEXDispatch(this.channel,{name:PageName})
     }
 
-    View:FC<{self:RouterComponent,children?:any,tag?:string,className?:string} & BaseElementProps<HTMLDivElement>> = ({self,tag = "div",children,className,...props})=>{
-        self.children = children || []
-        self.Refine()
-        const [currentPage,setCurrentPage] =  React.useState(self.defaultPage)
+    View = ({tag = "div",children,className,...props}:{children?:any,tag?:string,className?:string} & BaseElementProps<HTMLDivElement>)=>{
+        this.children = children || []
+        this.Refine()
+        const channel = this.channel
+        const [currentPage,setCurrentPage] =  React.useState(this.defaultPage)
         function TriggerDisplayPage(event:CIEvent){
             setCurrentPage(()=>event.detail.data.name)
-            console.log(self.channel," pageing ",event.detail.data.name)
+            console.log(channel," pageing ",event.detail.data.name)
         }
-        var ReturnEl = React.createElement(tag,{className:className,...props},[self.GetPage(currentPage),
-        <self.changeModel.CEventXH channel={self.channel} key="1" onEvent={TriggerDisplayPage} self={self.changeModel}></self.changeModel.CEventXH>])
+        var ReturnEl = React.createElement(tag,{className:className,...props},[this.GetPage(currentPage),
+        <this.changeModel.CEventXH channel={this.channel} key="1" onEvent={TriggerDisplayPage} ></this.changeModel.CEventXH>])
         return ReturnEl
     }
 
