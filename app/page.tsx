@@ -127,7 +127,7 @@ const footerItems = [
               />
               <button className="text-center p-[7.3px]  bg-black rounded-e-lg border-[1px] border-white hover:opacity-50 "
               onClick={() => {
-                router.push("/sign-up?name=Mosope")
+                router.push("/sign-up?email=sopeadegboyega@gmail.com")
               }}>
                 Sign Up for CV
               </button>
@@ -370,8 +370,8 @@ const footerItems = [
   Sign up or log in now and take the first step toward your dream career!"</p>
 
   <div className="w-fit h-fit flex flex-col md:flex-row gap-2 ">
-    <button className="bg-white w-[300px] text-black px-[16px] py-[12px]  rounded-md font-[700] hover:bg-transparent  hover:text-white transition duration-300 ease-in-out">Sign Up for CV Builder  ›</button>
-    <button className="bg-transparent w-[300px] text-white px-[16px] py-[12px] rounded-md border-[1px] border-white font-[700] hover:bg-white hover:text-black transition duration-500 ease-in-out">Sign in to CV Builder</button>
+    <button className="bg-white w-[300px] text-black px-[16px] py-[12px]  rounded-md font-[700] hover:bg-transparent  hover:text-white transition duration-300 ease-in-out" onClick={() => {router.push("/sign-up")}}>Sign Up for CV Builder  ›</button>
+    <button className="bg-transparent w-[300px] text-white px-[16px] py-[12px] rounded-md border-[1px] border-white font-[700] hover:bg-white hover:text-black transition duration-500 ease-in-out" onClick={() => {router.push("/login")}}>Sign in to CV Builder</button>
   </div>
 </div>
 
