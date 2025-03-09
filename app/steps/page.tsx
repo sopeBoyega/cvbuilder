@@ -95,16 +95,17 @@ class ICOn{
 }
 
 export default function StepPage(){
-    var slider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:false})
-    var haveJobDes = new BaseHOC({Component:Div})
-    var yesJobHaveOne = new BaseHOC({Component:Center})
-    var noJobHaveOne = new BaseHOC({Component:Center})
-    var yesCVHaveOne = new BaseHOC({Component:Center})
-    var noCVHaveOne = new BaseHOC({Component:Center})
-    var haveCVDes = new BaseHOC({Component:Div})
-    var cvFileNameDis = new BaseHOC({Component:Div})
-    var ico = new ICOn()
-    var CVInput = new BaseHOC<{type?:string,hidden?:any}>({Component:(props:any)=><Input {...props}></Input>})
+    const slider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:false})
+    const haveJobDes = new BaseHOC({Component:Div})
+    const yesJobHaveOne = new BaseHOC({Component:Center})
+    const noJobHaveOne = new BaseHOC({Component:Center})
+    const yesCVHaveOne = new BaseHOC({Component:Center})
+    const noCVHaveOne = new BaseHOC({Component:Center})
+    const haveCVDes = new BaseHOC({Component:Div})
+    const cvFileNameDis = new BaseHOC({Component:Div})
+    const ico = new ICOn()
+
+    const CVInput = new BaseHOC<{type?:string,hidden?:boolean}>({Component:(props:any)=><Input {...props}></Input>})
     React.useEffect(()=>{
         haveJobDes.style.display("flex")
         haveCVDes.style.display("flex")
@@ -112,7 +113,7 @@ export default function StepPage(){
              el.onchange = ()=>{
 
                 if (el.files){
-                    var file = el.files[0]
+                    const file = el.files[0]
                     cvFileNameDis.Execute((dis:HTMLDivElement)=>{
                         dis.innerText = `${file.name} | ${file.size/(1000*2)}mb | ${file.type}`
                     })}
