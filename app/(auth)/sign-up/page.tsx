@@ -1,8 +1,8 @@
 "use client";
-import React, { ReactEventHandler, useState } from "react";
+import React, { ReactEventHandler, useEffect, useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Button from "@/app/components/global/button";
 
 interface SignUpDetails {
@@ -13,6 +13,10 @@ interface SignUpDetails {
 }
 
 const page = (props: any) => {
+
+  const params = useParams()
+  const email = params?.email
+  console.log("email")
   const router = useRouter();
   const [signUpDetails, setSignUpDetails] = useState<SignUpDetails>({
     name: "",
@@ -37,6 +41,20 @@ const page = (props: any) => {
     else{
       alert("Please make sure passwords match!")
     }
+console.log(params)
+}
+
+useEffect(() => {
+  if(email) {
+    console.log(email)
+    if (typeof email === 'string') {
+      setSignUpDetails({ ...signUpDetails, email });
+    }
+  }
+}, [])
+
+  const onSumbit = () => {
+    event?.preventDefault()
   }
   return (
     <div className="w-[330px] flex flex-col gap-5 h-fit">
