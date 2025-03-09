@@ -1,11 +1,11 @@
 "use client"
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 import { BaseElementProps } from "./csml";
 import { CEXModel, CIEvent} from "./cexmodel"
 import { RandInt } from "./anys";
 
 export function ListChildren(children:any,CloneWithProps = {}){
-    const childrenWithProps = React.Children.map(children, (child) =>
+    const childrenWithProps:ReactNode[] = React.Children.map(children, (child) =>
         React.cloneElement(child, {  ...CloneWithProps })
       );
     return childrenWithProps
@@ -14,7 +14,7 @@ export function ListChildren(children:any,CloneWithProps = {}){
 
 export default class RouterComponent {
 
-    pages: { [key: string]: React.ReactElement } = {};
+    pages: { [key: string]: ReactNode } = {};
     pageNameList:string[] = []
     defaultPage:string = ""
     channel:string = ""
