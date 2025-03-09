@@ -24,7 +24,7 @@ class ICOn{
         
     }
     indexi(val:number){
-        if (val==0){
+        if (val==0){ 
             this.bar1.style.width("0px")
             this.bar2.style.width("0px")
             this.JobDes.style.backgroundColor("rgba(59, 130, 246, 1)")
