@@ -1,9 +1,7 @@
 "use client"
-import React, { FC, ReactNode, useEffect } from "react"
+import React, { FC } from "react"
 import { _cssHelper } from "./css"
 import { BaseElementProps, Div } from "./csml"
-import { ListChildren } from "./basicrouter"
-import {Timeout} from "@mui/utils/useTimeout";
 
 
 /**
@@ -39,12 +37,12 @@ import {Timeout} from "@mui/utils/useTimeout";
 
 export default class BaseHOC<T = {}>{
     
-    protected ref:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined>
+    protected ref:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined> | React.RefObject<null>
     public style
     public isMediaDestroyed: boolean
     protected Component
     public medias:{[key:string]:AtMedia} = {}
-    constructor ({Component = Div , refee = React.useRef(null) }:{Component?:any ,refee?:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined>}){
+    constructor ({Component = Div , refee = React.useRef(null) }:{Component?:FC ,refee?:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined> | React.RefObject<null>}){
         this.isMediaDestroyed = false
         this.ref = refee
         this.style = {..._cssHelper}
