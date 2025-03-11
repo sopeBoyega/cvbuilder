@@ -60,7 +60,7 @@ class ICOn{
             gridIconDivision
         ].join(' ')
         return <Div display = "grid" placeItems = "center" overflow={"visible"}   gridTemplateColumns={gridTemplateColumns} maxWidth="500px" minWidth={"300px"} width={"90%"}   gap="20px">
-            <Div style={(this.pFrameStyle as any)}>
+            <Div style={(this.pFrameStyle as never)}>
                 <this.JobDes.Render display="grid" placeItems="center" backgroundColor="rgba(31, 41, 55, 1)"  width="50px" height="50px" 
                 borderRadius="50%" ><svg width="30px" height="30px" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M25.4583 3.33179H10.4583C9.57428 3.33179 8.72643 3.68298 8.10131 4.3081C7.47619 4.93322 7.125 5.78107 7.125 6.66512V33.3318C7.125 34.2158 7.47619 35.0637 8.10131 35.6888C8.72643 36.3139 9.57428 36.6651 10.4583 36.6651H30.4583C31.3424 36.6651 32.1902 36.3139 32.8154 35.6888C33.4405 35.0637 33.7917 34.2158 33.7917 33.3318V11.6651L25.4583 3.33179Z" stroke="#F3F4F6" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
