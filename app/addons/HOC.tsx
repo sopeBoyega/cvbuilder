@@ -3,6 +3,7 @@ import React, { FC, ReactNode, useEffect } from "react"
 import { _cssHelper } from "./css"
 import { BaseElementProps, Div } from "./csml"
 import { ListChildren } from "./basicrouter"
+import {Timeout} from "@mui/utils/useTimeout";
 
 
 /**
@@ -33,56 +34,82 @@ import { ListChildren } from "./basicrouter"
      * ```
      * *GUDITTON*
      */
+
+
+
 export default class BaseHOC<T = {}>{
     
     protected ref:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined>
     public style
+    public isMediaDestroyed: boolean
     protected Component
-    constructor ({Component = Div , refee}:{Component?:any ,refee?:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined>}){
-        
-        this.ref = refee || React.useRef((null as any)) 
+    public medias:{[key:string]:AtMedia} = {}
+    constructor ({Component = Div , refee = React.useRef(null) }:{Component?:any ,refee?:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined>}){
+        this.isMediaDestroyed = false
+        this.ref = refee
         this.style = {..._cssHelper}
         this.Component = Component
         this.EffectifyStyle()
     }
-
-    protected Stylilise(style:{[key:string]:any}){
-       var element = this.ref.current
-        if (element){
-            for (const key of Object.keys(style)){
-                element.style[(key as any)] = style[key]
-                console.log(element)
-                console.log(element.style[(key as any)])
-            }
+    AddMedia(id:string,Media:AtMedia){
+        this.medias = {
+            [id]:Media
         }
     }
-
+    DestroyMedia(id:string){
+        if (this.medias[id]){
+            this.medias[id].Destroy()
+        }
+    }
+    PauseMedia(id:string){
+        if (this.medias[id]){
+            this.medias[id].Pause()
+        }
+    }
+    ContinueMedia(id:string){
+        if (this.medias[id]){
+            this.medias[id].Continue()
+        }
+    }
     protected EffectifyStyle(){
-        for (const key of Object.keys(_cssHelper)){
-            this.style = {...this.style,[key]:(value:string)=>{this.Stylilise({[key]:value})}}
+        for ( const key of Object.keys(_cssHelper)){
+            this.style = {...this.style,[key]:(value?:string)=>{
+                const element = this.ref.current
+                    if (element){
+                        if (value) {
+                            element.style[key] = value
+                            // console.log(element.style[key])
+                            }
+                        else{
+                        return element.style[key]
+                        }
+                    }
+
+            }}
         }
     }
+
     /**
      * 
      *  `Execute`: safely run functions with your element without ```if (element.current){}```
      *  just by passing your function into the `Execute` method and getting the element as an argument
      * 
      */
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     public Execute(func:Function){
-        var element = this.ref.current
+        const element = this.ref.current
         if (element){
             func(element)
         }
     }
     /**
-     * 
-     * @param self is required.
-     * `self` is the `BaseHOC` reference variable.
+     *
      * @example
-     * ``` 
-     * <hoc.Render self={hoc}></hoc.Render>
      * ```
-     * @returns `BaseHOC.Component` 
+     * <hoc.Render ></hoc.Render>
+     * ```
+     * @returns `BaseHOC.Component`
+     * @param props
      */
     Render:FC<BaseElementProps<HTMLDivElement>& T> =(props:BaseElementProps<HTMLDivElement>& T) =>{
             return <this.Component Ref = {this.ref} {...props}>
@@ -92,7 +119,61 @@ export default class BaseHOC<T = {}>{
 }
 
 
+class AtMedia{
+    isDestroyed: boolean = false
+    isPaused: boolean = false
+    media:string = "max-width"
+    pixels:number = 800
+    interval:any
+    mediaElementFunc = ()=>window
+    styleat = {}
+    styleaf = {}
+    hoc:BaseHOC
+    constructor(hoc:BaseHOC,{media = "max-width",pixels = 800,mediaElementFunc = ()=>window,styleat = {},styleaf = {}} = {}){
+        this.media = media
+        this.mediaElementFunc = mediaElementFunc
+        this.styleaf = styleaf
+        this.styleat = styleat
+        this.pixels = pixels
+        this.hoc = hoc
+    }
+    Destroy (){
+        this.isDestroyed = true
+    }
 
+    Pause(){
+        this.isPaused = true
+    }
+
+    Continue(){
+        this.isPaused = false
+    }
+
+    Activate(){
+        this.interval = setInterval(() => {
+            this.hoc.Execute(()=>{
+                if (this.isDestroyed){
+                    clearInterval(this.interval)
+                    this.isDestroyed = false
+                }
+                const mediaer = this.mediaElementFunc()
+                if (!this.isPaused){
+                    if (mediaer.matchMedia(`(${this.media}:${this.pixels}px)`).matches) {
+                        for (const key of Object.keys(this.styleat)) {
+                            this.hoc.style[(key)](this.styleat[(key)]);
+                            // console.log(`[${this.styleat[key]}] ${this.style[key]()}`)
+                        }
+                    } else {
+                        for (const key of Object.keys(this.styleaf)) {
+                            this.hoc.style[(key)](this.styleaf[(key)]);
+                            // console.log(`[${styleaf[key]}] ${this.style[key]()}`)
+                        }
+                    }
+                }
+            })
+        },1)
+    }
+}
 
 
 
