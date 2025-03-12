@@ -42,6 +42,20 @@ export default class BaseHOC<T = {}>{
     public isMediaDestroyed: boolean
     protected Component
     public medias:{[key:string]:AtMedia} = {}
+    public variables:{[key:string]:any} = {}
+
+    SetVariable(name:string, value: any){
+        this.variables[name]=value
+    }
+
+    GetVariable(name:string) {
+        return this.variables[name]
+    }
+
+    GetVariableType(name:string) {
+        return typeof (this.variables[name])
+    }
+
     constructor ({Component = Div , refee = React.useRef(null) }:{Component?:FC ,refee?:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined> | React.RefObject<null>}){
         this.isMediaDestroyed = false
         this.ref = refee
@@ -69,10 +83,13 @@ export default class BaseHOC<T = {}>{
             this.medias[id].Continue()
         }
     }
+    get Element(){
+        return this.ref.current
+    }
     protected EffectifyStyle(){
         for ( const key of Object.keys(_cssHelper)){
             this.style = {...this.style,[key]:(value?:string)=>{
-                const element = this.ref.current
+                const element = this.Element
                     if (element){
                         if (value) {
                             element.style[key] = value
@@ -95,7 +112,7 @@ export default class BaseHOC<T = {}>{
      */
     // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     public Execute(func:Function){
-        const element = this.ref.current
+        const element =this.Element
         if (element){
             func(element)
         }

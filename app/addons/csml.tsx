@@ -54,7 +54,7 @@ export function filterOutStyles(Styles:any = {}){
   var allCSSProperties
       allCSSProperties = {...css};
       var propforit:any = {}
-      for (var key in Styles){
+      for (let key in Styles){
           if (!(key in allCSSProperties)){
               propforit[key] = Styles[key]
           }
@@ -85,20 +85,20 @@ export function BaseElement({className,tag = "div",children,id,Ref,onClick,comme
   const UnClassName = comment?`/*${String(comment).split(" ").join("_")}*/`:""
   className = `${className?className:""} ${UnClassName}`
   const Element =ReElement?({Ref,...props}:any)=><ReElement ref={Ref} {...props}> {props.children}</ReElement>: ({children,Ref,...attr}:any)=>{return React.createElement(tag,{ref:Ref,...attr},children)}
-  var propsforstyle = filterInStyles(props)
+  const propsforstyle = filterInStyles(props)
   
-  var Style = {
+  const Style = {
       ...style,
       ...propsforstyle  
   }
-  var propforit = filterOutStyles(props)
+  const propforit = filterOutStyles(props)
   
   return <Element { ...propforit} className={mergeText(className)} onClick={onClick} id={id} Ref={Ref} style={Style}>
       {children}
   </Element>
 }
 
-export var Text:FC<BaseElementProps<HTMLParagraphElement>> = function({className,children,id,Ref,...props}:any){
+export const Text:FC<BaseElementProps<HTMLParagraphElement>> = function({className,children,id,Ref,...props}:any){
   return <BaseElement tag="p" display = "inline-block" {...props} className={className} id={id} Ref={Ref}  >{children}</BaseElement>
 }
 /**
@@ -109,7 +109,7 @@ export var Text:FC<BaseElementProps<HTMLParagraphElement>> = function({className
  * ```
  * 
  */
-export var Span:FC<BaseElementProps<HTMLSpanElement>> = function({className,children,id,Ref,...props}:any){
+export const Span:FC<BaseElementProps<HTMLSpanElement>> = function({className,children,id,Ref,...props}:any){
   return <BaseElement tag="span" display="inline-block" {...props} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 
