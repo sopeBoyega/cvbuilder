@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import { inter } from "./fonts/fonts";
+import { Provider } from "./components/ui/provider";
 
 
 
@@ -20,7 +21,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} text-white`}
       >
-        {children}
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

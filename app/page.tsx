@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import { notoSans } from "./fonts/fonts";
-import List from "./components/list";
+import List from "./components/global/list";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
