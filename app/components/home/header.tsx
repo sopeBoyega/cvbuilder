@@ -12,7 +12,7 @@ const Header = (props: Props) => {
         </p>
         <div className="flex w-fit h-fit gap-2">
           <div className=" h-fit w-fit rounded-full p-[5px] border-[1px] border-white">
-            <IconItem name="trash" color="" />
+            <IconItem name="trash" />
           </div>
           <div className=" h-fit w-fit rounded-full p-[5px] border-[1px] border-white">
             <svg

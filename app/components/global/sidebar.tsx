@@ -46,7 +46,7 @@ export default function Sidebar() {
           >
             <IconItem
               name={`${item.icon}`}
-              color={activeTab === item.title ? "#8C55D4" : "#525866"}
+              fillColor={activeTab === item.title ? "#8C55D4" : "#525866"}
             />
             <p className="capitalize text-[14px] font-[500] my-2 ml-1.5">
               {item.title}
