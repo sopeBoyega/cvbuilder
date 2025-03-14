@@ -1,9 +1,10 @@
 "use client"
-import { Div, Center, TextArea,Input, BaseElementProps } from "../addons/csml"
+import { Div, Center, TextArea,Input, BaseElementProps,EButton,Form } from "../addons/csml"
 import BaseHOC from "../addons/HOC"
 import SliderHOC from "../addons/Slider"
 import React, { useEffect } from "react"
-
+import {Dict, mergeText, useUpdate} from "../addons/anys"
+import styles from "./styles.module.css"
 class ICOn{
     JobDes
     upCV
@@ -91,7 +92,7 @@ class ICOn{
             </Div>
             <Div style={(this.pFrameStyle as any)}>
                 <this.analysis.Render display="grid" placeItems="center" backgroundColor="rgba(31, 41, 55, 1)" width="50px" height="50px" 
-                borderRadius="50%"><svg width="41" height="40" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                borderRadius="50%"><svg width="30px" height="30px" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M35.0781 25C35.0781 25.8841 34.7269 26.7319 34.1018 27.357C33.4767 27.9821 32.6288 28.3333 31.7448 28.3333H11.7448L5.07812 35V8.33333C5.07812 7.44928 5.42931 6.60143 6.05444 5.97631C6.67956 5.35119 7.5274 5 8.41146 5H31.7448C32.6288 5 33.4767 5.35119 34.1018 5.97631C34.7269 6.60143 35.0781 7.44928 35.0781 8.33333V25Z" stroke="#F3F4F6" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
 
@@ -103,8 +104,109 @@ class ICOn{
     }
 }
 
+function Experience(props){
+    const etd = new BaseHOC()
+    const btn = new BaseHOC({Component:EButton})
+    const EditorForm =  new BaseHOC({Component:Form})
+    const Editor:BaseHOC = props.editor;
+    let editId:number = 0
+    const [editorType, setEditorType] = React.useState<string>("")
+
+    let experiences:Dict[] = []
+    const [experience, setExperience] = React.useState<Dict[]>([])
+    const Update = useUpdate();
+    const form:Dict<Dict<string> | string> = props.form;
+
+    function handleSubmit(){
+        const formData = new FormData(EditorForm.Element)
+        const formObject = Object.fromEntries(formData.entries());
+
+        console.log(formObject);
+        console.log(editorType);
+        if (editorType == "create"){
+            console.log('create', formObject)
+            experiences = [...experiences, {...formObject,id:experiences.length}]
+        }
+        if(editorType == "update"){
+            console.log('update', formObject)
+
+                const newex = experiences.map((fo:Dict)=>{
+                    let newfo = fo
+                    if (fo.id == editId){
+                        newfo =  {...formObject,id:experiences.length}
+                    }
+                    return newfo
+                })
+                experiences =  newex
+
+        }
+        // Update();
+        console.log(experiences);
+        setExperience(experiences);
+    }
+
+    return <Div {...props} className={styles.formField}>
+        <Div className ={styles.formLabel}>Experience</Div>
+        {experience.map((form:Dict,key)=> {
+            return <Div display={"grid"} gridTemplateColumns={"1fr auto auto"} gap={"10px"} key={key}>
+                <EButton backgroundColor={"rgba(31, 41, 55, 1)"}>{form.jobTitle}</EButton>
+                <EButton backgroundColor={"rgba(37, 99, 235, 1)"}
+                         onClick={()=>{
+                             Editor.style.display("flex")
+                             etd.innerText("Edit Experience")
+                             btn.innerText("edit")
+                             setEditorType("edit")
+                             editId = form.id;
+                         }}
+                >Edit </EButton>
+                <EButton backgroundColor={"rgba(235, 99, 37, 1)"}>delete </EButton>
+            </Div>
+        })}
+        <Editor.ToRender renderId ={"0dfd"}>
+            <etd.Render fontSize={"30px"} fontWeight={"bolder"}>Create Experience</etd.Render>
+        </Editor.ToRender>
+        <Editor.ToRender renderId ={"dfdfdf"} backgroundColor={"rgba(0,0,0,0.39)"} backdropFilter = "blur(10px)">
+            <EditorForm.Render display={"flex"} flexDirection={"column"} gap={"10px"} width={"80%"} padding={"20px"} borderRadius={"10px"} maxWidth={'500px'} height = {"fit-content"} minHeight={"300px"} backgroundColor={"rgb(17,24,39)"}>
+                <Div className={styles.formField}>
+                    <Div className ={styles.formLabel}>Job Title</Div>
+                    <Input name={"jobTitle"} placeholder={"Enter Job Title"} className ={mergeText(styles.formInput)}></Input>
+                </Div><Div className={styles.formField}>
+                    <Div className ={styles.formLabel}>Company Name</Div>
+                    <Input name={"companyName"} placeholder={"Enter Company Name"} className ={mergeText(styles.formInput)}></Input>
+                </Div><Div className={styles.formField}>
+                    <Div className ={styles.formLabel}>location</Div>
+                    <Input name ={"location"} placeholder={"Enter location"} className ={mergeText(styles.formInput)}></Input>
+                </Div><Div className={styles.formField}>
+                    <Div className ={styles.formLabel}>Start Date</Div>
+                    <Input name={"startDate"} placeholder={"Enter Start Date"} className ={mergeText(styles.formInput)}></Input>
+                </Div><Div className={styles.formField}>
+                    <Div className ={styles.formLabel}>End Date</Div>
+                    <Input name={"endDate"} placeholder={"Enter End Date"} className ={mergeText(styles.formInput)}></Input>
+                </Div><Div className={styles.formField}>
+                    <Div className ={styles.formLabel}>Responsibility</Div>
+                    <Input name={"res"} placeholder={"Enter Responsibility"} className ={mergeText(styles.formInput)}></Input>
+                </Div>
+            </EditorForm.Render>
+            <btn.Render backgroundColor={"rgba(37, 99, 235, 1)"}
+            onClick={()=>{
+                Editor.style.display("none")
+                handleSubmit()
+            }}
+            > Create </btn.Render>
+
+        </Editor.ToRender>
+        <EButton
+            onClick={()=>{
+               Editor.style.display("flex")
+                etd.innerText("Create Experience")
+                setEditorType("create")
+            }}
+            width={"fit-content"} backgroundColor = "rgba(45, 45, 45, 0.29)" color={"white"}>create + </EButton>
+    </Div>
+}
+
 export default function StepPage(){
-    const slider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:true})
+    const slider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:true,direction:"row"})
     // const parentSlider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:true})
     // const questSlider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:true})
     const haveJobDes = new BaseHOC({Component:Div})
@@ -116,9 +218,13 @@ export default function StepPage(){
     const cvFileNameDis = new BaseHOC({Component:Div})
     const analysis = new BaseHOC({Component:Div})
     const ico = new ICOn()
-
+    const form:Dict<Dict<string> | string>  = {}
+    const Editor = new BaseHOC()
     const CVInput = new BaseHOC<{type?:string,hidden?:boolean}>({Component:(props:any)=><Input {...props}></Input>})
     React.useEffect(()=>{
+        setTimeout(()=>{
+            // setExperiences(()=>[1])
+        },2000)
         haveJobDes.style.display("flex")
         haveCVDes.style.display("flex")
         CVInput.Execute((el:HTMLInputElement)=>{
@@ -141,6 +247,9 @@ export default function StepPage(){
     }
     slider.onSlide  = onSlide;
     return <Center backgroundColor="rgb(13,17,23)">
+        <Editor.Render position={"fixed"} flexDirection={"column"} gap={"30px"} comment = {"experience Editor"} zIndex={'1000'} width={"100vw"} display={"none"} alignItems={"center"} justifyContent={"center"} backgroundColor={"black"} height={"100vh"} top={"0px"} left={"0px"}>
+
+        </Editor.Render>
         <Div maxWidth="1000px" width="100vw" height="100vh" overflow="auto" display="flex" flexDirection="column" gap="30px" boxSizing="border-box" padding = "20px" paddingTop="30px" >
             <Div comment="top info view" display="flex" flexDirection="column" gap="20px">
                     <Center gap="20px" >
@@ -206,16 +315,33 @@ export default function StepPage(){
                                 </haveCVDes.Render>
 
                             </Div>
-                        <Div display="flex" flexDirection="column" gap="20px">
+                        <Div display="flex" flexDirection="column" width={"100%"} gap="20px">
                             <Div fontSize="20px">Form</Div>
-                            <Div fontSize="15px" color="rgba(156, 163, 175, 1)">Help us understand your profile better</Div>
-
+                            <Div fontSize="15px" color="rgba(156, 163, 175, 1)">Fill in the information to help us understand your profile better</Div>
+                            <Div width="100%" justifyContent={"center"} alignItems={"center"} display="flex" flexDirection="column" gap="20px">
+                                <Div className={styles.formField}>
+                                    <Div className ={styles.formLabel}>Full Name</Div>
+                                    <Input placeholder={"Enter Full Name"} className ={mergeText(styles.formInput)}></Input>
+                                </Div><Div className={styles.formField}>
+                                    <Div className ={styles.formLabel}>Email</Div>
+                                    <Input placeholder={"Enter Email"} className ={mergeText(styles.formInput)}></Input>
+                                </Div><Div className={styles.formField}>
+                                    <Div className ={styles.formLabel}>LinkedIn (Optional)</Div>
+                                    <Input placeholder={"Enter LinkedIn"} className ={mergeText(styles.formInput)}></Input>
+                                </Div><Div className={styles.formField}>
+                                    <Div className ={styles.formLabel}>Phone</Div>
+                                    <Input placeholder={"Enter Phone"} className ={mergeText(styles.formInput)}></Input>
+                                </Div><Div className={styles.formField}>
+                                    <Div className ={styles.formLabel}>Portfolio (Optional)</Div>
+                                    <Input placeholder={"Enter Portfolio"} className ={mergeText(styles.formInput)}></Input>
+                            </Div><Experience editor = {Editor} form ={form}></Experience>
+                            </Div>
                         </Div>
                     </slider.Render>
                 </Div>
                 <Div display="flex" justifyContent="space-between" comment = "buttons">
                     <Div onClick={()=>{slider.slide((pidx:number)=> pidx-1);ico.indexi(slider.currentIndex)}} padding ="10px" paddingInline="20px" borderRadius="10px" background="rgb(31,41,55)">Previous</Div>
-                    <Div onClick={()=>{slider.slide((pidx:number)=>pidx+1);ico.indexi(slider.currentIndex)}} padding ="10px" paddingInline="20px" borderRadius="10px" background="rgb(37,99,235)">Next</Div>
+                    <Div onClick={()=>{slider.slide((pidx:number) =>pidx+1);ico.indexi(slider.currentIndex)}} padding ="10px" paddingInline="20px" borderRadius="10px" background="rgb(37,99,235)">Next</Div>
                 </Div>
         </Div>
     </Center>

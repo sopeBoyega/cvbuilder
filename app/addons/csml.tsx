@@ -124,7 +124,10 @@ export const Span:FC<BaseElementProps<HTMLSpanElement>> = function({className,ch
 export const Div:FC<BaseElementProps<HTMLDivElement> >= function({className,children,id,Ref,onClick,...props}){
   return <BaseElement tag="div"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export const RDiv:FC<BaseElementProps<HTMLMediaElement>> = function({className,children,id,Ref,onClick,...props}:any){
+export const Form:FC<BaseElementProps<HTMLFormElement> >= function({className,children,id,Ref,onClick,...props}){
+  return <BaseElement tag="form"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const RDiv:FC<BaseElementProps<HTMLDivElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="div"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 export const Main:FC<BaseElementProps<{}>> = function({className,children,id,Ref,onClick,...props}:any){
@@ -137,10 +140,10 @@ export const Button:FC<BaseElementProps<HTMLButtonElement>> = function({classNam
   return <BaseElement tag="button"  {...props} type = {type} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 export const Input:FC<BaseElementProps<HTMLInputElement> & React.InputHTMLAttributes<HTMLInputElement>> = function({className,children,id,Ref,type = "text",placeholder,onClick,...props}){
-  return <BaseElement tag="input"  {...props} type = {type} placeholder = {placeholder} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+  return <BaseElement tag="input"  {...props} type = {type} placeholder = {placeholder} onClick={onClick} className={className} id={id} Ref={Ref}   ></BaseElement>
 }
 export const TextArea:FC<BaseElementProps<HTMLTextAreaElement>  & {Ref?:any,cols?:string,rows?:string,placeholder?:string}> = function({className,children,id,Ref,onClick,...props}:any){
-  return <BaseElement tag="textarea"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+  return <BaseElement tag="textarea"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   ></BaseElement>
 }
 export const Img:FC<BaseElementProps<HTMLImageElement> & React.ImgHTMLAttributes<HTMLImageElement>> = function({className,children,id,Ref,src,onClick,...props}){
   return <BaseElement tag="img"   {...props}  ReElement = {({children,...attr}:any)=><img src={src} {...attr}/>} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>

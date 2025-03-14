@@ -1,8 +1,9 @@
 "use client"
-import React, { FC } from "react"
+import React, {FC, ReactNode, useState} from "react"
 import { _cssHelper } from "./css"
 import { BaseElementProps, Div } from "./csml"
-
+import {Dict, useUpdate} from "@/app/addons/anys";
+import {ListChildren} from "@/app/addons/anys";
 
 /**
      * 
@@ -32,9 +33,6 @@ import { BaseElementProps, Div } from "./csml"
      * ```
      * *GUDITTON*
      */
-
-
-
 export default class BaseHOC<T = {}>{
     
     protected ref:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined> | React.RefObject<null>
@@ -43,7 +41,14 @@ export default class BaseHOC<T = {}>{
     protected Component
     public medias:{[key:string]:AtMedia} = {}
     public variables:{[key:string]:any} = {}
-
+    public existAs
+    protected forceUpdate?:Function
+    public Addons = []
+    public added = []
+    protected setAddons:any
+    protected setAddonProps:any
+    protected setAdded:any
+    protected addonProps:Dict = {}
     SetVariable(name:string, value: any){
         this.variables[name]=value
     }
@@ -51,20 +56,28 @@ export default class BaseHOC<T = {}>{
     GetVariable(name:string) {
         return this.variables[name]
     }
+    Update(){
+        if (this.forceUpdate){
+            this.forceUpdate()
+        }
+    }
 
     GetVariableType(name:string) {
         return typeof (this.variables[name])
     }
 
-    constructor ({Component = Div , refee = React.useRef(null) }:{Component?:FC ,refee?:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined> | React.RefObject<null>}){
+    constructor ({Component = Div,existAs, refee = React.useRef(null) }:{Component?:FC ,existAs?:Function,refee?:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined> | React.RefObject<null>} = {}){
         this.isMediaDestroyed = false
         this.ref = refee
+        this.existAs = existAs
         this.style = {..._cssHelper}
         this.Component = Component
         this.EffectifyStyle()
+
     }
     AddMedia(id:string,Media:AtMedia){
         this.medias = {
+            ...this.medias,
             [id]:Media
         }
     }
@@ -83,8 +96,21 @@ export default class BaseHOC<T = {}>{
             this.medias[id].Continue()
         }
     }
-    get Element(){
-        return this.ref.current
+    get Element():HTMLElement | undefined|null{
+        if (this.existAs) {
+            return this.existAs()
+        }else{
+            return this.ref.current
+        }
+    }
+    innerText (val:string){
+        if (this.Element){
+            this.Element.innerText = val
+        }
+    }innerHTML (val:string){
+        if (this.Element){
+            this.Element.innerHTML = val
+        }
     }
     protected EffectifyStyle(){
         for ( const key of Object.keys(_cssHelper)){
@@ -104,31 +130,50 @@ export default class BaseHOC<T = {}>{
         }
     }
 
-    /**
-     * 
-     *  `Execute`: safely run functions with your element without ```if (element.current){}```
-     *  just by passing your function into the `Execute` method and getting the element as an argument
-     * 
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    public Execute(func:Function){
+     public Execute(func:Function){
         const element =this.Element
         if (element){
             func(element)
         }
     }
-    /**
-     *
-     * @example
-     * ```
-     * <hoc.Render ></hoc.Render>
-     * ```
-     * @returns `BaseHOC.Component`
-     * @param props
-     */
+
+    protected AddMore(children:ReactNode[]){
+        React.useEffect(()=>{
+            this.setAddons((adds)=>[adds,children])
+            this.Update()
+        })
+    }
+    ToRender = ({children,renderId ,...props}:BaseElementProps<HTMLDivElement> & {renderId:any}) => {
+        if (renderId){}else{
+            throw new Error("renderId must be defined")
+        }
+        if (!this.added.includes(renderId)){
+            if (children) {
+                this.AddMore(ListChildren(children))
+                this.setAdded((added)=>[...added,renderId])
+            }
+        }
+            this.setAddonProps((p)=> {
+                return{...props,...p}
+            })
+
+        this.Update()
+        return <></>
+    }
     Render:FC<BaseElementProps<HTMLDivElement>& T> =(props:BaseElementProps<HTMLDivElement>& T) =>{
-            return <this.Component Ref = {this.ref} {...props}>
+            this.forceUpdate = useUpdate()
+            const addonsState = useState([])
+            this.Addons = addonsState[0]
+            this.setAddons = addonsState[1]
+            const addonPropsState = useState([])
+            this.addonProps = addonPropsState[0]
+            this.setAddonProps = addonPropsState[1]
+            const addedState = useState([])
+            this.added = addedState[0]
+            this.setAdded = addedState[1]
+            return <this.Component Ref = {this.ref} {...props} {...this.addonProps} >
                 {props.children}
+                {this.Addons}
             </this.Component>
     }
 }
@@ -217,10 +262,10 @@ export class MessageLabelHOC{
             setTimeout(() => {
             if (this.PRef.current){this.PRef.current.style.opacity = "0";
            setTimeout(()=>{ ondone()},leavetime)}
-                
+
             }, timeout);
         }
-        
+
     }
     Run = (props: BaseElementProps<HTMLDivElement>) => {
 

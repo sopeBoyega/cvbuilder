@@ -1,10 +1,10 @@
 "use client"
 
 import React, { FC, ReactNode, useEffect } from "react"
-import { ListChildren } from "./basicrouter"
+import { ListChildren } from "./anys"
 import { BaseElementProps, Div } from "./csml"
 import BaseHOC from "./HOC"
-import { LastIndex } from "./anys"
+// import {LastIndex, useUpdate} from "./anys"
 
 
 export default class SliderHOC{
@@ -94,6 +94,7 @@ export default class SliderHOC{
         console.log(inputIndex) */
         this.currentIndex = inputIndex%lengthOf
         this.onSlide(this.currentIndex)
+        // this.ForceUpdate()
     }
 
     Render:FC<BaseElementProps<HTMLDivElement>> = ({...props}:BaseElementProps<HTMLDivElement>)=>{

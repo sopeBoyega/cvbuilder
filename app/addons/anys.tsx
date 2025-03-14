@@ -1,10 +1,19 @@
 "use client"
 
-import {useReducer} from "react"
+import React, {ReactNode, useReducer} from "react"
 
+export type Dict<T = any> = {[key:string]:T}
 
 export function mergeText(...texts:string[]){
     return texts.join(" ")
+}
+
+export function ListChildren(children:any,CloneWithProps = {}){
+    const childrenWithProps:ReactNode[] = React.Children.map(children, (child) =>
+        React.cloneElement(child, {  ...CloneWithProps })
+    );
+    return childrenWithProps
+
 }
 
 export function mergeFunc(...func:Function[]){

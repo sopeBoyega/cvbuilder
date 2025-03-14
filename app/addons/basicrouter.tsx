@@ -2,15 +2,8 @@
 import React, { FC, ReactNode } from "react";
 import { BaseElementProps } from "./csml";
 import { CEXModel, CIEvent} from "./cexmodel"
-import { RandInt } from "./anys";
+import {ListChildren, RandInt} from "./anys";
 
-export function ListChildren(children:any,CloneWithProps = {}){
-    const childrenWithProps:ReactNode[] = React.Children.map(children, (child) =>
-        React.cloneElement(child, {  ...CloneWithProps })
-      );
-    return childrenWithProps
-
-}
 
 export default class RouterComponent {
 
