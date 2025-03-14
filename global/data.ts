@@ -9,13 +9,13 @@ export const sidebarData: sideBar[] = [
   },
   {
     title: "My CVs",
-    url: "/",
+    url: "/my-cv",
     descripition:"View all your CVs",
     icon: "notes",
   },
   {
     title: "Word Cloud",
-    url: "/",
+    url: "/word-cloud",
     descripition:"",
     icon: "cloud",
   },
