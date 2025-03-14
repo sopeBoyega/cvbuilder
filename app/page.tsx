@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import { notoSans } from "./fonts/fonts";
-import List from "./components/list";
+import List from "./components/global/list";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -106,14 +106,14 @@ const footerItems = [
           </div>
 
           <p className="font-[700] text-responsive text-white">
-            Start Your <br />
-            Professional Journey
+            Your Dream Job <br />
+            Starts with the Right Resume
           </p>
 
           <p className="lg:text-[#8B949E]   font-[400] text-[clamp(1rem,2.5vw,1.5rem)]">
             Create, customize, and download your perfect CV—no <br />
-            fees, no hassle, just results. Fast, easy, and tailored for <br />
-            success.
+            fees, no hassle, just results. Fast, easy, and tailored to <br />
+            land you interviews
           </p>
 
           <div className="w-full h-fit flex flex-row items-center gap-7 mt-7 justify-start">
@@ -129,7 +129,7 @@ const footerItems = [
               onClick={() => {
                 router.push("/sign-up?email=sopeadegboyega@gmail.com")
               }}>
-                Sign Up for CV
+                Build Your Resume Now
               </button>
             </div>
 

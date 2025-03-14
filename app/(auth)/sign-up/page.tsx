@@ -31,16 +31,27 @@ const page = (props: any) => {
     setSignUpDetails({ ...signUpDetails, [name]: value });
   };
 
-  console.log(params)
-  
-  useEffect(() => {
-if(email) {
-  console.log(email)
-  if (typeof email === 'string') {
-    setSignUpDetails({ ...signUpDetails, email });
-  }
+  const onSumbitHandler = (event :any) => {
+    event.preventDefault()
+
+    if(signUpDetails && signUpDetails.password === signUpDetails.confirmPassword){
+      localStorage.setItem("user",JSON.stringify(signUpDetails))
+      router.push('/sign-up/code')
+    }
+    else{
+      alert("Please make sure passwords match!")
+    }
+console.log(params)
 }
-  },[])
+
+useEffect(() => {
+  if(email) {
+    console.log(email)
+    if (typeof email === 'string') {
+      setSignUpDetails({ ...signUpDetails, email });
+    }
+  }
+}, [])
 
   const onSumbit = () => {
     event?.preventDefault()
@@ -71,7 +82,7 @@ if(email) {
         </div>
         <hr className="border-[0.1px] w-[45%] border-[#CDCFD01A]" />
       </div>
-      <form className="">
+      <form className="" onSubmit={onSumbitHandler}>
         <div className="flex-col ">
           <input
             className="w-full text-[13px] h-[39px] rounded-full pl-3 mb-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
