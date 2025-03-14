@@ -39,15 +39,6 @@ import {
 } from "react-icons/lu";
 import { MenuItem, MenuContent, MenuRoot, MenuTrigger } from "../ui/menu";
 import { Button } from "../ui/button";
-import { createListCollection } from "@chakra-ui/react";
-import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "../ui/select";
 import IconItem from "../global/icon";
 
 const TextEditor = () => {
@@ -78,6 +69,7 @@ const TextEditor = () => {
       Color,
     ],
     content: "<p> Write Your Post....</p>",
+    immediatelyRender: false,
   });
 
   const addImage = (event: React.ChangeEvent<HTMLInputElement>) => {

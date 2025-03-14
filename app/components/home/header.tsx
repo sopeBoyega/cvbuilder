@@ -5,11 +5,11 @@ type Props = {}
 
 const Header = (props: Props) => {
   return (
-    <div className="flex justify-between items-center mb-[15px]">
+    <div className="flex justify-between w-full items-center mb-[15px]">
         <p className="text-white text-[23px] font-[700]">
-          {" "}
-          Good Afternoon , Okechukwu
+          Good Afternoon , Mosope
         </p>
+        
         <div className="flex w-fit h-fit gap-2">
           <div className=" h-fit w-fit rounded-full p-[5px] border-[1px] border-white">
             <IconItem name="trash" />

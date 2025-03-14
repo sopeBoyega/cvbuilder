@@ -15,6 +15,9 @@ export default {
       },
       fontSize :{
        'responsive' :'clamp(2rem,3.5vw,3rem)'
+      },
+      boxShadow: {
+        'custom-shadow': '0px 9.37px 9.37px 0px #000000',
       }
     },
   },

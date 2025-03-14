@@ -15,7 +15,7 @@ export const sidebarData: sideBar[] = [
   },
   {
     title: "Word Cloud",
-    url: "/",
+    url: "/word-cloud",
     descripition:"",
     icon: "cloud",
   },

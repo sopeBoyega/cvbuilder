@@ -76,7 +76,7 @@ export default function IconItem(props: IconProps) {
         >
           <path
             d="M17.6106 30.6719C16.3691 30.0394 14.987 29.7114 13.5815 29.7114C2.61865 30.4845 2.61865 46.4369 13.5815 47.2099H39.5599C42.7222 47.2333 45.7675 46.0621 48.0866 43.9304C55.7934 37.2074 51.6706 23.6912 41.5276 22.4028C37.8733 0.453607 6.17925 8.79291 13.6987 29.7114"
-            stroke="#94A3B8"
+            stroke={props.color || "#94A3B8"}
             strokeWidth="5.1535"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -84,7 +84,7 @@ export default function IconItem(props: IconProps) {
           />
           <path
             d="M37.7188 23.4311C38.9368 22.8221 40.2721 22.4941 41.6307 22.4707"
-            stroke="#94A3B8"
+            stroke={props.color || "#94A3B8"}
             strokeWidth="5.1535"
             strokeMiterlimit="10"
             strokeLinecap="round"
