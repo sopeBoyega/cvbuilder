@@ -1,4 +1,5 @@
-import { sideBar } from "./types";
+
+import { sideBar, StatusType } from "./types";
 
 export const sidebarData: sideBar[] = [
   {
@@ -21,7 +22,7 @@ export const sidebarData: sideBar[] = [
   },
   {
     title: "Settings",
-    url: "/",
+    url: "/settings",
     descripition:"",
     icon: "settings",
   },
@@ -31,6 +32,8 @@ export const subSideBarData: sideBar[] = [
 
 ];
 
+export const cvStatus : StatusType[] = ["drafts","downloaded","saved","drafts","downloaded","saved","drafts","downloaded","saved"]
+
  
 
 
@@ -39,4 +42,4 @@ export const subSideBarData: sideBar[] = [
 
 
 
-export const base_url: string = "https://soundmind-api.onrender.com";
+

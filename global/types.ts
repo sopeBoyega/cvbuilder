@@ -5,3 +5,7 @@ export type sideBar = {
     icon: React.ReactNode;
   };
   
+  export type StatusType =
+  | "downloaded"
+  | "drafts"
+  | "saved";

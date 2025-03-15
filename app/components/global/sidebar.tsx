@@ -1,15 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { sidebarData, subSideBarData } from "@/global/data";
+import { cvStatus, sidebarData, subSideBarData } from "@/global/data";
 import Image from "next/image";
 
 import IconItem from "./icon";
 import { sideBar } from "@/global/types";
 import { useRouter } from "next/navigation";
-import { notoSans } from "@/app/fonts/fonts";
 
 export default function Sidebar() {
-  const [activeTab, setActiveTab] = useState<string>("dashboard");
+  const [activeTab, setActiveTab] = useState<string>("Home");
   const [adVisible, setAdVisible] = useState<boolean>(true);
 
   const router = useRouter();
@@ -19,6 +18,8 @@ export default function Sidebar() {
     // Also removed the /(slash that was infront of the tab
     router.push(tab.url);
   };
+
+  const cvLength = cvStatus.length;
 
   return (
     <div className="border-r-[1px] border-r-[#E2E4E9] fixed z-[1000] h-[100vh] hidden md:flex md:flex-col  bg-black w-[20%] top-0">
@@ -37,7 +38,7 @@ export default function Sidebar() {
         {sidebarData.map((item: sideBar) => (
           <div
             key={item.title}
-            className={`flex w-full  border-[3.03px] border-white rounded-full h-fit items-center cursor-pointer px-[12px] py-[px] ${
+            className={`flex w-full  border-[3.03px] border-white rounded-full h-fit items-center justify-between cursor-pointer px-[12px] py-[px] ${
               activeTab === item.title
                 ? "bg-[#F6F8FA] rounded-[8px] text-[#0A0D14]"
                 : "text-white font-[700]"
@@ -45,13 +46,20 @@ export default function Sidebar() {
             // Changed item.title below the item.url
             onClick={() => handleTabNavigate(item)}
           >
-            <IconItem
-              name={`${item.icon}`}
-              fillColor={activeTab === item.title ? "none" : "none"}
-            />
-            <p className="capitalize text-[14px] font-[500] my-2 ml-1.5">
-              {item.title}
-            </p>
+            <div className="flex items-center justify-center">
+              <IconItem
+                name={`${item.icon}`}
+                fillColor={activeTab === item.title ? "none" : "none"}
+              />
+              <p className="capitalize text-[14px] font-[500] my-2 ml-1.5">
+                {item.title}
+              </p>
+            </div>
+            {item.title === "My CVs" && (
+              <div className="bg-[#EEF2FF] border-[1.34px] border-[#A5B4FC] h-fit w-fit py-[5px] px-[10px] rounded-full text-[13px] text-[#2563EB] ">
+                0{cvLength}
+              </div>
+            )}
           </div>
         ))}
 
@@ -63,7 +71,10 @@ export default function Sidebar() {
                   <p className="font-[500] text-[13px]">Pro Plan</p>
                   <p className="text-[13px]">
                     {" "}
-                    <span className="font-[700] text-[25px]">$15.99{adVisible}</span>/mo
+                    <span className="font-[700] text-[25px]">
+                      $15.99{adVisible}
+                    </span>
+                    /mo
                   </p>
                 </div>
                 <div className="">
@@ -97,7 +108,9 @@ export default function Sidebar() {
               <p className="text-[10px]">Basic Member</p>
             </div>
           </div>
-          <IconItem name="exit" color="#8C55D4" />
+          <span  onClick={() => {router.push("/")}} className="cursor-pointer">
+            <IconItem name="exit" color="#8C55D4" />
+          </span>{" "}
         </div>
       </div>
     </div>
