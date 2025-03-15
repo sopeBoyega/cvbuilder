@@ -28,7 +28,7 @@ export default function Header() {
         </div>
 
         <div className="flex items-center justify-center gap-2">
-        <p className="text-white font-[500]"> Hello, Okechuwku</p>
+        <p className="text-white font-[500]"> Hello, Mosope</p>
         <Image src="/Avatar.png" width={40} height={40} alt="Avatar" />
         </div>
       </div>

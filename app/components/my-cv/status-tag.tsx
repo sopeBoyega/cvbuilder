@@ -1,9 +1,7 @@
+import { StatusType } from "@/global/types";
 import React from "react";
 
-export type StatusType =
-  | "downloaded"
-  | "drafts"
-  | "saved";
+
 
 interface StatusTagProps {
   status: StatusType;

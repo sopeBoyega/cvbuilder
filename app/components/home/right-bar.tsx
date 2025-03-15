@@ -86,15 +86,16 @@ const RightBar = (props: Props) => {
       {/* Download Resume Box */}
       <div className="w-[300px] bg-black/80 border-[1.2px] border-gray-500 rounded-2xl text-white font-sans">
         <div className="p-3 text-lg font-bold">Download Resume</div>
-        <div className="border-t border-gray-500 p-4">
-          <div className="flex justify-between mb-2"><span>Status:</span><span className="text-blue-400">Draft</span></div>
-          <div className="flex justify-between mb-2"><span>Visibility:</span><span className="text-blue-400">Public</span></div>
-          <div className="flex justify-between mb-2"><span>Template color:</span><span className="text-blue-400">White</span></div>
+        <div className="border-t border-b border-gray-500 p-4">
+          <div className="flex justify-between mb-2"><span  >Status: Draft</span><span className="text-blue-400">Edit</span></div>
+          <div className="flex justify-between mb-2"><span>Visibility: Public</span><span className="text-blue-400">Edit</span></div>
+          <div className="flex justify-between mb-2"><span>Template color: White</span><span className="text-blue-400">Edit</span></div>
           <div className="flex justify-between mb-2"><span>Download Format</span><span className="text-blue-400">Edit</span></div>
-          <div className="flex justify-center mt-4">
-            <button className="bg-blue-500 text-white py-2 px-4 rounded-full">Download</button>
-          </div>
+        
         </div>
+        <div className="flex justify-center p-2 mt-2 ">
+            <button className="bg-transparent text-white py-2 px-4 w-full border-[1px] border-white rounded-full">Download</button>
+          </div>
       </div>
     </div>
   );

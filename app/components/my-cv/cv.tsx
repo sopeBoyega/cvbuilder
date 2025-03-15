@@ -1,6 +1,7 @@
 import React from "react";
-import StatusTag, { StatusType } from "./status-tag"; // Import StatusType
+import StatusTag from "./status-tag"; // Import StatusType
 import { inter } from "@/app/fonts/fonts";
+import { StatusType } from "@/global/types";
 
 type Props = {
   statusTag: StatusType; // Update the type to StatusType

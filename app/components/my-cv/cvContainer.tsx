@@ -1,5 +1,6 @@
 import React from 'react'
 import CV from '@/app/components/my-cv/cv'
+import { cvStatus } from '@/global/data';
 
 type Props = {}
 
@@ -7,7 +8,7 @@ type StatusType = "drafts" | "downloaded" | "saved";
 
 const CvContainer = (props: Props) => {
 
- const cvStatus : StatusType[] = ["drafts","downloaded","saved","drafts","downloaded","saved","drafts","downloaded","saved"]
+ 
   
  return (
   <>

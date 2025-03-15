@@ -86,7 +86,7 @@ const page = (props: any) => {
         <p className="font-[400] text-[11.27px]">Remember me for 30 days</p>
       </div>
 
-      <div className="w-full border-[1.21px] h-[39px] rounded-full border-white  items-center flex justify-between">
+      <div className="w-full border-[1.21px] h-[39px] rounded-full border-white  items-center flex justify-between cursor-pointer">
         <div className=""></div>
         <p className=" text-[13px] ">Sign In </p>
         <div className="">
@@ -106,7 +106,7 @@ const page = (props: any) => {
       <div className="place-items-center">
         <p className="text-[10px]">
           Don't have an account?{" "}
-          <span className="underline text-subheading">Sign Up</span>
+          <span className="underline text-subheading cursor-pointer">Sign Up</span>
         </p>
       </div>
     </div>
