@@ -123,7 +123,7 @@ const footerItems = [
                 onChange={onChangeHandler}
                 value={email}
                 placeholder="Email address"
-                className="placeholder-[#6E7781] text-black p-2 rounded-s-lg  focus:outline-none focus:ring-0"
+                className="placeholder-[#6E7781] text-black p-2 rounded-s-lg  focus:outline-none focus:ring-0 bg-white"
               />
               <button className="text-center p-[7.3px]  bg-black rounded-e-lg border-[1px] border-white hover:opacity-50 "
               onClick={() => {

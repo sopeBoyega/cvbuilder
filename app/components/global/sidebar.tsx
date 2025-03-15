@@ -10,6 +10,7 @@ import { notoSans } from "@/app/fonts/fonts";
 
 export default function Sidebar() {
   const [activeTab, setActiveTab] = useState<string>("dashboard");
+  const [adVisible, setAdVisible] = useState<boolean>(true);
 
   const router = useRouter();
 
@@ -32,7 +33,7 @@ export default function Sidebar() {
         />
       </div>
 
-      <div className="mt-[5px] p-[20px] gap-y-3 flex flex-col h-[85vh]">
+      <div className="mt-[5px] p-[20px] gap-y-3 flex  flex-col h-[85vh]">
         {sidebarData.map((item: sideBar) => (
           <div
             key={item.title}
@@ -54,34 +55,41 @@ export default function Sidebar() {
           </div>
         ))}
 
-        <div className="mt-auto">
-          <div className="w-full h-fit border-[3.05px] rounded-lg border-white p-[10px] ">
-            <div className="flex w-full justify-between ">
-              <div className="flex flex-col ">
-                <p className="font-[500] text-[13px]">Pro Plan</p>
-                <p className="text-[13px]">
-                  {" "}
-                  <span className="font-[700] text-[25px]">$15.99</span>/mo
-                </p>
+        {adVisible && (
+          <div className="mt-auto">
+            <div className="w-full h-fit border-[3.05px] rounded-lg border-white p-[10px] ">
+              <div className="flex w-full justify-between ">
+                <div className="flex flex-col ">
+                  <p className="font-[500] text-[13px]">Pro Plan</p>
+                  <p className="text-[13px]">
+                    {" "}
+                    <span className="font-[700] text-[25px]">$15.99{adVisible}</span>/mo
+                  </p>
+                </div>
+                <div className="">
+                  <p
+                    className="text-[#94A3B8] font-[400] cursor-pointer"
+                    onClick={() => setAdVisible(false)}
+                  >
+                    x
+                  </p>
+                </div>
               </div>
-              <div className="">
-                <p className="text-[#94A3B8] font-[400] cursor-pointer">x</p>
+
+              <p className="w-full text-[12px] my-3 font-[400]">
+                Enjoy unlimited access to our app <br />
+                with only a small price monthly
+              </p>
+
+              <div className="flex justify-center items-center w-fit gap-3">
+                <p className="text-[13px] font-[700]">Dismiss</p>
+                <p className="text-[#2563EB] text-[13px] font-[700]">Go Pro</p>
               </div>
-            </div>
-
-            <p className="w-full text-[12px] my-3 font-[400]">
-              Enjoy unlimited access to our app <br />
-              with only a small price monthly
-            </p>
-
-            <div className="flex justify-center items-center w-fit gap-3">
-              <p className="text-[13px] font-[700]">Dismiss</p>
-              <p className="text-[#2563EB] text-[13px] font-[700]">Go Pro</p>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="border-t-[1.5px] border-white pt-[20px] flex justify-between ">
+        <div className="border-t-[1.5px] border-white pt-[20px] flex  justify-between ">
           <div className="flex gap-x-1">
             <Image src="/Avatar.png" width={40} height={40} alt="Avatar" />
             <div className="flex flex-col ">
@@ -91,8 +99,6 @@ export default function Sidebar() {
           </div>
           <IconItem name="exit" color="#8C55D4" />
         </div>
-
-       
       </div>
     </div>
   );
