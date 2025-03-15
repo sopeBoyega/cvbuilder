@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useRef,FC } from "react"
-import { mergeText } from "./anys"
+import { mergeText,Dict } from "./anys"
+import {Div} from "@/app/addons/csml";
 
 export interface CIEvent extends Event{
     detail:{
@@ -16,12 +17,26 @@ export class CEXModel{
     
     uniType
     channels:string[] = []
+    dispatcher:Dict<Function> = {Public:(data:string|Dict|number)=>{},Every:(data:string|Dict|number)=>{}}
     constructor(uniType:string){
         this.uniType = uniType
 
     }
-    CEventX(channel:string,data = {}){return new CustomEvent(this.uniType,{detail:{channel:channel,data:data}})}
-    FIDispatch(Event:CustomEvent,selector = "*"){
+
+    MakeChannelDispatcher(channel:string){
+        this.dispatcher[channel] = (data:string|Dict|number)=>{
+            this.CEXDispatch(channel, data)
+        }
+        this.dispatcher["Public"] = (data:string|Dict|number)=>{
+            this.CEXDispatch("Public", data)
+        }
+        this.dispatcher["Every"] = (data:string|Dict|number)=>{
+            this.CEXDispatch("Every", data)
+        }
+    }
+
+    protected CEventX(channel:string,data = {}){return new CustomEvent(this.uniType,{detail:{channel:channel,data:data}})}
+    protected FIDispatch(Event:CustomEvent,selector = "*"){
         if (window){
             
             const ListAll = document.querySelectorAll(`.${selector}`)
@@ -31,9 +46,9 @@ export class CEXModel{
         }
     }
 
-    CEXDispatch(channel:string,data:string|{}|number = {}){this.FIDispatch(this.CEventX(channel,data),this.uniType)}
+    protected CEXDispatch(channel:string,data:string|Dict|number = {}){this.FIDispatch(this.CEventX(channel,data),this.uniType)}
 
-    CEventXHC ({channel,Public,hangOn = ()=>document.body,onEvent,idAdd=""}:{channel:string,Public?:Function,hangOn?:Function, onEvent?:Function,idAdd?:string}){
+    CEXEffectCreate ({channel,Public,existOn = ()=>document.body,onEvent,idAdd=""}:{channel:string,Public?:Function,existOn?:Function, onEvent?:Function,idAdd?:string}){
       Public = Public || function(..._arg:any[]){}
       onEvent = onEvent || function(..._arg:any[]){}
       if (window){
@@ -45,23 +60,24 @@ export class CEXModel{
           el.id = id
           el.style.display = "none"
           el.className = this.uniType
+            this.MakeChannelDispatcher(channel)
           el.addEventListener(type,(e:(CIEvent | Event))=>{
               Public(e)
-              var E = (e as CIEvent)
-              if (E.detail.channel == Channel){
+              const E = (e as CIEvent)
+              if ([Channel,"Every"].includes(E.detail.channel )){
                   func(e)
 
               }
           })
-          hangOn().appendChild(el)}
+          existOn().appendChild(el)}
       }
     }
 
-    CEventXH:FC<{channel:string,Public?:Function,onEvent?:Function,idAdd?:string}> =(
+    CEXRenderCreate:FC<{channel:string,Public?:Function,onEvent?:Function,idAdd?:string}> =(
         {channel = "", Public = function(..._arg:any[]){},idAdd="", onEvent = function(..._arg:any[]){}}
     )=>{
        
-        this.channels.push(channel)
+        this.MakeChannelDispatcher(channel)
         const ref:any = useRef(null)
         useEffect(
             ()=>{
@@ -71,8 +87,8 @@ export class CEXModel{
                 el.id = `${this.uniType}-${channel}-${idAdd}`
                 el.addEventListener(type,(e:(CIEvent | Event))=>{
                     Public(e)
-                    var E = (e as CIEvent)
-                    if (E.detail.channel == channel){
+                    const E = (e as CIEvent)
+                    if ([channel,"Every"].includes(E.detail.channel)){
                         func(e)
 
                     }
@@ -80,6 +96,6 @@ export class CEXModel{
     
             },[]
         )
-        return <div ref={ref} className={mergeText(this.uniType)} style={{display:"none"}} />
+        return <Div Ref={ref} className={mergeText(this.uniType)} display={"none"} />
     }
 }

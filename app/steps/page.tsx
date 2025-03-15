@@ -2,9 +2,13 @@
 import { Div, Center, TextArea,Input, BaseElementProps,EButton,Form } from "../addons/csml"
 import BaseHOC from "../addons/HOC"
 import SliderHOC from "../addons/Slider"
-import React, { useEffect } from "react"
+import React, { HTMLInputTypeAttribute, useEffect } from "react"
 import {Dict, mergeText, useUpdate} from "../addons/anys"
 import styles from "./styles.module.css"
+import {CEXModel} from "@/app/addons/cexmodel";
+
+const SubmitHandle = new CEXModel("SubmitEventDispatcherModel")
+
 class ICOn{
     JobDes
     upCV
@@ -21,8 +25,7 @@ class ICOn{
         this.pFrameStyle = {display:"flex",
             flexDirection:"column", alignItems:"center",
             justifyContent:"center",gap:"10px"
-        } 
-        
+        }
     }
     indexi(val:number){
         if (val==0){ 
@@ -107,103 +110,618 @@ class ICOn{
 function Experience(props){
     const etd = new BaseHOC()
     const btn = new BaseHOC({Component:EButton})
-    const EditorForm =  new BaseHOC({Component:Form})
-    const Editor:BaseHOC = props.editor;
-    let editId:number = 0
-    const [editorType, setEditorType] = React.useState<string>("")
+    const editorForm =  new BaseHOC({Component:Form})
+    const editor:BaseHOC = props.editor;
+    editor.SetVariable("editorType","")
+    editor.SetVariable("editId",0)
 
-    let experiences:Dict[] = []
-    const [experience, setExperience] = React.useState<Dict[]>([])
+    const [data, setData] = React.useState<Dict[]>([])
     const Update = useUpdate();
     const form:Dict<Dict<string> | string> = props.form;
+    const jobTitle = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const companyName = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const location = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const startDate = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const endDate = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const res = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:TextArea})
+    const inputs = [jobTitle,companyName,location,startDate,endDate,res]
 
-    function handleSubmit(){
-        const formData = new FormData(EditorForm.Element)
+
+    var handleSubmit = (key?:number) =>{
+        const formData = new FormData(editorForm.Element)
         const formObject = Object.fromEntries(formData.entries());
 
-        console.log(formObject);
-        console.log(editorType);
-        if (editorType == "create"){
-            console.log('create', formObject)
-            experiences = [...experiences, {...formObject,id:experiences.length}]
+        if (editor.GetVariable("editorType") == "create"){
+            setData((ex)=>{
+                return [...ex, {...formObject,id:Math.random()*1000*(ex.length+(Math.random()*10))}]
+            });
         }
-        if(editorType == "update"){
-            console.log('update', formObject)
+        if(editor.GetVariable("editorType") == "edit"){
+            const id = editor.GetVariable("editId")
+                setData((ex)=>{
+                    return ex.map((fo:Dict)=>{
+                        let newfo = fo
+                        if (fo.id == id){
+                            newfo =  {...formObject,id:Math.random()*1000*(ex.length+(Math.random()*10))}
+                        }
+                        return newfo
+                    })
+                });
 
-                const newex = experiences.map((fo:Dict)=>{
-                    let newfo = fo
-                    if (fo.id == editId){
-                        newfo =  {...formObject,id:experiences.length}
+        }
+        if (editor.GetVariable("editorType") == "delete"){
+            if (key != undefined){setData((ex)=>{
+                const newex:Dict[] = []
+                ex.forEach((fo:Dict,idx)=>{
+                    if (idx != key){
+                        newex.push(fo)
                     }
-                    return newfo
                 })
-                experiences =  newex
-
+                // data = [...newex]
+                return newex
+            });}
+            
         }
-        // Update();
-        console.log(experiences);
-        setExperience(experiences);
+            setData((d)=>{
+                SubmitHandle.dispatcher.FormFill({
+                    key: "Experience",
+                    value: d.map((form) => {
+                        const newDict: Dict = {}
+                        newDict.jobTitle = form.jobTitle
+                        newDict.companyName = form.companyName
+                        newDict.location = form.location
+                        newDict.startDate = form.startDate
+                        newDict.endDate = form.endDate
+                        newDict.res = form.res
+                        return newDict
+                    })
+                })
+                return d
+            })
+
     }
 
     return <Div {...props} className={styles.formField}>
+
         <Div className ={styles.formLabel}>Experience</Div>
-        {experience.map((form:Dict,key)=> {
+        {data.map((form:Dict,key)=> {
             return <Div display={"grid"} gridTemplateColumns={"1fr auto auto"} gap={"10px"} key={key}>
                 <EButton backgroundColor={"rgba(31, 41, 55, 1)"}>{form.jobTitle}</EButton>
                 <EButton backgroundColor={"rgba(37, 99, 235, 1)"}
                          onClick={()=>{
-                             Editor.style.display("flex")
+                             editor.style.display("flex")
                              etd.innerText("Edit Experience")
                              btn.innerText("edit")
-                             setEditorType("edit")
-                             editId = form.id;
+                             editor.SetVariable("editorType","edit")
+                             editor.SetVariable("editId",form.id)
+                             jobTitle.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.jobTitle
+                             })
+                             companyName.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.companyName
+                             })
+                             location.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.location
+                             })
+                             startDate.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.startDate
+                             })
+                             endDate.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.endDate
+                             })
+                             res.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.res
+                             })
+                             
                          }}
                 >Edit </EButton>
-                <EButton backgroundColor={"rgba(235, 99, 37, 1)"}>delete </EButton>
+                <EButton
+                onClick={()=>{
+                    etd.innerText("Edit Experience")
+                    btn.innerText("delete")
+                    editor.SetVariable("editorType","delete")
+                    handleSubmit(key)
+                    // Update();
+                    }} backgroundColor={"rgba(235,99,37,0.77)"}>delete </EButton>
             </Div>
         })}
-        <Editor.ToRender renderId ={"0dfd"}>
+        <editor.ToRender renderId ={"0dfd"} onClick={(e)=>{
+            if (e.target == editor.Element){
+                editor.style.display("none")
+        }}}>
             <etd.Render fontSize={"30px"} fontWeight={"bolder"}>Create Experience</etd.Render>
-        </Editor.ToRender>
-        <Editor.ToRender renderId ={"dfdfdf"} backgroundColor={"rgba(0,0,0,0.39)"} backdropFilter = "blur(10px)">
-            <EditorForm.Render display={"flex"} flexDirection={"column"} gap={"10px"} width={"80%"} padding={"20px"} borderRadius={"10px"} maxWidth={'500px'} height = {"fit-content"} minHeight={"300px"} backgroundColor={"rgb(17,24,39)"}>
+        </editor.ToRender>
+        <editor.ToRender renderId ={"dfdfdf"} backgroundColor={"rgba(0,0,0,0.58)"} backdropFilter = "blur(10px)">
+            <editorForm.Render display={"flex"} flexDirection={"column"} gap={"10px"} width={"80%"} padding={"20px"} borderRadius={"10px"} maxWidth={'500px'} height = {"fit-content"} minHeight={"300px"} backgroundColor={"rgb(17,24,39)"}>
                 <Div className={styles.formField}>
                     <Div className ={styles.formLabel}>Job Title</Div>
-                    <Input name={"jobTitle"} placeholder={"Enter Job Title"} className ={mergeText(styles.formInput)}></Input>
+                    <jobTitle.Render name={"jobTitle"} placeholder={"Enter Job Title"} className ={mergeText(styles.formInput)}/>
                 </Div><Div className={styles.formField}>
                     <Div className ={styles.formLabel}>Company Name</Div>
-                    <Input name={"companyName"} placeholder={"Enter Company Name"} className ={mergeText(styles.formInput)}></Input>
+                    <companyName.Render name={"companyName"} placeholder={"Enter Company Name"} className ={mergeText(styles.formInput)}/>
                 </Div><Div className={styles.formField}>
                     <Div className ={styles.formLabel}>location</Div>
-                    <Input name ={"location"} placeholder={"Enter location"} className ={mergeText(styles.formInput)}></Input>
+                    <location.Render name ={"location"} placeholder={"Enter location"} className ={mergeText(styles.formInput)}/>
                 </Div><Div className={styles.formField}>
                     <Div className ={styles.formLabel}>Start Date</Div>
-                    <Input name={"startDate"} placeholder={"Enter Start Date"} className ={mergeText(styles.formInput)}></Input>
+                    <startDate.Render name={"startDate"} placeholder={"Enter Start Date"} className ={mergeText(styles.formInput)}/>
                 </Div><Div className={styles.formField}>
                     <Div className ={styles.formLabel}>End Date</Div>
-                    <Input name={"endDate"} placeholder={"Enter End Date"} className ={mergeText(styles.formInput)}></Input>
+                    <endDate.Render name={"endDate"} placeholder={"Enter End Date"} className ={mergeText(styles.formInput)}/>
                 </Div><Div className={styles.formField}>
                     <Div className ={styles.formLabel}>Responsibility</Div>
-                    <Input name={"res"} placeholder={"Enter Responsibility"} className ={mergeText(styles.formInput)}></Input>
+                    <res.Render name={"res"} placeholder={"Enter Responsibility"} className ={mergeText(styles.formInput)}/>
                 </Div>
-            </EditorForm.Render>
+            </editorForm.Render>
             <btn.Render backgroundColor={"rgba(37, 99, 235, 1)"}
             onClick={()=>{
-                Editor.style.display("none")
+                editor.style.display("none")
                 handleSubmit()
+
             }}
             > Create </btn.Render>
 
-        </Editor.ToRender>
+        </editor.ToRender>
         <EButton
             onClick={()=>{
-               Editor.style.display("flex")
+               editor.style.display("flex")
                 etd.innerText("Create Experience")
-                setEditorType("create")
+                btn.innerText("create")
+                editor.SetVariable("editorType","create")
+                inputs.forEach(input=>{
+                    input.Execute((el:HTMLInputElement)=>{
+                        el.value = ""
+                    })
+                })
             }}
             width={"fit-content"} backgroundColor = "rgba(45, 45, 45, 0.29)" color={"white"}>create + </EButton>
     </Div>
 }
+
+
+function Education(props){
+    const etd = new BaseHOC()
+    const btn = new BaseHOC({Component:EButton})
+    const editorForm =  new BaseHOC({Component:Form})
+    const editor:BaseHOC = props.editor;
+    editor.SetVariable("editorType","")
+    editor.SetVariable("editId",0)
+    const [data, setData] = React.useState<Dict[]>([])
+    const Update = useUpdate();
+    const degree = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const university = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const graduation_year = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const relevant_coursework = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+
+    const inputs = [degree,university,graduation_year,relevant_coursework]
+
+    var handleSubmit = (key?:number) =>{
+        const formData = new FormData(editorForm.Element)
+        const formObject = Object.fromEntries(formData.entries());
+
+        if (editor.GetVariable("editorType") == "create"){
+            setData((ex)=>{
+                return [...ex, {...formObject,id:Math.random()*1000*(ex.length+(Math.random()*10))}]
+            });
+        }
+        if(editor.GetVariable("editorType") == "edit"){
+            const id = editor.GetVariable("editId")
+            setData((ex)=>{
+                return ex.map((fo:Dict)=>{
+                    let newfo = fo
+                    if (fo.id == id){
+                        newfo =  {...formObject,id:Math.random()*1000*(ex.length+(Math.random()*10))}
+                    }
+                    return newfo
+                })
+            });
+
+        }
+        if (editor.GetVariable("editorType") == "delete"){
+            if (key != undefined){setData((ex)=>{
+                const newex:Dict[] = []
+                ex.forEach((fo:Dict,idx)=>{
+                    if (idx != key){
+                        newex.push(fo)
+                    }
+                })
+                // data = [...newex]
+                return newex
+            });}
+
+        }
+            setData((d)=> {
+                SubmitHandle.dispatcher.FormFill({
+                    key: "Education",
+                    value: d.map((form) => {
+                        const newDict: Dict = {}
+                        newDict.degree = form.degree
+                        newDict.university = form.university
+                        newDict.graduation_year = form.graduation_year
+                        newDict.relevant_coursework = form.relevant_coursework
+                        return newDict
+                    })
+                })
+                return d
+            })
+    }
+
+    return <Div {...props} className={styles.formField}>
+        <Div className ={styles.formLabel}>Education</Div>
+        {data.map((form:Dict,key)=> {
+            return <Div display={"grid"} gridTemplateColumns={"1fr auto auto"} gap={"10px"} key={key}>
+                <EButton backgroundColor={"rgba(31, 41, 55, 1)"}>{form.degree}</EButton>
+                <EButton backgroundColor={"rgba(37, 99, 235, 1)"}
+                         onClick={()=>{
+                             editor.style.display("flex")
+                             etd.innerText("Edit Education")
+                             btn.innerText("edit")
+                             editor.SetVariable("editorType","edit")
+                             editor.SetVariable("editId",form.id)
+                             degree.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.degree
+                             })
+                             university.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.university
+                             })
+                             graduation_year.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.graduation_year
+                             })
+                             relevant_coursework.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.relevant_coursework
+                             })
+
+
+                         }}
+                >Edit </EButton>
+                <EButton
+                    onClick={()=>{
+                        etd.innerText("Edit Education")
+                        btn.innerText("delete")
+                        editor.SetVariable("editorType","delete")
+                        handleSubmit(key)
+                        // Update();
+                    }} backgroundColor={"rgba(235,99,37,0.77)"}>delete </EButton>
+            </Div>
+        })}
+        <editor.ToRender renderId ={"0dfd"} onClick={(e)=>{
+            if (e.target == editor.Element){
+                editor.style.display("none")
+            }}}>
+            <etd.Render fontSize={"30px"} fontWeight={"bolder"}>Create Education</etd.Render>
+        </editor.ToRender>
+        <editor.ToRender renderId ={"dfdfdf"} backgroundColor={"rgba(0,0,0,0.58)"} backdropFilter = "blur(10px)">
+            <editorForm.Render display={"flex"} flexDirection={"column"} gap={"10px"} width={"80%"} padding={"20px"} borderRadius={"10px"} maxWidth={'500px'} height = {"fit-content"} minHeight={"300px"} backgroundColor={"rgb(17,24,39)"}>
+                <Div className={styles.formField}>
+                    <Div className ={styles.formLabel}>Degree</Div>
+                    <degree.Render name={"degree"} placeholder={"Enter Degree"} className ={mergeText(styles.formInput)}/>
+                </Div><Div className={styles.formField}>
+                <Div className ={styles.formLabel}>University</Div>
+                <university.Render name={"university"} placeholder={"Enter University"} className ={mergeText(styles.formInput)}/>
+            </Div><Div className={styles.formField}>
+                <Div className ={styles.formLabel}>Graduation Year</Div>
+                <graduation_year.Render name ={"graduation_year"} placeholder={"Enter Graduation Year"} className ={mergeText(styles.formInput)}/>
+            </Div><Div className={styles.formField}>
+                <Div className ={styles.formLabel}>Relevant Coursework</Div>
+                <relevant_coursework.Render name={"relevant_coursework"} placeholder={"Enter Relevant Coursework e.g \"Data Structures\", \"Algorithms\", \"Database Management\""} className ={mergeText(styles.formInput)}/>
+            </Div>
+            </editorForm.Render>
+            <btn.Render backgroundColor={"rgba(37, 99, 235, 1)"}
+                        onClick={()=>{
+                            editor.style.display("none")
+                            handleSubmit()
+                        }}
+            > Create </btn.Render>
+
+        </editor.ToRender>
+        <EButton
+            onClick={()=>{
+                editor.style.display("flex")
+                etd.innerText("Create Education")
+                btn.innerText("create")
+                editor.SetVariable("editorType","create")
+                inputs.forEach(input=>{
+                    input.Execute((el:HTMLInputElement)=>{
+                        el.value = ""
+                    })
+                })
+            }}
+            width={"fit-content"} backgroundColor = "rgba(45, 45, 45, 0.29)" color={"white"}>create + </EButton>
+    </Div>
+}
+
+
+function Certification(props){
+    const etd = new BaseHOC()
+    const btn = new BaseHOC({Component:EButton})
+    const editorForm =  new BaseHOC({Component:Form})
+    const editor:BaseHOC = props.editor;
+    editor.SetVariable("editorType","")
+    editor.SetVariable("editId",0)
+    const [data, setData] = React.useState<Dict[]>([])
+    const Update = useUpdate();
+    const name = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const issuing_organization = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const issue_date = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+
+    const inputs = [name,issuing_organization,issue_date]
+
+    var handleSubmit = (key?:number) =>{
+        const formData = new FormData(editorForm.Element)
+        const formObject = Object.fromEntries(formData.entries());
+
+        if (editor.GetVariable("editorType") == "create"){
+            setData((ex)=>{
+                return [...ex, {...formObject,id:Math.random()*1000*(ex.length+(Math.random()*10))}]
+            });
+        }
+        if(editor.GetVariable("editorType") == "edit"){
+            const id = editor.GetVariable("editId")
+            setData((ex)=>{
+                return ex.map((fo:Dict)=>{
+                    let newfo = fo
+                    if (fo.id == id){
+                        newfo =  {...formObject,id:Math.random()*1000*(ex.length+(Math.random()*10))}
+                    }
+                    return newfo
+                })
+            });
+
+        }
+        if (editor.GetVariable("editorType") == "delete"){
+            if (key != undefined){setData((ex)=>{
+                const newex:Dict[] = []
+                ex.forEach((fo:Dict,idx)=>{
+                    if (idx != key){
+                        newex.push(fo)
+                    }
+                })
+                // data = [...newex]
+                return newex
+            });}
+
+        }
+            setData((d)=> {
+                SubmitHandle.dispatcher.FormFill({
+                    key: "Certification",
+                    value: d.map((form) => {
+                        const newDict: Dict = {}
+                        newDict.name = form.name
+                        newDict.issuing_organization = form.issuing_organization
+                        newDict.issue_date = form.issue_date
+                        return newDict
+                    })
+                })
+                return d
+            })
+    }
+
+    return <Div {...props} className={styles.formField}>
+        <Div  className ={styles.formLabel}>Certification</Div>
+        {data.map((form:Dict,key)=> {
+            return <Div display={"grid"} gridTemplateColumns={"1fr auto auto"} gap={"10px"} key={key}>
+                <EButton backgroundColor={"rgba(31, 41, 55, 1)"}>{form.name}</EButton>
+                <EButton backgroundColor={"rgba(37, 99, 235, 1)"}
+                         onClick={()=>{
+                             editor.style.display("flex")
+                             etd.innerText("Edit Certification")
+                             btn.innerText("edit")
+                             editor.SetVariable("editorType","edit")
+                             editor.SetVariable("editId",form.id)
+                             name.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.name
+                             })
+                             issuing_organization.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.issuing_organization
+                             })
+                             issue_date.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.issue_date
+                             })
+                         }}
+                >Edit </EButton>
+                <EButton
+                    onClick={()=>{
+                        etd.innerText("Edit Certification")
+                        btn.innerText("delete")
+                        editor.SetVariable("editorType","delete")
+                        handleSubmit(key)
+                        // Update();
+                    }} backgroundColor={"rgba(235,99,37,0.77)"}>delete </EButton>
+            </Div>
+        })}
+        <editor.ToRender renderId ={"0dfd"} onClick={(e)=>{
+            if (e.target == editor.Element){
+                editor.style.display("none")
+            }}}>
+            <etd.Render fontSize={"30px"} fontWeight={"bolder"}>Create Certification</etd.Render>
+        </editor.ToRender>
+        <editor.ToRender renderId ={"dfdfdf"} backgroundColor={"rgba(0,0,0,0.58)"} backdropFilter = "blur(10px)">
+            <editorForm.Render display={"flex"} flexDirection={"column"} gap={"10px"} width={"80%"} padding={"20px"} borderRadius={"10px"} maxWidth={'500px'} height = {"fit-content"} minHeight={"300px"} backgroundColor={"rgb(17,24,39)"}>
+                <Div className={styles.formField}>
+                    <Div className ={styles.formLabel}>Name</Div>
+                    <name.Render name={"name"} placeholder={"Enter Name"} className ={mergeText(styles.formInput)}/>
+                </Div><Div className={styles.formField}>
+                <Div className ={styles.formLabel}>Issuing Organization</Div>
+                <issuing_organization.Render name={"issuing_organization"} placeholder={"Enter Issuing Organization"} className ={mergeText(styles.formInput)}/>
+            </Div><Div className={styles.formField}>
+                <Div className ={styles.formLabel}>Issue Date</Div>
+                <issue_date.Render name ={"issue_date"} placeholder={"Enter Issue Date"} className ={mergeText(styles.formInput)}/>
+            </Div>
+            </editorForm.Render>
+            <btn.Render backgroundColor={"rgba(37, 99, 235, 1)"}
+                        onClick={()=>{
+                            editor.style.display("none")
+                            handleSubmit()
+                        }}
+            > Create </btn.Render>
+
+        </editor.ToRender>
+        <EButton
+            onClick={()=>{
+                editor.style.display("flex")
+                etd.innerText("Create Certification")
+                btn.innerText("create")
+                editor.SetVariable("editorType","create")
+                inputs.forEach(input=>{
+                    input.Execute((el:HTMLInputElement)=>{
+                        el.value = ""
+                    })
+                })
+            }}
+            width={"fit-content"} backgroundColor = "rgba(45, 45, 45, 0.29)" color={"white"}>create + </EButton>
+    </Div>
+}
+
+
+function Project(props){
+    const etd = new BaseHOC()
+    const btn = new BaseHOC({Component:EButton})
+    const editorForm =  new BaseHOC({Component:Form})
+    const editor:BaseHOC = props.editor;
+    editor.SetVariable("editorType","")
+    editor.SetVariable("editId",0)
+    const [data, setData] = React.useState<Dict[]>([])
+    const Update = useUpdate();
+    const name = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const description = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:TextArea})
+    const technologies_used = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+    const link = new BaseHOC<React.InputHTMLAttributes<HTMLInputElement>>({Component:Input})
+
+    const inputs = [name,description,technologies_used,link]
+
+    var handleSubmit = (key?:number) =>{
+        const formData = new FormData(editorForm.Element)
+        const formObject = Object.fromEntries(formData.entries());
+
+        if (editor.GetVariable("editorType") == "create"){
+            setData((ex)=>{
+                return [...ex, {...formObject,id:Math.random()*1000*(ex.length+(Math.random()*10))}]
+            });
+        }
+        if(editor.GetVariable("editorType") == "edit"){
+            const id = editor.GetVariable("editId")
+            setData((ex)=>{
+                return ex.map((fo:Dict)=>{
+                    let newfo = fo
+                    if (fo.id == id){
+                        newfo =  {...formObject,id:Math.random()*1000*(ex.length+(Math.random()*10))}
+                    }
+                    return newfo
+                })
+            });
+
+        }
+        if (editor.GetVariable("editorType") == "delete"){
+            if (key != undefined){setData((ex)=>{
+                const newex:Dict[] = []
+                ex.forEach((fo:Dict,idx)=>{
+                    if (idx != key){
+                        newex.push(fo)
+                    }
+                })
+                // data = [...newex]
+                return newex
+            });}
+
+        }
+            setData((d)=> {
+                SubmitHandle.dispatcher.FormFill({
+                    key: "Project",
+                    value: d.map((form) => {
+                        const newDict: Dict = {}
+                        newDict.name = form.name
+                        newDict.description = form.description
+                        newDict.technologies_used = form.technologies_used
+                        newDict.link = form.link
+                        return newDict
+                    })
+                })
+                return d
+            })
+    }
+
+    return <Div {...props} className={styles.formField}>
+        <Div className ={styles.formLabel}>Project</Div>
+        {data.map((form:Dict,key)=> {
+            return <Div display={"grid"} gridTemplateColumns={"1fr auto auto"} gap={"10px"} key={key}>
+                <EButton backgroundColor={"rgba(31, 41, 55, 1)"}>{form.name}</EButton>
+                <EButton backgroundColor={"rgba(37, 99, 235, 1)"}
+                         onClick={()=>{
+                             editor.style.display("flex")
+                             etd.innerText("Edit Project")
+                             btn.innerText("edit")
+                             editor.SetVariable("editorType","edit")
+                             editor.SetVariable("editId",form.id)
+                             name.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.name
+                             })
+                             description.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.description
+                             })
+                             technologies_used.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.technologies_used
+                             })
+                             link.Execute((el:HTMLInputElement)=>{
+                                 el.value = form.link
+                             })
+                         }}
+                >Edit </EButton>
+                <EButton
+                    onClick={()=>{
+                        etd.innerText("Edit Project")
+                        btn.innerText("delete")
+                        editor.SetVariable("editorType","delete")
+                        handleSubmit(key)
+                        // Update();
+                    }} backgroundColor={"rgba(235,99,37,0.77)"}>delete </EButton>
+            </Div>
+        })}
+        <editor.ToRender renderId ={"0dfd"} onClick={(e)=>{
+            if (e.target == editor.Element){
+                editor.style.display("none")
+            }}}>
+            <etd.Render fontSize={"30px"} fontWeight={"bolder"}>Create Project</etd.Render>
+        </editor.ToRender>
+        <editor.ToRender renderId ={"dfdfdf"} backgroundColor={"rgba(0,0,0,0.58)"} backdropFilter = "blur(10px)">
+            <editorForm.Render display={"flex"} flexDirection={"column"} gap={"10px"} width={"80%"} padding={"20px"} borderRadius={"10px"} maxWidth={'500px'} height = {"fit-content"} minHeight={"300px"} backgroundColor={"rgb(17,24,39)"}>
+                <Div className={styles.formField}>
+                    <Div className ={styles.formLabel}>Name</Div>
+                    <name.Render name={"name"} placeholder={"Enter Name"} className ={mergeText(styles.formInput)}/>
+                </Div><Div className={styles.formField}>
+                <Div className ={styles.formLabel}>description</Div>
+                <description.Render name={"description"} placeholder={"Enter description"} className ={mergeText(styles.formInput)}/>
+            </Div><Div className={styles.formField}>
+                <Div className ={styles.formLabel}>Technologies Used</Div>
+                <technologies_used.Render name ={"technologies_used"} placeholder={"Enter Technologies Used"} className ={mergeText(styles.formInput)}/>
+            </Div><Div className={styles.formField}>
+                <Div className ={styles.formLabel}>link</Div>
+                <link.Render name ={"link"} placeholder={"Enter link"} className ={mergeText(styles.formInput)}/>
+            </Div>
+            </editorForm.Render>
+            <btn.Render backgroundColor={"rgba(37, 99, 235, 1)"}
+                        onClick={()=>{
+                            editor.style.display("none")
+                            handleSubmit()
+                        }}
+            > Create </btn.Render>
+
+        </editor.ToRender>
+        <EButton
+            onClick={()=>{
+                editor.style.display("flex")
+                etd.innerText("Create Project")
+                btn.innerText("create")
+                editor.SetVariable("editorType","create")
+                inputs.forEach(input=>{
+                    input.Execute((el:HTMLInputElement)=>{
+                        el.value = ""
+                    })
+                })
+            }}
+            width={"fit-content"} backgroundColor = "rgba(45, 45, 45, 0.29)" color={"white"}>create + </EButton>
+    </Div>
+}
+
 
 export default function StepPage(){
     const slider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:true,direction:"row"})
@@ -219,11 +737,14 @@ export default function StepPage(){
     const analysis = new BaseHOC({Component:Div})
     const ico = new ICOn()
     const form:Dict<Dict<string> | string>  = {}
-    const Editor = new BaseHOC()
+    const exEditor = new BaseHOC()
+    const eduEditor = new BaseHOC()
+    const ceEditor = new BaseHOC()
+    const prEditor = new BaseHOC()
     const CVInput = new BaseHOC<{type?:string,hidden?:boolean}>({Component:(props:any)=><Input {...props}></Input>})
     React.useEffect(()=>{
         setTimeout(()=>{
-            // setExperiences(()=>[1])
+            // setDatas(()=>[1])
         },2000)
         haveJobDes.style.display("flex")
         haveCVDes.style.display("flex")
@@ -245,11 +766,26 @@ export default function StepPage(){
             analysis.style.animation("none")
         }
     }
+    function FormfillHandler(e){
+        const data = e.detail.data
+        const key = data.key
+        const value = data.value
+        form[key] = value
+        console.log("form fill Dispatch ")
+        console.log("form is ",form)
+    }
     slider.onSlide  = onSlide;
     return <Center backgroundColor="rgb(13,17,23)">
-        <Editor.Render position={"fixed"} flexDirection={"column"} gap={"30px"} comment = {"experience Editor"} zIndex={'1000'} width={"100vw"} display={"none"} alignItems={"center"} justifyContent={"center"} backgroundColor={"black"} height={"100vh"} top={"0px"} left={"0px"}>
+        <SubmitHandle.CEXRenderCreate channel={"FormFill"} onEvent={FormfillHandler}></SubmitHandle.CEXRenderCreate>
+        <exEditor.Render position={"fixed"} flexDirection={"column"} gap={"30px"} comment = {"experience Editor"} zIndex={'1000'} width={"100vw"} display={"none"} alignItems={"center"} justifyContent={"center"} backgroundColor={"black"} height={"100vh"} top={"0px"} left={"0px"}>
 
-        </Editor.Render>
+        </exEditor.Render><eduEditor.Render position={"fixed"} flexDirection={"column"} gap={"30px"} comment = {"experience Editor"} zIndex={'1000'} width={"100vw"} display={"none"} alignItems={"center"} justifyContent={"center"} backgroundColor={"black"} height={"100vh"} top={"0px"} left={"0px"}>
+
+        </eduEditor.Render><ceEditor.Render position={"fixed"} flexDirection={"column"} gap={"30px"} comment = {"experience Editor"} zIndex={'1000'} width={"100vw"} display={"none"} alignItems={"center"} justifyContent={"center"} backgroundColor={"black"} height={"100vh"} top={"0px"} left={"0px"}>
+
+        </ceEditor.Render><prEditor.Render position={"fixed"} flexDirection={"column"} gap={"30px"} comment = {"experience Editor"} zIndex={'1000'} width={"100vw"} display={"none"} alignItems={"center"} justifyContent={"center"} backgroundColor={"black"} height={"100vh"} top={"0px"} left={"0px"}>
+
+        </prEditor.Render>
         <Div maxWidth="1000px" width="100vw" height="100vh" overflow="auto" display="flex" flexDirection="column" gap="30px" boxSizing="border-box" padding = "20px" paddingTop="30px" >
             <Div comment="top info view" display="flex" flexDirection="column" gap="20px">
                     <Center gap="20px" >
@@ -265,6 +801,7 @@ export default function StepPage(){
                         <Div display="flex" flexDirection="column" gap="20px">
                             <Div fontSize="20px">Job Description</Div>
                             <Div fontSize="15px" color="rgba(156, 163, 175, 1)">Do you have a specific job dscription you'd like to tailor your resume to?</Div>
+
                             <Div display="grid" gap="20px" gridTemplateColumns="1fr 1fr">
                                 <yesJobHaveOne.Render  textAlign="center" onClick={()=>{
                                     haveJobDes.style.display("flex")
@@ -301,7 +838,7 @@ export default function StepPage(){
                                 <haveCVDes.Render  marginInline="20px" flexDirection="column" gap="20px" display="none" >
                                     <Div fontSize="15px" color="rgba(156, 163, 175, 1)">Upload your CV in PDF or Word format:</Div>
                                     <CVInput.Render type="file" id="" hidden/>
-                                    <Div padding = "20px" borderStyle="dashed" onClick={()=>CVInput.Execute((el:HTMLInputElement)=>{el.click();console.log("input clicked")})} paddingBlock = "30px"  borderRadius="10px" border="2px solid rgba(65, 75, 91, 1)" display="grid" placeItems="center" gap="10px">
+                                    <Div padding = "20px" borderStyle="dashed" onClick={()=>CVInput.Execute((el:HTMLInputElement)=>{el.click()})} paddingBlock = "30px"  borderRadius="10px" border="2px solid rgba(65, 75, 91, 1)" display="grid" placeItems="center" gap="10px">
                                         <Center>
                                             <svg width="50px" height="50px" viewBox="0 0 96 97" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M84 60.3296V76.3296C84 78.4513 83.1571 80.4862 81.6569 81.9864C80.1566 83.4867 78.1217 84.3296 76 84.3296H20C17.8783 84.3296 15.8434 83.4867 14.3431 81.9864C12.8429 80.4862 12 78.4513 12 76.3296V60.3296" stroke="#6B7280" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -321,20 +858,42 @@ export default function StepPage(){
                             <Div width="100%" justifyContent={"center"} alignItems={"center"} display="flex" flexDirection="column" gap="20px">
                                 <Div className={styles.formField}>
                                     <Div className ={styles.formLabel}>Full Name</Div>
-                                    <Input placeholder={"Enter Full Name"} className ={mergeText(styles.formInput)}></Input>
+                                    <Input placeholder={"Enter Full Name"} onChange={(e)=>form["fullname"] = e.target.value}  className ={mergeText(styles.formInput)}></Input>
                                 </Div><Div className={styles.formField}>
                                     <Div className ={styles.formLabel}>Email</Div>
-                                    <Input placeholder={"Enter Email"} className ={mergeText(styles.formInput)}></Input>
+                                    <Input placeholder={"Enter Email"} onChange={(e)=>form["email"] = e.target.value} className ={mergeText(styles.formInput)}></Input>
                                 </Div><Div className={styles.formField}>
                                     <Div className ={styles.formLabel}>LinkedIn (Optional)</Div>
-                                    <Input placeholder={"Enter LinkedIn"} className ={mergeText(styles.formInput)}></Input>
+                                    <Input placeholder={"Enter LinkedIn"} onChange={(e)=>form["LinkedIn"] = e.target.value} className ={mergeText(styles.formInput)}></Input>
                                 </Div><Div className={styles.formField}>
                                     <Div className ={styles.formLabel}>Phone</Div>
-                                    <Input placeholder={"Enter Phone"} className ={mergeText(styles.formInput)}></Input>
-                                </Div><Div className={styles.formField}>
+                                    <Input placeholder={"Enter Phone"} onChange={(e)=>form["phone"] = e.target.value} className ={mergeText(styles.formInput)}></Input>
+                                </Div>
+                                <Experience editor = {exEditor} form ={form}></Experience>
+                                <Div className={styles.formField}>
                                     <Div className ={styles.formLabel}>Portfolio (Optional)</Div>
-                                    <Input placeholder={"Enter Portfolio"} className ={mergeText(styles.formInput)}></Input>
-                            </Div><Experience editor = {Editor} form ={form}></Experience>
+                                    <Input placeholder={"Enter Portfolio"} onChange={(e)=>form["portfolio"] = e.target.value} className ={mergeText(styles.formInput)}></Input>
+                            </Div>
+
+                                <Education editor = {eduEditor} form ={form}/>
+                                <Div className={styles.formField}>
+                                    <Div className ={styles.formLabel}>Language</Div>
+                                    <Input placeholder={"Enter Language"} onChange={(e)=>form["language"] = e.target.value} className ={mergeText(styles.formInput)}></Input>
+                                </Div>
+                                <Certification editor = {ceEditor} form ={form}/>
+                                <Project editor = {prEditor} form ={form}/>
+                                <Div className={styles.formField}>
+                                    <Div className ={styles.formLabel}>Additional info</Div>
+                                    <Input placeholder={"Enter additional info"} onChange={(e)=>form["additional_info"] = e.target.value} className ={mergeText(styles.formInput)}></Input>
+                                </Div>
+                            </Div>
+                        </Div>
+                        <Div display="flex" flexDirection="column" gap="20px">
+                            <Div fontSize="20px">Submit</Div>
+                            <Div fontSize="15px" color="rgba(156, 163, 175, 1)">Submit your work</Div>
+
+                            <Div display={"grid"} placeItems={"center"} height={"200px"}>
+                                <EButton backgroundColor={"black"} color={"white"}>Submit</EButton>
                             </Div>
                         </Div>
                     </slider.Render>

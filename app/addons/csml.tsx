@@ -139,7 +139,7 @@ export const Section:FC<BaseElementProps<{}>> = function({className,children,id,
 export const Button:FC<BaseElementProps<HTMLButtonElement>> = function({className,children,id,Ref,type = "button",onClick,...props}:any){
   return <BaseElement tag="button"  {...props} type = {type} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export const Input:FC<BaseElementProps<HTMLInputElement> & React.InputHTMLAttributes<HTMLInputElement>> = function({className,children,id,Ref,type = "text",placeholder,onClick,...props}){
+export const Input:FC<BaseElementProps<HTMLInputElement> & React.InputHTMLAttributes<HTMLInputElement> &{name?:string,value?:string}> = function({className,children,id,Ref,type = "text",placeholder,onClick,...props}){
   return <BaseElement tag="input"  {...props} type = {type} placeholder = {placeholder} onClick={onClick} className={className} id={id} Ref={Ref}   ></BaseElement>
 }
 export const TextArea:FC<BaseElementProps<HTMLTextAreaElement>  & {Ref?:any,cols?:string,rows?:string,placeholder?:string}> = function({className,children,id,Ref,onClick,...props}:any){
