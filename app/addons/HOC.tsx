@@ -27,13 +27,13 @@ import {ListChildren} from "@/app/addons/anys";
      *                  })
      *         },3000)
      *     },[])
-     *     return <hoc.Render self={hoc}>test</hoc.Render>
+     *     return <hoc.Render >test</hoc.Render>
      * }
      * 
      * ```
      * *GUDITTON*
      */
-export default class BaseHOC<T = {}>{
+export default class BaseHOC<T = {},ElementInterface = HTMLBaseElement>{
     
     protected ref:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined> | React.RefObject<null>
     public style
@@ -43,11 +43,9 @@ export default class BaseHOC<T = {}>{
     public variables:{[key:string]:any} = {}
     public existAs
     protected forceUpdate?:Function
-    public Addons = []
-    public added = []
+    public Addons:Dict<any[]> = {}
     protected setAddons:any
     protected setAddonProps:any
-    protected setAdded:any
     protected addonProps:Dict = {}
     SetVariable(name:string, value: any){
         this.variables[name]=value
@@ -96,7 +94,7 @@ export default class BaseHOC<T = {}>{
             this.medias[id].Continue()
         }
     }
-    get Element():HTMLElement | undefined|null{
+    get Element():ElementInterface | undefined|null{
         if (this.existAs) {
             return this.existAs()
         }else{
@@ -137,43 +135,29 @@ export default class BaseHOC<T = {}>{
         }
     }
 
-    protected AddMore(children:ReactNode[]){
-        React.useEffect(()=>{
-            this.setAddons((adds)=>[adds,children])
-            this.Update()
-        })
-    }
+
     ToRender = ({children,renderId ,...props}:BaseElementProps<HTMLDivElement> & {renderId:any}) => {
-        if (renderId){}else{
-            throw new Error("renderId must be defined")
-        }
-        if (!this.added.includes(renderId)){
-            if (children) {
-                this.AddMore(ListChildren(children))
-                this.setAdded((added)=>[...added,renderId])
-            }
-        }
-            this.setAddonProps((p)=> {
-                return{...props,...p}
-            })
+        this.setAddons((e:any)=>{return {...e,[renderId]:ListChildren(children)}})
+        
+        this.setAddonProps((p:any)=> {
+            return{...props,...p} 
+        })
 
         this.Update()
         return <></>
     }
     Render:FC<BaseElementProps<HTMLDivElement>& T> =(props:BaseElementProps<HTMLDivElement>& T) =>{
             this.forceUpdate = useUpdate()
-            const addonsState = useState([])
+            const addonsState = useState({})
             this.Addons = addonsState[0]
             this.setAddons = addonsState[1]
             const addonPropsState = useState([])
             this.addonProps = addonPropsState[0]
             this.setAddonProps = addonPropsState[1]
-            const addedState = useState([])
-            this.added = addedState[0]
-            this.setAdded = addedState[1]
+
             return <this.Component Ref = {this.ref} {...props} {...this.addonProps} >
                 {props.children}
-                {this.Addons}
+                {Object.values(this.Addons)}
             </this.Component>
     }
 }
@@ -235,6 +219,11 @@ class AtMedia{
     }
 }
 
+
+export var HOCS = {
+    
+}
+export class InputHOC extends BaseHOC<React.InputHTMLAttributes<HTMLInputElement>,HTMLInputElement>{}
 
 
 /**
