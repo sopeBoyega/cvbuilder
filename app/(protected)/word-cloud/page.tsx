@@ -9,8 +9,8 @@ const page = (props: Props) => {
   return (
     <div className='flex w-full flex-col items-center justify-center'>
         <Header/>
-        {/* <File/> */}
-        <WordCloud/>
+        <File/>
+        {/* <WordCloud/> */}
     </div>
   )
 }

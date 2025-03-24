@@ -6,12 +6,12 @@ type Props = {};
 
 const File = (props: Props) => {
   return (
-    <div>
-      {" "}
+    <div className="w-full">
+
       <FileUpload.Root
          accept={["application/pdf","application/msword",""]}
         maxFiles={1}
-        className="w-[95%] h-[80vh] place-self-center border-dotted border-[3px] flex items-center justify-center rounded-lg bg-transparent border-[#374151]"
+        className="w-full h-[80vh]  border-dotted border-[3px] flex items-center justify-center rounded-lg bg-transparent border-[#374151]"
       >
         <FileUpload.HiddenInput />
         <FileUpload.Dropzone>
