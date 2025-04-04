@@ -23,7 +23,7 @@ export default class SliderHOC{
     onSlide:Function = (_val:number)=>{}
     onEnd:Function = (_val:number)=>{}
 
-    constructor({direction="row",fitContent = false,slideTime = 300,blockLoop = false,effect = "ease-in-out", refType = React.useRef}){
+    constructor({direction="row",fitContent = false,slideTime = 300,blockLoop = false,effect = "ease-in-out", refType = React.useRef} = {}){
         this.direction = direction
         this.slideTime = slideTime
         this.effect = effect
@@ -130,7 +130,7 @@ export default class SliderHOC{
             if (this.fitContent){this.FrameHocs.map(frameHoc=>{
                     frameHoc.style.display("none")
                 })
-                this.FrameHocs[0].style.display("block")}
+                this.FrameHocs[0] && this.FrameHocs[0].style.display("block")}
         },[])
        
         return <Div width="100%" height="100%" {...props} style={Style} >

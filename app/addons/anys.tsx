@@ -1,6 +1,6 @@
 "use client"
 
-import React, {ReactNode, useReducer} from "react"
+import React, {ReactNode, useReducer, useState} from "react"
 
 export type Dict<T = any> = {[key:string]:T}
 
@@ -152,4 +152,8 @@ export function ReplaceAll(text:string,word1:string,word2:string){
 export function useUpdate(){
   const [, forceUpdate] = useReducer(x => x + 1, 1);
       return forceUpdate;
+}
+export function useStateUpdate(){
+  const [, forceUpdate] = useState(0);
+      return ()=>forceUpdate(()=>Math.random());
 }

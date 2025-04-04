@@ -1,8 +1,8 @@
 "use client"
 import React, {FC, ReactNode, useState} from "react"
 import { _cssHelper } from "./css"
-import { BaseElementProps, Div } from "./csml"
-import {Dict, useUpdate} from "@/app/addons/anys";
+import { BaseElementProps, Div, Hidden } from "./csml"
+import {Dict, ReplaceAll, useUpdate} from "@/app/addons/anys";
 import {ListChildren} from "@/app/addons/anys";
 
 /**
@@ -33,38 +33,86 @@ import {ListChildren} from "@/app/addons/anys";
      * ```
      * *GUDITTON*
      */
-export default class BaseHOC<T = {},ElementInterface = HTMLBaseElement>{
+export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement>{
     
-    protected ref:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined> | React.RefObject<null>
+    protected ref:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>
     public style
     public isMediaDestroyed: boolean
     protected Component
-    public medias:{[key:string]:AtMedia} = {}
-    public variables:{[key:string]:any} = {}
+    public medias:Dict<AtMedia> = {}
+    protected variables:Dict = {}
     public existAs
     protected forceUpdate?:Function
     public Addons:Dict<any[]> = {}
     protected setAddons:any
     protected setAddonProps:any
     protected addonProps:Dict = {}
-    SetVariable(name:string, value: any){
-        this.variables[name]=value
+    protected ConstTypeName = "-Const"
+    protected onChangeTypeName = "-ChangeFunc"
+
+    SetVariable(name:string, value?: any,onChange?:(name?:string,val?:any)=>void){
+        let key = ReplaceAll(name, this.ConstTypeName,"")
+        key = ReplaceAll(key, this.onChangeTypeName,"")
+        if (!this.variables[key+this.ConstTypeName]) {
+            if (!(onChange == undefined)){
+                this.variables[key+this.onChangeTypeName] = onChange
+            }else if (!this.variables[key+this.onChangeTypeName]){
+                this.variables[key+this.onChangeTypeName] = (name?:string,val?:any)=>{}
+            }
+            if (!(value == undefined)){
+                if (this.variables[key]){
+                    this.variables[key+this.onChangeTypeName](key,value)
+                }
+                this.variables[key] = value
+                
+            }
+        }else{
+            console.log("tried assigning to a const variable: ",this.variables[key]," with value:",value)
+        }
+    }
+
+    
+    
+    ConstVariable(name:string, value: any){
+            let key = ReplaceAll(name, this.ConstTypeName,"")
+            key = ReplaceAll(key, this.onChangeTypeName,"")
+        if (!this.variables[key+this.ConstTypeName]) {
+            this.variables[key] = value
+            this.variables[key+this.ConstTypeName] = true
+        }else{
+            console.log("tried assigning to a const variable: ",this.variables[key]," with value:",value)
+        }
+        
     }
 
     GetVariable(name:string) {
-        return this.variables[name]
+        let key = ReplaceAll(name, this.ConstTypeName,"")        
+        return this.variables[key]
     }
+
+    GetVariableType(name:string) {
+        let key = ReplaceAll(name, this.ConstTypeName,"") 
+        return typeof (this.variables[key])
+    }
+
+    IsVariableConst(name:string){
+        let key = ReplaceAll(name, this.ConstTypeName,"") 
+        return this.variables[key+this.ConstTypeName]
+    }
+
+    GetAllVariables(){
+        return this.variables
+    }
+
     Update(){
         if (this.forceUpdate){
             this.forceUpdate()
         }
     }
 
-    GetVariableType(name:string) {
-        return typeof (this.variables[name])
-    }
+   
 
-    constructor ({Component = Div,existAs, refee = React.useRef(null) }:{Component?:FC ,existAs?:Function,refee?:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined> | React.RefObject<null>} = {}){
+    constructor ({Component = Div,existAs, refee = React.useRef(null) }:{Component?:FC ,existAs?:Function,refee?:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>} = {}){
         this.isMediaDestroyed = false
         this.ref = refee
         this.existAs = existAs
@@ -78,6 +126,7 @@ export default class BaseHOC<T = {},ElementInterface = HTMLBaseElement>{
             ...this.medias,
             [id]:Media
         }
+        Media.Activate()
     }
     DestroyMedia(id:string){
         if (this.medias[id]){
@@ -98,18 +147,33 @@ export default class BaseHOC<T = {},ElementInterface = HTMLBaseElement>{
         if (this.existAs) {
             return this.existAs()
         }else{
-            return this.ref.current
+            return this.ref.current 
         }
     }
-    innerText (val:string){
+    innerText (val?:string){
         if (this.Element){
-            this.Element.innerText = val
+            if (val){
+                this.Element.innerText = val
+            }
+            else{
+                return this.Element.innerText
+            }
         }
-    }innerHTML (val:string){
-        if (this.Element){
-            this.Element.innerHTML = val
-        }
+        return ""
     }
+
+    innerHTML (val?:string){
+        if (this.Element){
+            if (val){
+                this.Element.innerHTML = val
+            }
+            else{
+                return this.Element.innerHTML
+            }
+        }
+        return ""
+    }
+
     protected EffectifyStyle(){
         for ( const key of Object.keys(_cssHelper)){
             this.style = {...this.style,[key]:(value?:string)=>{
@@ -128,7 +192,7 @@ export default class BaseHOC<T = {},ElementInterface = HTMLBaseElement>{
         }
     }
 
-     public Execute(func:Function){
+     public Execute(func = (ele:ElementInterface)=>{}){
         const element =this.Element
         if (element){
             func(element)
@@ -144,9 +208,9 @@ export default class BaseHOC<T = {},ElementInterface = HTMLBaseElement>{
         })
 
         this.Update()
-        return <></>
+        return <Hidden></Hidden>
     }
-    Render:FC<BaseElementProps<HTMLDivElement>& T> =(props:BaseElementProps<HTMLDivElement>& T) =>{
+    Render:FC<BaseElementProps<HTMLDivElement>& CustomProps> =(props:BaseElementProps<HTMLDivElement>& CustomProps) =>{
             this.forceUpdate = useUpdate()
             const addonsState = useState({})
             this.Addons = addonsState[0]
@@ -163,23 +227,34 @@ export default class BaseHOC<T = {},ElementInterface = HTMLBaseElement>{
 }
 
 
-class AtMedia{
+export class AtMedia{
     isDestroyed: boolean = false
     isPaused: boolean = false
-    media:string = "max-width"
-    pixels:number = 800
+    media:string[] = ["max-width"]
+    pixels:number[] = [800]
     interval:any
     mediaElementFunc = ()=>window
     styleat = {}
-    styleaf = {}
+    stylebef = {}
+    atMedia = (HOC:BaseHOC) => {}
+    beforeMedia = (HOC:BaseHOC) => {}
+    hasAtMedia = false
+    hasBeforeMedia = false
     hoc:BaseHOC
-    constructor(hoc:BaseHOC,{media = "max-width",pixels = 800,mediaElementFunc = ()=>window,styleat = {},styleaf = {}} = {}){
-        this.media = media
+    listMedia:string[] = []
+    determinant:string ='and'
+    aliveTest = (media:AtMedia) =>{}
+    constructor(hoc:BaseHOC,{media = (["max-width"] as string | string[]),determinant = "and",test = (media:AtMedia)=>{},pixels = ([800] as number | number[]),mediaElementFunc = ()=>window ,styleat = {},stylebef = {},atMedia = (HOC:BaseHOC) => {},beforeMedia = (HOC:BaseHOC) => {}} = {}){
+        this.media = typeof(media) == "string" ?[media]:media
         this.mediaElementFunc = mediaElementFunc
-        this.styleaf = styleaf
+        this.stylebef = stylebef
         this.styleat = styleat
-        this.pixels = pixels
+        this.pixels = typeof(pixels) == "number" ?[pixels]:pixels
+        this.atMedia = atMedia
+        this.beforeMedia = beforeMedia
         this.hoc = hoc
+        this.determinant = determinant
+        this.aliveTest = test
     }
     Destroy (){
         this.isDestroyed = true
@@ -202,15 +277,34 @@ class AtMedia{
                 }
                 const mediaer = this.mediaElementFunc()
                 if (!this.isPaused){
-                    if (mediaer.matchMedia(`(${this.media}:${this.pixels}px)`).matches) {
+                    this.listMedia = []
+                    for (var idx in this.media){
+                        
+                        this.listMedia.push(`(${this.media[idx]}:${this.pixels[idx] || this.pixels[idx-1] || this.pixels[0]}px)`)
+                        
+                    }
+                    // console.log(this.stringMedia)
+                     this.aliveTest(this)
+                    if (this.listMedia[this.determinant.toLowerCase() == "and"?"every":"some"]((stringMedia:string)=>mediaer.matchMedia(stringMedia).matches)) {
+                        // console.log(this.stringMedia)
+                        if (!this.hasAtMedia){
+                            this.atMedia(this.hoc)
+                            this.hasBeforeMedia = false
+                            this.hasAtMedia = true
+                        }
                         for (const key of Object.keys(this.styleat)) {
                             this.hoc.style[(key)](this.styleat[(key)]);
                             // console.log(`[${this.styleat[key]}] ${this.style[key]()}`)
                         }
                     } else {
-                        for (const key of Object.keys(this.styleaf)) {
-                            this.hoc.style[(key)](this.styleaf[(key)]);
-                            // console.log(`[${styleaf[key]}] ${this.style[key]()}`)
+                        if (!this.hasBeforeMedia){
+                            this.beforeMedia(this.hoc)
+                            this.hasAtMedia = false
+                            this.hasBeforeMedia = true
+                        }
+                        for (const key of Object.keys(this.stylebef)) {
+                            this.hoc.style[(key)](this.stylebef[(key)]);
+                            // console.log(`[${stylebef[key]}] ${this.style[key]()}`)
                         }
                     }
                 }
@@ -223,7 +317,21 @@ class AtMedia{
 export var HOCS = {
     
 }
-export class InputHOC extends BaseHOC<React.InputHTMLAttributes<HTMLInputElement>,HTMLInputElement>{}
+export class InputHOC extends BaseHOC<React.InputHTMLAttributes<HTMLInputElement>,HTMLInputElement>{
+    value(val?:string){
+        if (this.Element){
+            if (val){
+                this.Element.value = val}
+            else{
+                return this.Element.value
+            }
+        }
+        return ""
+    }
+}
+export class AnchorHOC extends BaseHOC<React.AnchorHTMLAttributes<HTMLAnchorElement>,HTMLAnchorElement>{}
+export class LinkHOC extends BaseHOC<React.LinkHTMLAttributes<HTMLLinkElement>,HTMLLinkElement>{}
+export class VideoHOC extends BaseHOC<React.VideoHTMLAttributes<HTMLVideoElement>,HTMLVideoElement>{}
 
 
 /**
@@ -262,3 +370,4 @@ export class MessageLabelHOC{
     }
 
 }
+

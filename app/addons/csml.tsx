@@ -124,16 +124,28 @@ export const Span:FC<BaseElementProps<HTMLSpanElement>> = function({className,ch
 export const Div:FC<BaseElementProps<HTMLDivElement> >= function({className,children,id,Ref,onClick,...props}){
   return <BaseElement tag="div"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
+export const A:FC<BaseElementProps<HTMLAnchorElement> >= function({className,children,id,Ref,onClick,...props}){
+  return <BaseElement tag="a"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const Footer:FC<BaseElementProps<HTMLElement>>= function({className,children,id,Ref,onClick,...props}){
+  return <BaseElement tag="footer"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const Header:FC<BaseElementProps<HTMLElement>>= function({className,children,id,Ref,onClick,...props}){
+  return <BaseElement tag="header"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const P:FC<BaseElementProps<HTMLElement>>= function({className,children,id,Ref,onClick,...props}){
+  return <BaseElement tag="p"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
 export const Form:FC<BaseElementProps<HTMLFormElement> >= function({className,children,id,Ref,onClick,...props}){
   return <BaseElement tag="form"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 export const RDiv:FC<BaseElementProps<HTMLDivElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="div"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export const Main:FC<BaseElementProps<{}>> = function({className,children,id,Ref,onClick,...props}:any){
+export const Main:FC<BaseElementProps<HTMLBaseElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="main"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export const Section:FC<BaseElementProps<{}>> = function({className,children,id,Ref,onClick,...props}:any){
+export const Section:FC<BaseElementProps<HTMLBaseElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="section"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 export const Button:FC<BaseElementProps<HTMLButtonElement>> = function({className,children,id,Ref,type = "button",onClick,...props}:any){
@@ -151,15 +163,33 @@ export const Img:FC<BaseElementProps<HTMLImageElement> & React.ImgHTMLAttributes
 export const CAudio:FC<BaseElementProps<HTMLAudioElement>> = function({className,children,id,Ref,src,onClick,...props}:any){
   return <BaseElement tag="audio"  {...props}  ReElement={({children,...attr}:any)=><audio src={src} {...attr}> {children}</audio>} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export const CVideo:FC<BaseElementProps<HTMLAudioElement>> = function({className,children,id,Ref,src,onClick,...props}:any){
-  return <BaseElement tag="video"  {...props}  ReElement={({children,...attr}:any)=><video src={src} {...attr}> {children}</video>}onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+export const CVideo:FC<BaseElementProps<HTMLVideoElement> & React.VideoHTMLAttributes<HTMLVideoElement>> = function({className,children,id,Ref,src,onClick,...props}:any){
+  return <BaseElement tag="video"  {...props}  ReElement={({children,...attr}:any)=><video src={src} {...attr} ref={Ref}> {children}</video>}onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export const H1:FC<BaseElementProps<{}>> = function({className,children,id,Ref,onClick,...props}:any){
-  return <BaseElement tag="h1" fontSize ="20px" fontWeight="bolder" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+export const Ol:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="ol" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const Ul:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="ul" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const Li:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="li" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const H1:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="h1" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const H2:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="h2" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 export const Hr:FC<BaseElementProps<HTMLHRElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="hr" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export const EButton:FC<BaseElementProps<{}>> = function({className,children,id,Ref,onClick,...props}:any){
+export const EButton:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <Div borderRadius="8px" paddingInline="22px" paddingBlock="10px" {...props} onClick={onClick} Ref={Ref} id={id} className={className}>{children}</Div>
+}
+
+export const Hidden:FC<BaseElementProps<HTMLDivElement>> = function (props){
+  return <Div display="none" {...props}>
+      {props.children}
+  </Div>
 }
