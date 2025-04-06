@@ -8,7 +8,7 @@ const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
    <div className="bg-[url(/hero.png)] w-full h-[100vh] bg-center bg-cover bg-no-repeat flex items-center justify-center">
     <div className="w-[70%] h-[90vh] bg-[#111827] rounded-[19.33px] flex  ">
-        <div className=" w-[430px]  place-self-center relative ">
+        <div className=" w-[430px]  place-self-center relative hidden lg:flex">
             <Image
             src="../resumelady.svg"
             width={430}

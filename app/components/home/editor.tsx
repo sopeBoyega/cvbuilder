@@ -145,7 +145,7 @@ const TextEditor = () => {
           <p>Text</p>
         </div>
         {/* Toolbar */}
-        <div className="flex  justify-between border-y-2 border-y-white items-center gap-1.5 mb-1">
+        <div className="flex flex-wrap justify-between border-y-2 border-y-white items-center gap-1.5 mb-1">
           {/* Undo/Redo */}
           <button
             onClick={() => editor?.chain().focus().undo().run()}

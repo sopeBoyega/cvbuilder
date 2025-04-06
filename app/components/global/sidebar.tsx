@@ -22,7 +22,7 @@ export default function Sidebar() {
   const cvLength = cvStatus.length;
 
   return (
-    <div className="border-r-[1px] border-r-[#E2E4E9] fixed z-[1000] h-[100vh] hidden md:flex md:flex-col  bg-black w-[20%] top-0">
+    <div className="border-r-[1px] border-r-[#E2E4E9] fixed z-[1000] h-[80vh] hidden md:flex md:flex-col  bg-black w-[20%] top-0">
       <div className="flex items-start justify-  mb-[5px] flex-col p-[20px]">
         <p className={`font-[700] text-[20px] `}>CV Builder</p>
         <input
