@@ -14,7 +14,7 @@ export default function layout({
       <div className="flex justify-between items-center">
         <Sidebar />
 
-        <div className="w-[100%] min-h-[100vh] order-1 ml-[20%]">
+        <div className="w-[100%] min-h-[100vh] order-1 md:ml-[20%]">
           <Header />
           <div className={`${PJS.className} p-[12px] bg-[#0D1117] min-h-[100vh]`}> {children}</div>
         </div>

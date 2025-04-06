@@ -19,9 +19,11 @@ const page = (props: Props) => {
     <div className={`${PJS.className}`}>
       {/* Header Component */}
       <Header/>
-      <div className="w-full h-fit flex justify-between items-start">
+      <div className="w-full h-fit flex justify-center items-start ">
         <TextEditor/>
+        <div className="">
         <RightBar/>
+        </div>
       </div>
     </div>
   );

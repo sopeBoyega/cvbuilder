@@ -1,3 +1,4 @@
+"use client"
 import React, { PropsWithChildren } from "react"
 import { useEffect, FC } from "react"
 import CSSHelper, { ICssHelper } from "./css"
@@ -53,7 +54,7 @@ export function filterOutStyles(Styles:any = {}){
   var allCSSProperties
       allCSSProperties = {...css};
       var propforit:any = {}
-      for (var key in Styles){
+      for (let key in Styles){
           if (!(key in allCSSProperties)){
               propforit[key] = Styles[key]
           }
@@ -61,10 +62,10 @@ export function filterOutStyles(Styles:any = {}){
   return propforit
 }
 
-export type BaseElementProps<T> =  ICssHelper & React.DetailedHTMLProps<React.HTMLAttributes<T>,T> & React.HTMLAttributes<HTMLBaseElement>  & PropsWithChildren & {comment?:string}
+export type BaseElementProps<T> =  ICssHelper & React.DetailedHTMLProps<React.HTMLAttributes<T>,T> & React.HTMLAttributes<HTMLBaseElement>  & PropsWithChildren & {comment?:string,Ref?:any}
 
 export function Center(props:BaseElementProps<HTMLDivElement>&{Ref?:any}){
-      return <Div  display="flex" justifyContent="center" alignItems="center" width="100%" {...props}>
+      return <Div  display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%" {...props}>
           {props.children}
       </Div>
 }
@@ -84,20 +85,20 @@ export function BaseElement({className,tag = "div",children,id,Ref,onClick,comme
   const UnClassName = comment?`/*${String(comment).split(" ").join("_")}*/`:""
   className = `${className?className:""} ${UnClassName}`
   const Element =ReElement?({Ref,...props}:any)=><ReElement ref={Ref} {...props}> {props.children}</ReElement>: ({children,Ref,...attr}:any)=>{return React.createElement(tag,{ref:Ref,...attr},children)}
-  var propsforstyle = filterInStyles(props)
+  const propsforstyle = filterInStyles(props)
   
-  var Style = {
+  const Style = {
       ...style,
       ...propsforstyle  
   }
-  var propforit = filterOutStyles(props)
+  const propforit = filterOutStyles(props)
   
   return <Element { ...propforit} className={mergeText(className)} onClick={onClick} id={id} Ref={Ref} style={Style}>
       {children}
   </Element>
 }
 
-export var Text:FC<BaseElementProps<HTMLParagraphElement>  & {Ref?:any}> = function({className,children,id,Ref,...props}:any){
+export const Text:FC<BaseElementProps<HTMLParagraphElement>> = function({className,children,id,Ref,...props}:any){
   return <BaseElement tag="p" display = "inline-block" {...props} className={className} id={id} Ref={Ref}  >{children}</BaseElement>
 }
 /**
@@ -108,7 +109,7 @@ export var Text:FC<BaseElementProps<HTMLParagraphElement>  & {Ref?:any}> = funct
  * ```
  * 
  */
-export var Span:FC<BaseElementProps<HTMLSpanElement>  & {Ref?:any}> = function({className,children,id,Ref,...props}:any){
+export const Span:FC<BaseElementProps<HTMLSpanElement>> = function({className,children,id,Ref,...props}:any){
   return <BaseElement tag="span" display="inline-block" {...props} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 
@@ -120,43 +121,75 @@ export var Span:FC<BaseElementProps<HTMLSpanElement>  & {Ref?:any}> = function({
  * ```
  * 
  */
-export var Div:React.FunctionComponent<BaseElementProps<HTMLDivElement>  & {Ref?:any} >= function({className,children,id,Ref,onClick,...props}){
-  return <BaseElement tag="div" display="block" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
-}
-export var RDiv:FC<BaseElementProps<HTMLMediaElement>  & {Ref?:any}> = function({className,children,id,Ref,onClick,...props}:any){
+export const Div:FC<BaseElementProps<HTMLDivElement> >= function({className,children,id,Ref,onClick,...props}){
   return <BaseElement tag="div"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export var Main:FC<BaseElementProps<{}>  & {Ref?:any}> = function({className,children,id,Ref,onClick,...props}:any){
+export const A:FC<BaseElementProps<HTMLAnchorElement> >= function({className,children,id,Ref,onClick,...props}){
+  return <BaseElement tag="a"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const Footer:FC<BaseElementProps<HTMLElement>>= function({className,children,id,Ref,onClick,...props}){
+  return <BaseElement tag="footer"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const Header:FC<BaseElementProps<HTMLElement>>= function({className,children,id,Ref,onClick,...props}){
+  return <BaseElement tag="header"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const P:FC<BaseElementProps<HTMLElement>>= function({className,children,id,Ref,onClick,...props}){
+  return <BaseElement tag="p"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const Form:FC<BaseElementProps<HTMLFormElement> >= function({className,children,id,Ref,onClick,...props}){
+  return <BaseElement tag="form"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const RDiv:FC<BaseElementProps<HTMLDivElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="div"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const Main:FC<BaseElementProps<HTMLBaseElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="main"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export var Section:FC<BaseElementProps<{}>  & {Ref?:any}> = function({className,children,id,Ref,onClick,...props}:any){
+export const Section:FC<BaseElementProps<HTMLBaseElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="section"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export var Button:FC<BaseElementProps<HTMLButtonElement>  & {Ref?:any}> = function({className,children,id,Ref,type = "button",onClick,...props}:any){
+export const Button:FC<BaseElementProps<HTMLButtonElement>> = function({className,children,id,Ref,type = "button",onClick,...props}:any){
   return <BaseElement tag="button"  {...props} type = {type} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export var Input:FC<BaseElementProps<HTMLInputElement>  & {Ref?:any} & React.InputHTMLAttributes<HTMLInputElement>> = function({className,children,id,Ref,type = "text",placeholder,onClick,...props}){
-  return <BaseElement tag="input"  {...props} type = {type} placeholder = {placeholder} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+export const Input:FC<BaseElementProps<HTMLInputElement> & React.InputHTMLAttributes<HTMLInputElement> &{name?:string,value?:string}> = function({className,children,id,Ref,type = "text",placeholder,onClick,...props}){
+  return <BaseElement tag="input"  {...props} type = {type} placeholder = {placeholder} onClick={onClick} className={className} id={id} Ref={Ref}   ></BaseElement>
 }
-export var TextArea:FC<BaseElementProps<HTMLTextAreaElement>  & {Ref?:any}> = function({className,children,id,Ref,onClick,...props}:any){
-  return <BaseElement tag="textarea"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+export const TextArea:FC<BaseElementProps<HTMLTextAreaElement>  & {Ref?:any,cols?:string,rows?:string,placeholder?:string}> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="textarea"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   ></BaseElement>
 }
-export var Img:FC<BaseElementProps<HTMLImageElement>  & {Ref?:any} & React.ImgHTMLAttributes<HTMLImageElement>> = function({className,children,id,Ref,src,onClick,...props}){
+export const Img:FC<BaseElementProps<HTMLImageElement> & React.ImgHTMLAttributes<HTMLImageElement>> = function({className,children,id,Ref,src,onClick,...props}){
   return <BaseElement tag="img"   {...props}  ReElement = {({children,...attr}:any)=><img src={src} {...attr}/>} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export var CAudio:FC<BaseElementProps<HTMLAudioElement>  & {Ref?:any}> = function({className,children,id,Ref,src,onClick,...props}:any){
+export const CAudio:FC<BaseElementProps<HTMLAudioElement>> = function({className,children,id,Ref,src,onClick,...props}:any){
   return <BaseElement tag="audio"  {...props}  ReElement={({children,...attr}:any)=><audio src={src} {...attr}> {children}</audio>} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export var CVideo:FC<BaseElementProps<HTMLAudioElement>  & {Ref?:any}> = function({className,children,id,Ref,src,onClick,...props}:any){
-  return <BaseElement tag="video"  {...props}  ReElement={({children,...attr}:any)=><video src={src} {...attr}> {children}</video>}onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+export const CVideo:FC<BaseElementProps<HTMLVideoElement> & React.VideoHTMLAttributes<HTMLVideoElement>> = function({className,children,id,Ref,src,onClick,...props}:any){
+  return <BaseElement tag="video"  {...props}  ReElement={({children,...attr}:any)=><video src={src} {...attr} ref={Ref}> {children}</video>}onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export var H1:FC<BaseElementProps<{}>  & {Ref?:any}> = function({className,children,id,Ref,onClick,...props}:any){
-  return <BaseElement tag="h1" fontSize ="20px" fontWeight="bolder" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+export const Ol:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="ol" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export var Hr:FC<BaseElementProps<HTMLHRElement>  & {Ref?:any}> = function({className,children,id,Ref,onClick,...props}:any){
+export const Ul:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="ul" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const Li:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="li" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const H1:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="h1" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const H2:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="h2" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const Hr:FC<BaseElementProps<HTMLHRElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="hr" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export var EButton:FC<BaseElementProps<{}>  & {Ref?:any}> = function({className,children,id,Ref,onClick,...props}:any){
+export const EButton:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <Div borderRadius="8px" paddingInline="22px" paddingBlock="10px" {...props} onClick={onClick} Ref={Ref} id={id} className={className}>{children}</Div>
 }
 
+export const Hidden:FC<BaseElementProps<HTMLDivElement>> = function (props){
+  return <Div display="none" {...props}>
+      {props.children}
+  </Div>
+}

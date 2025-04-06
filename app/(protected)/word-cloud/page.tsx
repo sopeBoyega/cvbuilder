@@ -9,8 +9,9 @@ const page = (props: Props) => {
   return (
     <div className='flex w-full flex-col items-center justify-center'>
         <Header/>
-        {/* <File/> */}
-        <WordCloud/>
+        <p className='text-[#9CA3AF] font-[600] text-[30px] p-5N text-center'>Upload your CV in PDF or Word format to get or see your word cloud</p>
+        <File/>
+        {/* <WordCloud/> */}
     </div>
   )
 }
