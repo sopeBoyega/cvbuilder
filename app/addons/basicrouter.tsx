@@ -39,7 +39,7 @@ export default class RouterComponent {
     }
 
     DisplayPage(PageName:string){
-        this.changeModel.CEXDispatch(this.channel,{name:PageName})
+        this.changeModel.dispatcher[this.channel]({name:PageName})
     }
 
     View = ({tag = "div",children,className,...props}:{children?:any,tag?:string,className?:string} & BaseElementProps<HTMLDivElement>)=>{
@@ -52,7 +52,7 @@ export default class RouterComponent {
             console.log(channel," pageing ",event.detail.data.name)
         }
         var ReturnEl = React.createElement(tag,{className:className,...props},[this.GetPage(currentPage),
-        <this.changeModel.CEventXH channel={this.channel} key="1" onEvent={TriggerDisplayPage} ></this.changeModel.CEventXH>])
+        <this.changeModel.CEXRenderCreate channel={this.channel} key="1" onEvent={TriggerDisplayPage} ></this.changeModel.CEXRenderCreate>])
         return ReturnEl
     }
 

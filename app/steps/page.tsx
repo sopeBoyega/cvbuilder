@@ -111,14 +111,37 @@ class ICOn{
 }
 //software engineering
 function AISession({base,loadingHoc,jobDesHoc}:{base:BaseHOC,loadingHoc:BaseHOC,jobDesHoc:InputHOC}){
-    let questSlider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:true})
-    let update = useStateUpdate()
-    let message = new BaseHOC()
-    let questCount = new BaseHOC()
-    let bar = new BaseHOC()
+    const questSlider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:true})
+    const update = useStateUpdate()
+    const message = new BaseHOC()
+    const questCount = new BaseHOC()
+    const bar = new BaseHOC()
+    const jobDesView = new BaseHOC()
+    const resetAskDiv = new BaseHOC()
+    const resetConfirmDiv = new BaseHOC()
+    const loadingIcon:BaseHOC = base.GetVariable("loadingIcon")
     let jobDescription = jobDesHoc.value()
+    base.SetVariable('hba',base.GetVariable('hba') || false)
+    function jobDesViewUpdate(){
+        jobDesView.Execute(()=>{
+            jobDesView.innerText(base.GetVariable(jdVarName))
+            message.innerText("")
+            loadingIcon.style.display("none")
+
+            if (base.GetVariable(jdVarName) != jobDescription){
+                if (base.GetVariable('AiStarted') == true){
+                    if (base.GetVariable('hba') == false){loadingHoc.style.display("flex")
+                        loadingHoc.Element?.focus()
+                    resetAskDiv.style.display("flex")}
+                }
+            }
+        })
+    }
+
+    base.SetVariable(jdVarName, base.GetVariable(jdVarName),jobDesViewUpdate)
     function FormFetch(){
         loadingHoc.style.display("flex")
+        loadingIcon.style.display("grid")
         message.innerText("Generating ...")
         fetch("http://localhost:8089/ai/questions",{
             method:"POST",
@@ -134,19 +157,22 @@ function AISession({base,loadingHoc,jobDesHoc}:{base:BaseHOC,loadingHoc:BaseHOC,
                 base.SetVariable("AiStarted",true)
                 base.SetVariable("form",data["questions"])
                 loadingHoc.style.display("none")
+                base.SetVariable("hba",false)
                 update()
+
             })
         }).catch(err=>{
             console.log(err)
             base.SetVariable("AiStarted",false)
             base.SetVariable("form",[])
-            setTimeout(()=>{loadingHoc.style.display("none")},2000)
+            setTimeout(()=>{loadingHoc.style.display("none")},4000)
             message.innerText("ERROR")
             update()
         })
     }
     function FormGive(){
         loadingHoc.style.display("flex")
+        loadingIcon.style.display("grid")
         message.innerText("Generating CV ...")
         fetch("http://localhost:8089/ai/cv",{
             method:"POST",
@@ -161,8 +187,10 @@ function AISession({base,loadingHoc,jobDesHoc}:{base:BaseHOC,loadingHoc:BaseHOC,
                 console.log(data)
                 base.SetVariable("CVID",data["id"])
                 message.innerText("Redirecting ...")
-                setTimeout(()=>{
-                    window.location.href =`/cv/${base.GetVariable("CVID")}`}
+                setTimeout(()=>{                                           
+                    // window.location.href =`/cv/${base.GetVariable("CVID")}`
+                    loadingHoc.style.display("none")
+                }
                     ,2000)
                 // loadingHoc.style.display("none")
             })
@@ -184,16 +212,61 @@ function AISession({base,loadingHoc,jobDesHoc}:{base:BaseHOC,loadingHoc:BaseHOC,
     }
     questSlider.onSlide = onSlide
     return <Div>
-        <loadingHoc.ToRender renderId={"loaderMessage"} display="none">
-            <message.Render>Loading...</message.Render>
+        <loadingHoc.ToRender renderId={"loaderMessage"} display="none" >
+            <message.Render></message.Render>
+            <resetAskDiv.Render display="none" flexDirection="column" background="rgba(100,100,100,0.3)" borderRadius="10px" padding="20px" alignItems="center" gap="0px">
+                <Div>you have changed your Job description.</Div>
+                <Div>you have to reset your questions.</Div>
+                <Div display="flex" gap="20px" marginTop="10px">
+                <EButton backgroundColor={"black"} color={"white"} onClick={()=>{
+                    loadingHoc.style.display("none")
+                    resetAskDiv.style.display("none")
+                    base.SetVariable("hba",true)
+                    }}>Cancel</EButton>
+                <EButton backgroundColor={"rgba(59, 130, 246, 0.7)"} color={"white"} onClick={()=>{
+                    loadingHoc.style.display("none");
+                    resetAskDiv.style.display("none");
+                    base.SetVariable("hba",true)
+                    base.SetVariable("AiStarted",false);
+                    base.SetVariable("form",[]);
+                    console.log(base.GetVariable('AiStarted'));
+                    
+                    update()}}>Reset</EButton>
+                </Div>
+            </resetAskDiv.Render>
+            <resetConfirmDiv.Render display="none" flexDirection="column" background="rgba(100,100,100,0.3)" borderRadius="10px" padding="20px" alignItems="center" gap="0px">
+                <Div>Questions will be wiped out.</Div>
+                <Div>Confirm to reset.</Div>
+                <Div display="flex" gap="20px" marginTop="10px">
+                <EButton backgroundColor={"black"} color={"white"} onClick={()=>{
+                    loadingHoc.style.display("none")
+                    resetConfirmDiv.style.display("none")
+                    }}>Cancel</EButton>
+                <EButton backgroundColor={"rgba(59, 130, 246, 0.7)"} color={"white"} onClick={()=>{
+                    loadingHoc.style.display("none");
+                    resetConfirmDiv.style.display("none");
+                    base.SetVariable("AiStarted",false);
+                    base.SetVariable("form",[]);
+                    console.log(base.GetVariable('AiStarted'));
+                    
+                    update()}}>Reset</EButton>
+                </Div>
+            </resetConfirmDiv.Render>
         </loadingHoc.ToRender>
 
         <Div>
             <Div fontSize="16px" color="rgba(156, 163, 175, 1)">Job Description</Div>
-            <Div fontSize="15px" color="rgba(156, 163, 175, 1)">{"\t"}{base.GetVariable(jdVarName)}</Div>
+            <jobDesView.Render fontSize="15px" color="rgba(156, 163, 175, 1)">{"\t"}{base.GetVariable(jdVarName)}</jobDesView.Render>
         </Div>
         <Div display="flex" gap="20px" justifyContent="right" width="100%">
-            {base.GetVariable('AiStarted') && <EButton backgroundColor={"rgba(59, 130, 246, 0.7)"} color={"white"} onClick={()=>{base.SetVariable("AiStarted",false);base.SetVariable("form",[]);console.log(base.GetVariable('AiStarted'));update()}}>Reset</EButton>}
+            {base.GetVariable('AiStarted') && <EButton backgroundColor={"rgba(59, 130, 246, 0.7)"} color={"white"} onClick={()=>{
+                loadingHoc.style.display("flex")
+                resetAskDiv.style.display("none")
+                loadingIcon.style.display("none")
+
+                resetConfirmDiv.style.display("flex")
+                message.innerText("")
+                }}>Reset</EButton>}
         </Div>
         <br />
         
@@ -264,14 +337,15 @@ export default function StepPage(){
     const ico = new ICOn(slider)
     const form:Dict<Dict<string> | string>  = {}
     const nextBtn = new BaseHOC()
+    const loadingIcon = new BaseHOC()
     const CVInput = new InputHOC({Component:Input})
-    base.SetVariable(jdVarName,"None")
+    base.SetVariable("loadingIcon",loadingIcon)
     
     
 
     React.useEffect(()=>{
         setTimeout(()=>{
-            // setDatas(()=>[1])
+            // setDatas(()=>[1])9
         },2000)
         haveJobDes.style.display("flex")
         haveCVDes.style.display("flex")
@@ -288,7 +362,7 @@ export default function StepPage(){
     })
     function onSlide(index:number){
         ico.indexi(slider.currentIndex)
-        if (index == slider.children.length-1){
+        /* if (index == slider.children.length-1){
             nextBtn.innerText("Submit")
             nextBtn.Execute((el)=>{el.onclick = ()=>{
                 console.log("end")
@@ -296,7 +370,7 @@ export default function StepPage(){
         }else{
             nextBtn.innerText("Next")
             nextBtn.Execute((el)=>{el.onclick = ()=>{slider.slide((pidx:number) =>pidx+1)}})
-        }
+        } */
     }
 
     function FormfillHandler(e:CIEvent){
@@ -310,7 +384,7 @@ export default function StepPage(){
     slider.onSlide  = onSlide;
     return <base.Render backgroundColor="rgb(13,17,23)">
         <loadingHoc.Render backdropFilter="blur(10px)" zIndex="1000" width="100%" height="100%" display="flex" gap="20px" alignItems="center" justifyContent="center" top="0" left="0" background="rgba(0,0,0,0.7)" position="fixed" >
-            <Div className={styles.gendiv}></Div>
+            <loadingIcon.Render className={styles.gendiv}></loadingIcon.Render>
 
          </loadingHoc.Render>
         <Div maxWidth="1000px" width="100vw" height="100vh" overflow="auto" display="flex" flexDirection="column" gap="30px" boxSizing="border-box" padding = "20px" paddingTop="30px" >

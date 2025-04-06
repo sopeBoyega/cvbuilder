@@ -1,3 +1,3 @@
 
 
-class Database()
+class Database{}

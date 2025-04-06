@@ -2,7 +2,7 @@
 import React, {FC, ReactNode, useState} from "react"
 import { _cssHelper } from "./css"
 import { BaseElementProps, Div, Hidden } from "./csml"
-import {Dict, ReplaceAll, useUpdate} from "@/app/addons/anys";
+import {Dict, ReplaceAll, useStateUpdate, useUpdate} from "@/app/addons/anys";
 import {ListChildren} from "@/app/addons/anys";
 
 /**
@@ -150,25 +150,25 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement
             return this.ref.current 
         }
     }
-    innerText (val?:string){
+    innerText (val?:any){
         if (this.Element){
             if (val){
-                this.Element.innerText = val
+                (this.Element as any).innerText = val
             }
             else{
-                return this.Element.innerText
+                return (this.Element as any).innerText
             }
         }
         return ""
     }
 
-    innerHTML (val?:string){
+    innerHTML (val?:any){
         if (this.Element){
             if (val){
-                this.Element.innerHTML = val
+                (this.Element as any).innerHTML = val
             }
             else{
-                return this.Element.innerHTML
+                return (this.Element as any).innerHTML
             }
         }
         return ""
@@ -180,11 +180,11 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement
                 const element = this.Element
                     if (element){
                         if (value) {
-                            element.style[key] = value
-                            // console.log(element.style[key])
+                            (element as any).style[key] = value
+                            // console.log((element as any).style[key])
                             }
                         else{
-                        return element.style[key]
+                        return (element as any).style[key]
                         }
                     }
 
@@ -207,18 +207,17 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement
             return{...props,...p} 
         })
 
-        this.Update()
         return <Hidden></Hidden>
     }
     Render:FC<BaseElementProps<HTMLDivElement>& CustomProps> =(props:BaseElementProps<HTMLDivElement>& CustomProps) =>{
-            this.forceUpdate = useUpdate()
+            this.forceUpdate = useStateUpdate()
             const addonsState = useState({})
             this.Addons = addonsState[0]
             this.setAddons = addonsState[1]
             const addonPropsState = useState([])
             this.addonProps = addonPropsState[0]
             this.setAddonProps = addonPropsState[1]
-
+            
             return <this.Component Ref = {this.ref} {...props} {...this.addonProps} >
                 {props.children}
                 {Object.values(this.Addons)}
@@ -279,8 +278,7 @@ export class AtMedia{
                 if (!this.isPaused){
                     this.listMedia = []
                     for (var idx in this.media){
-                        
-                        this.listMedia.push(`(${this.media[idx]}:${this.pixels[idx] || this.pixels[idx-1] || this.pixels[0]}px)`)
+                        this.listMedia.push(`(${this.media[idx]}:${this.pixels[idx] || this.pixels[Number(idx)-1] || this.pixels[0]}px)`)
                         
                     }
                     // console.log(this.stringMedia)
@@ -293,7 +291,7 @@ export class AtMedia{
                             this.hasAtMedia = true
                         }
                         for (const key of Object.keys(this.styleat)) {
-                            this.hoc.style[(key)](this.styleat[(key)]);
+                            (this.hoc as any).style[(key)]((this.styleat as any)[(key)]);
                             // console.log(`[${this.styleat[key]}] ${this.style[key]()}`)
                         }
                     } else {
@@ -303,7 +301,7 @@ export class AtMedia{
                             this.hasBeforeMedia = true
                         }
                         for (const key of Object.keys(this.stylebef)) {
-                            this.hoc.style[(key)](this.stylebef[(key)]);
+                            (this.hoc as any).style[(key)]((this.stylebef as any)[(key)]);
                             // console.log(`[${stylebef[key]}] ${this.style[key]()}`)
                         }
                     }
