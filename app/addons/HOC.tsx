@@ -1,7 +1,9 @@
-import React from "react"
+"use client"
+import React, {FC, ReactNode, useState} from "react"
 import { _cssHelper } from "./css"
-import { BaseElementProps, Div } from "./csml"
-
+import { BaseElementProps, Div, Hidden } from "./csml"
+import {Dict, ReplaceAll, useStateUpdate, useUpdate} from "@/app/addons/anys";
+import {ListChildren} from "@/app/addons/anys";
 
 /**
      * 
@@ -25,69 +27,309 @@ import { BaseElementProps, Div } from "./csml"
      *                  })
      *         },3000)
      *     },[])
-     *     return <hoc.Render self={hoc}>test</hoc.Render>
+     *     return <hoc.Render >test</hoc.Render>
      * }
      * 
      * ```
      * *GUDITTON*
      */
-export default class BaseHOC<T>{
+export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement>{
     
-    protected ref:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined>
+    protected ref:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>
     public style
+    public isMediaDestroyed: boolean
     protected Component
-    constructor ({Component = Div , refee}:{Component?:any ,refee?:React.RefObject<HTMLBaseElement> | React.MutableRefObject<undefined>}){
+    public medias:Dict<AtMedia> = {}
+    protected variables:Dict = {}
+    public existAs
+    protected forceUpdate?:Function
+    public Addons:Dict<any[]> = {}
+    protected setAddons:any
+    protected setAddonProps:any
+    protected addonProps:Dict = {}
+    protected ConstTypeName = "-Const"
+    protected onChangeTypeName = "-ChangeFunc"
+
+    SetVariable(name:string, value?: any,onChange?:(name?:string,val?:any)=>void){
+        let key = ReplaceAll(name, this.ConstTypeName,"")
+        key = ReplaceAll(key, this.onChangeTypeName,"")
+        if (!this.variables[key+this.ConstTypeName]) {
+            if (!(onChange == undefined)){
+                this.variables[key+this.onChangeTypeName] = onChange
+            }else if (!this.variables[key+this.onChangeTypeName]){
+                this.variables[key+this.onChangeTypeName] = (name?:string,val?:any)=>{}
+            }
+            if (!(value == undefined)){
+                if (this.variables[key]){
+                    this.variables[key+this.onChangeTypeName](key,value)
+                }
+                this.variables[key] = value
+                
+            }
+        }else{
+            console.log("tried assigning to a const variable: ",this.variables[key]," with value:",value)
+        }
+    }
+
+    
+    
+    ConstVariable(name:string, value: any){
+            let key = ReplaceAll(name, this.ConstTypeName,"")
+            key = ReplaceAll(key, this.onChangeTypeName,"")
+        if (!this.variables[key+this.ConstTypeName]) {
+            this.variables[key] = value
+            this.variables[key+this.ConstTypeName] = true
+        }else{
+            console.log("tried assigning to a const variable: ",this.variables[key]," with value:",value)
+        }
         
-        this.ref = refee || React.useRef() 
+    }
+
+    GetVariable(name:string) {
+        let key = ReplaceAll(name, this.ConstTypeName,"")        
+        return this.variables[key]
+    }
+
+    GetVariableType(name:string) {
+        let key = ReplaceAll(name, this.ConstTypeName,"") 
+        return typeof (this.variables[key])
+    }
+
+    IsVariableConst(name:string){
+        let key = ReplaceAll(name, this.ConstTypeName,"") 
+        return this.variables[key+this.ConstTypeName]
+    }
+
+    GetAllVariables(){
+        return this.variables
+    }
+
+    Update(){
+        if (this.forceUpdate){
+            this.forceUpdate()
+        }
+    }
+
+   
+
+    constructor ({Component = Div,existAs, refee = React.useRef(null) }:{Component?:FC ,existAs?:Function,refee?:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>} = {}){
+        this.isMediaDestroyed = false
+        this.ref = refee
+        this.existAs = existAs
         this.style = {..._cssHelper}
         this.Component = Component
         this.EffectifyStyle()
-    }
 
-    protected Stylilise(style:{[key:string]:any}){
-        var element = this.ref.current
-        if (element){
-            for (const key of Object.keys(style)){
-                element.style[(key as any)] = style[key]
-                console.log(element.style[(key as any)])
+    }
+    AddMedia(id:string,Media:AtMedia){
+        this.medias = {
+            ...this.medias,
+            [id]:Media
+        }
+        Media.Activate()
+    }
+    DestroyMedia(id:string){
+        if (this.medias[id]){
+            this.medias[id].Destroy()
+        }
+    }
+    PauseMedia(id:string){
+        if (this.medias[id]){
+            this.medias[id].Pause()
+        }
+    }
+    ContinueMedia(id:string){
+        if (this.medias[id]){
+            this.medias[id].Continue()
+        }
+    }
+    get Element():ElementInterface | undefined|null{
+        if (this.existAs) {
+            return this.existAs()
+        }else{
+            return this.ref.current 
+        }
+    }
+    innerText (val?:any){
+        if (this.Element){
+            if (val){
+                (this.Element as any).innerText = val
+            }
+            else{
+                return (this.Element as any).innerText
             }
         }
+        return ""
+    }
+
+    innerHTML (val?:any){
+        if (this.Element){
+            if (val){
+                (this.Element as any).innerHTML = val
+            }
+            else{
+                return (this.Element as any).innerHTML
+            }
+        }
+        return ""
     }
 
     protected EffectifyStyle(){
-        for (const key of Object.keys(_cssHelper)){
-            this.style = {...this.style,[key]:(value:string)=>{this.Stylilise({[key]:value})}}
+        for ( const key of Object.keys(_cssHelper)){
+            this.style = {...this.style,[key]:(value?:string)=>{
+                const element = this.Element
+                    if (element){
+                        if (value) {
+                            (element as any).style[key] = value
+                            // console.log((element as any).style[key])
+                            }
+                        else{
+                        return (element as any).style[key]
+                        }
+                    }
+
+            }}
         }
     }
-    /**
-     * 
-     *  `Execute`: safely run functions with your element without ```if (element.current){}```
-     *  just by passing your function into the `Execute` method and getting the element as an argument
-     * 
-     */
-    public Execute(func:Function){
-        var element = this.ref.current
+
+     public Execute(func = (ele:ElementInterface)=>{}){
+        const element =this.Element
         if (element){
             func(element)
         }
     }
-    /**
-     * 
-     * @param self is required.
-     * `self` is the `BaseHOC` reference variable.
-     * @example
-     * ``` 
-     * <hoc.Render self={hoc}></hoc.Render>
-     * ```
-     * @returns `BaseHOC.Component` 
-     */
-    Render(props:BaseElementProps<HTMLDivElement>&{self:BaseHOC<T>}& T){
-            return <props.self.Component Ref = {props.self.ref} {...props}>
+
+
+    ToRender = ({children,renderId ,...props}:BaseElementProps<HTMLDivElement> & {renderId:any}) => {
+        this.setAddons((e:any)=>{return {...e,[renderId]:ListChildren(children)}})
+        
+        this.setAddonProps((p:any)=> {
+            return{...props,...p} 
+        })
+
+        return <Hidden></Hidden>
+    }
+    Render:FC<BaseElementProps<HTMLDivElement>& CustomProps> =(props:BaseElementProps<HTMLDivElement>& CustomProps) =>{
+            this.forceUpdate = useStateUpdate()
+            const addonsState = useState({})
+            this.Addons = addonsState[0]
+            this.setAddons = addonsState[1]
+            const addonPropsState = useState([])
+            this.addonProps = addonPropsState[0]
+            this.setAddonProps = addonPropsState[1]
+            
+            return <this.Component Ref = {this.ref} {...props} {...this.addonProps} >
                 {props.children}
-            </props.self.Component>
+                {Object.values(this.Addons)}
+            </this.Component>
     }
 }
 
+
+export class AtMedia{
+    isDestroyed: boolean = false
+    isPaused: boolean = false
+    media:string[] = ["max-width"]
+    pixels:number[] = [800]
+    interval:any
+    mediaElementFunc = ()=>window
+    styleat = {}
+    stylebef = {}
+    atMedia = (HOC:BaseHOC) => {}
+    beforeMedia = (HOC:BaseHOC) => {}
+    hasAtMedia = false
+    hasBeforeMedia = false
+    hoc:BaseHOC
+    listMedia:string[] = []
+    determinant:string ='and'
+    aliveTest = (media:AtMedia) =>{}
+    constructor(hoc:BaseHOC,{media = (["max-width"] as string | string[]),determinant = "and",test = (media:AtMedia)=>{},pixels = ([800] as number | number[]),mediaElementFunc = ()=>window ,styleat = {},stylebef = {},atMedia = (HOC:BaseHOC) => {},beforeMedia = (HOC:BaseHOC) => {}} = {}){
+        this.media = typeof(media) == "string" ?[media]:media
+        this.mediaElementFunc = mediaElementFunc
+        this.stylebef = stylebef
+        this.styleat = styleat
+        this.pixels = typeof(pixels) == "number" ?[pixels]:pixels
+        this.atMedia = atMedia
+        this.beforeMedia = beforeMedia
+        this.hoc = hoc
+        this.determinant = determinant
+        this.aliveTest = test
+    }
+    Destroy (){
+        this.isDestroyed = true
+    }
+
+    Pause(){
+        this.isPaused = true
+    }
+
+    Continue(){
+        this.isPaused = false
+    }
+
+    Activate(){
+        this.interval = setInterval(() => {
+            this.hoc.Execute(()=>{
+                if (this.isDestroyed){
+                    clearInterval(this.interval)
+                    this.isDestroyed = false
+                }
+                const mediaer = this.mediaElementFunc()
+                if (!this.isPaused){
+                    this.listMedia = []
+                    for (var idx in this.media){
+                        this.listMedia.push(`(${this.media[idx]}:${this.pixels[idx] || this.pixels[Number(idx)-1] || this.pixels[0]}px)`)
+                        
+                    }
+                    // console.log(this.stringMedia)
+                     this.aliveTest(this)
+                    if (this.listMedia[this.determinant.toLowerCase() == "and"?"every":"some"]((stringMedia:string)=>mediaer.matchMedia(stringMedia).matches)) {
+                        // console.log(this.stringMedia)
+                        if (!this.hasAtMedia){
+                            this.atMedia(this.hoc)
+                            this.hasBeforeMedia = false
+                            this.hasAtMedia = true
+                        }
+                        for (const key of Object.keys(this.styleat)) {
+                            (this.hoc as any).style[(key)]((this.styleat as any)[(key)]);
+                            // console.log(`[${this.styleat[key]}] ${this.style[key]()}`)
+                        }
+                    } else {
+                        if (!this.hasBeforeMedia){
+                            this.beforeMedia(this.hoc)
+                            this.hasAtMedia = false
+                            this.hasBeforeMedia = true
+                        }
+                        for (const key of Object.keys(this.stylebef)) {
+                            (this.hoc as any).style[(key)]((this.stylebef as any)[(key)]);
+                            // console.log(`[${stylebef[key]}] ${this.style[key]()}`)
+                        }
+                    }
+                }
+            })
+        },1)
+    }
+}
+
+
+export var HOCS = {
+    
+}
+export class InputHOC extends BaseHOC<React.InputHTMLAttributes<HTMLInputElement>,HTMLInputElement>{
+    value(val?:string){
+        if (this.Element){
+            if (val){
+                this.Element.value = val}
+            else{
+                return this.Element.value
+            }
+        }
+        return ""
+    }
+}
+export class AnchorHOC extends BaseHOC<React.AnchorHTMLAttributes<HTMLAnchorElement>,HTMLAnchorElement>{}
+export class LinkHOC extends BaseHOC<React.LinkHTMLAttributes<HTMLLinkElement>,HTMLLinkElement>{}
+export class VideoHOC extends BaseHOC<React.VideoHTMLAttributes<HTMLVideoElement>,HTMLVideoElement>{}
 
 
 /**
@@ -115,14 +357,15 @@ export class MessageLabelHOC{
             setTimeout(() => {
             if (this.PRef.current){this.PRef.current.style.opacity = "0";
            setTimeout(()=>{ ondone()},leavetime)}
-                
+
             }, timeout);
         }
-        
-    }
-    Run(props:{self:MessageLabelHOC} & BaseElementProps<HTMLDivElement>){
 
-        return <props.self.Com  opacity="0" { ...props} Ref={props.self.PRef}><Div Ref={props.self.Ref}>{props.children}</Div></props.self.Com>
+    }
+    Run = (props: BaseElementProps<HTMLDivElement>) => {
+
+        return <this.Com  opacity="0" { ...props} Ref={this.PRef}><Div Ref={this.Ref}>{props.children}</Div></this.Com>
     }
 
 }
+
