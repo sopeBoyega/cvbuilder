@@ -1,4 +1,4 @@
-
+"use client"
 
 
 export function setItem(key:string,value:any,isjson:boolean = true){

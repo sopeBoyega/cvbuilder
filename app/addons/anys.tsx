@@ -1,8 +1,19 @@
-import {useReducer} from "react"
+"use client"
 
+import React, {ReactNode, useReducer, useState} from "react"
+
+export type Dict<T = any> = {[key:string]:T}
 
 export function mergeText(...texts:string[]){
     return texts.join(" ")
+}
+
+export function ListChildren(children:any,CloneWithProps = {}){
+    const childrenWithProps:ReactNode[] = React.Children.map(children, (child) =>
+        React.cloneElement(child, {  ...CloneWithProps })
+    );
+    return childrenWithProps
+
 }
 
 export function mergeFunc(...func:Function[]){
@@ -141,4 +152,8 @@ export function ReplaceAll(text:string,word1:string,word2:string){
 export function useUpdate(){
   const [, forceUpdate] = useReducer(x => x + 1, 1);
       return forceUpdate;
+}
+export function useStateUpdate(){
+  const [, forceUpdate] = useState(0);
+      return ()=>forceUpdate(()=>Math.random());
 }
