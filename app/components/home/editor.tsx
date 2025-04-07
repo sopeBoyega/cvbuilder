@@ -122,7 +122,7 @@ const TextEditor = () => {
 
   return (
   // Sizing of the Editing area needs be fixed when extended
-    <div className="flex flex-col w-[70%] gap-7  ">
+    <div className="flex flex-col w-[100%] md:w-[70%] gap-7  ">
       <div className="flex justify-between items-center bg-white p-2 rounded-lg">
         <Input
           placeholder="Heading"
