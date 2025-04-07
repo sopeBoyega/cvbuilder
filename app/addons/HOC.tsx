@@ -40,7 +40,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement
     public isMediaDestroyed: boolean
     protected Component
     public medias:Dict<AtMedia> = {}
-    protected variables:Dict = {}
+    public variables:Dict = {}
     public existAs
     protected forceUpdate?:Function
     public Addons:Dict<any[]> = {}
@@ -86,13 +86,13 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement
     }
 
     GetVariable(name:string) {
-        let key = ReplaceAll(name, this.ConstTypeName,"")        
-        return this.variables[key]
+        // let key = ReplaceAll(name, this.ConstTypeName,"")        
+        return this.variables[name]
     }
 
     GetVariableType(name:string) {
-        let key = ReplaceAll(name, this.ConstTypeName,"") 
-        return typeof (this.variables[key])
+        // let key = ReplaceAll(name, this.ConstTypeName,"") 
+        return typeof (this.variables[name])
     }
 
     IsVariableConst(name:string){
@@ -200,7 +200,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement
     }
 
 
-    ToRender = ({children,renderId ,...props}:BaseElementProps<HTMLDivElement> & {renderId:any}) => {
+    ToRender = ({children,renderId ,...props}:BaseElementProps<ElementInterface> & {renderId:any}) => {
         this.setAddons((e:any)=>{return {...e,[renderId]:ListChildren(children)}})
         
         this.setAddonProps((p:any)=> {
@@ -209,7 +209,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement
 
         return <Hidden></Hidden>
     }
-    Render:FC<BaseElementProps<HTMLDivElement>& CustomProps> =(props:BaseElementProps<HTMLDivElement>& CustomProps) =>{
+    Render:FC<BaseElementProps<ElementInterface>& CustomProps> =(props:BaseElementProps<ElementInterface>& CustomProps) =>{
             this.forceUpdate = useStateUpdate()
             const addonsState = useState({})
             this.Addons = addonsState[0]

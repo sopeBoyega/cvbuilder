@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Web Text Editor</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    .toolbar {
+      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .toolbar button, .toolbar select, .toolbar input {
+      padding: 5px;
+      font-size: 14px;
+    }
+    #editor {
+      border: 1px solid #ccc;
+      padding: 10px;
+      min-height: 300px;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <!-- Formatting -->
+    <button onclick="format('bold')"><b>B</b></button>
+    <button onclick="format('italic')"><i>I</i></button>
+    <button onclick="format('underline')"><u>U</u></button>
+
+    <!-- Font -->
+    <select onchange="setFont(this.value)">
+      <option value="Arial">Arial</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Courier New">Courier New</option>
+      <option value="Times New Roman">Times New Roman</option>
+    </select>
+
+    <!-- Font size -->
+    <select onchange="setSize(this.value)">
+      <option value="1">8pt</option>
+      <option value="2">10pt</option>
+      <option value="3" selected>12pt</option>
+      <option value="4">14pt</option>
+      <option value="5">18pt</option>
+      <option value="6">24pt</option>
+      <option value="7">36pt</option>
+    </select>
+
+    <!-- Color -->
+    <input type="color" onchange="setColor(this.value)" />
+
+    <!-- Alignment -->
+    <button onclick="format('justifyLeft')">Left</button>
+    <button onclick="format('justifyCenter')">Center</button>
+    <button onclick="format('justifyRight')">Right</button>
+    <button onclick="format('justifyFull')">Justify</button>
+
+    <!-- Lists -->
+    <button onclick="format('insertUnorderedList')">• List</button>
+    <button onclick="format('insertOrderedList')">1. List</button>
+
+    <!-- Undo/Redo -->
+    <button onclick="format('undo')">Undo</button>
+    <button onclick="format('redo')">Redo</button>
+
+    <!-- Link -->
+    <button onclick="insertLink()">Link</button>
+  </div>
+
+  <div id="editor" contenteditable="true">
+    Start typing here...
+  </div>
+
+  <script>
+    function format(command) {
+      document.execCommand(command, false, null);
+    }
+
+    function setFont(font) {
+      document.execCommand("fontName", false, font);
+    }
+
+    function setSize(size) {
+      document.execCommand("fontSize", false, size);
+    }
+
+    function setColor(color) {
+      document.execCommand("foreColor", false, color);
+    }
+
+    function insertLink() {
+      const url = prompt("Enter the URL:");
+      if (url) {
+        document.execCommand("createLink", false, url);
+      }
+    }
+  </script>
+
+</body>
+</html>

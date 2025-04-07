@@ -3,6 +3,7 @@
 import React, {ReactNode, useReducer, useState} from "react"
 
 export type Dict<T = any> = {[key:string]:T}
+export type dict<T = any> = {[key:string]:T}
 
 export function mergeText(...texts:string[]){
     return texts.join(" ")
