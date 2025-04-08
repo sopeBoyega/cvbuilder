@@ -2,7 +2,7 @@ import { dict } from "./anys";
 import { BaseElementProps, Div,Span, TextArea } from "./csml";
 import { ICssHelper } from "./css";
 import BaseHOC, { InputHOC } from "./HOC";
-
+// 789729
 type commandNames = (
     "bold" | "italic" | 
     "underline" | "strikethrough" | 

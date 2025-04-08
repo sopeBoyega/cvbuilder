@@ -1,18 +1,59 @@
 "use client"
-import React, { FC, ReactNode } from "react";
-import { BaseElementProps } from "./csml";
+import React, { FC, ReactNode, useEffect } from "react";
+import { BaseElementProps, Div } from "./csml";
 import { CEXModel, CIEvent} from "./cexmodel"
-import {ListChildren, RandInt} from "./anys";
+import {dict, ListChildren, RandInt, useStateUpdate} from "./anys";
+import { OERModel } from "./ObjectEvent";
+import BaseHOC from "./HOC";
 
 
-export default class RouterComponent {
+export default class BasicRouter{
+    view = new BaseHOC()
+    defaultPageIndex = 0
+    currentPage?:string = undefined
+    pages:dict<Function> = {}
+    index:Function[] = []
+    update:any | Function
+    protected _pages:dict<ReactNode> = {}
+
+    constructor(){
+
+    }
+
+    Route = ({name,...props}:{name:string} & BaseElementProps<HTMLDivElement>)=>{
+        this._pages[name]  = [<Div key={1} {...props}>{props.children}</Div>]
+        const pageDispatcher = ()=>{
+            this.view.SetVariable("current",name)
+            this.currentPage = name
+            this.update()
+        }
+        this.pages[name] = pageDispatcher
+        this.index.push(pageDispatcher)
+        return <></>
+    }
+
+    Render = (props:BaseElementProps<HTMLDivElement>)=>{
+        this.update = useStateUpdate()
+        this.view.SetVariable("current",this.view.GetVariable("current") || "")
+        useEffect(()=>{
+             if (this.currentPage == undefined){this.index[0]()}
+        },[])
+        return <this.view.Render>
+            {this._pages[this.view.GetVariable("current")]}
+            {props.children}
+        </this.view.Render>
+    }
+}
+
+
+export  class BasicRouterDeprecated {
 
     pages: { [key: string]: ReactNode } = {};
     pageNameList:string[] = []
     defaultPage:string = ""
     channel:string = ""
     children:any[] = []
-    changeModel = new CEXModel("RouterChangeModel")
+    changeModel = new OERModel("RouterChangeModel")
     // props:React.PropsWithChildren<any>
 
 
@@ -47,12 +88,12 @@ export default class RouterComponent {
         this.Refine()
         const channel = this.channel
         const [currentPage,setCurrentPage] =  React.useState(this.defaultPage)
-        function TriggerDisplayPage(event:CIEvent){
-            setCurrentPage(()=>event.detail.data.name)
-            console.log(channel," pageing ",event.detail.data.name)
+        function TriggerDisplayPage({name = ""}){
+            setCurrentPage(()=>name)
+            console.log(channel," pageing ",name)
         }
         var ReturnEl = React.createElement(tag,{className:className,...props},[this.GetPage(currentPage),
-        <this.changeModel.CEXRenderCreate channel={this.channel} key="1" onEvent={TriggerDisplayPage} ></this.changeModel.CEXRenderCreate>])
+        <this.changeModel.RenderCreate channel={this.channel} key="1" onEvent={TriggerDisplayPage} ></this.changeModel.RenderCreate>])
         return ReturnEl
     }
 
