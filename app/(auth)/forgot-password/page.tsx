@@ -1,11 +1,21 @@
 "use client";
 import Button from "@/app/components/global/button";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
 const page = (props: Props) => {
   const [email, setEmail] = useState<string>("");
+  const router = useRouter();
+
+  const onSumbitHandler = (event : any) => {
+    event.preventDefault()
+    if (email) {
+      console.log(" on Sumbit Handler is working")
+      router.push("/create-new-password");
+    }
+  }
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
@@ -14,21 +24,21 @@ const page = (props: Props) => {
         </p>
         <p className="text-subheading text-center text-[12.88px] font-[400]">
           Enter the email used to create an account below. We’ll <br />
-          send a link to reset your password {email}
+          send a link to reset your password
         </p>
       </div>
-      <form>
+      <form onSubmit={onSumbitHandler}>
         <div className="flex-col gap-3">
           <input
             className="w-full text-[13px] h-[39px] rounded-full pl-3 mb-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
             placeholder="Email"
             type="email"
             name="email"
-              value={email}
-           onChange={(event) => {
-            setEmail(event.target.value)
-           }}
-            required = {true}
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
+            required={true}
           />
         </div>
 

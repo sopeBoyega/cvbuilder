@@ -2,7 +2,7 @@
 import React, { ReactEventHandler, useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import Image from "next/image";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 import Button from "@/app/components/global/button";
 
 interface LoginDetails {
@@ -12,8 +12,7 @@ interface LoginDetails {
 }
 
 const page = (props: any) => {
-
-  const router = useRouter()
+  const router = useRouter();
   const [loginDetails, setLoginDetails] = useState<LoginDetails>({
     email: "",
     password: "",
@@ -53,7 +52,6 @@ const page = (props: any) => {
       </div>
 
       <div className="flex-col ">
-        
         <input
           className="w-full text-[13px] h-[39px] rounded-full pl-3 mb-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
           placeholder="Email"
@@ -64,39 +62,52 @@ const page = (props: any) => {
         />
 
         <div className="flex w-[100%] gap-3 ">
-        <input
-          className="w-[50%] text-[13px] h-[39px] rounded-full pl-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
-          placeholder="Password"
-          type="password"
-          name="password"
-          value={loginDetails.password}
-          onChange={onChangeHandler}
-        />
-        <input
-          className="w-[50%] text-[13px] h-[39px] rounded-full pl-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
-          placeholder="Confirm"
-          type="password"
-          name="password"
-          value={loginDetails.confirmPassword}
-          onChange={onChangeHandler}
-        />
+          <input
+            className="w-[50%] text-[13px] h-[39px] rounded-full pl-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
+            placeholder="Password"
+            type="password"
+            name="password"
+            value={loginDetails.password}
+            onChange={onChangeHandler}
+          />
+          <input
+            className="w-[50%] text-[13px] h-[39px] rounded-full pl-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
+            placeholder="Confirm"
+            type="password"
+            name="confirmPassword"
+            value={loginDetails.confirmPassword}
+            onChange={onChangeHandler}
+          />
         </div>
       </div>
 
-
       <div className="flex gap-2">
-      <p className="font-[400] text-[11.27px]">Remember me for 30 days</p>
+        <input type="checkbox" name="remember" id="" />
+        <p className="font-[400] text-[11.27px]">Remember me for 30 days</p>
       </div>
 
-     <Button text="Sign In"/>
+      <div className="w-full border-[1.21px] h-[39px] rounded-full border-white  items-center flex justify-between cursor-pointer">
+        <div className=""></div>
+        <p className=" text-[13px] ">Sign In </p>
+        <div className="">
+          <p className="text-[13px] font-[600] mr-[10px]  ">→</p>
+        </div>
+      </div>
 
-
-      <p className="underline hover:cursor-pointer text-[10px] text-center" onClick={() => {
-        router.push("/forgot-password")
-      }}>Forgot your Password?</p>
+      <p
+        className="underline hover:cursor-pointer text-[10px] text-center"
+        onClick={() => {
+          router.push("/forgot-password");
+        }}
+      >
+        Forgot your Password?
+      </p>
 
       <div className="place-items-center">
-        <p className="text-[10px]">Don't have an account? <span className="underline text-subheading">Sign Up</span></p>
+        <p className="text-[10px]">
+          Don't have an account?{" "}
+          <span className="underline text-subheading cursor-pointer">Sign Up</span>
+        </p>
       </div>
     </div>
   );

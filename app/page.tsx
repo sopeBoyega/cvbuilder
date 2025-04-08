@@ -1,11 +1,13 @@
 "use client"
 import Image from "next/image";
 import { notoSans } from "./fonts/fonts";
-import List from "./components/list";
+import List from "./components/global/list";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
 
+  const router = useRouter()
   const [email,setEmail] = useState<string>("")
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,9 +34,21 @@ const footerItems = [
           </div>
 
           <div className="w-fit h-fit flex flex-row gap-2  justify-center items-center">
-            <button className={`${notoSans.className}  hover:scale-[1.1]  transition duration-500 ease-in-out `}>Sign in</button>
-            <button className="border-[1.5px] rounded-[15px] py-[6.5px] px-[11.5px] border-[#D0D7DE] bg-white text-black font-[400] hover:scale-[1.1]  transition duration-500 ease-in-out">
-              <p>Sign Up</p>
+            <button className={`${notoSans.className}  hover:scale-[1.1]  transition duration-500 ease-in-out `}
+            onClick={() => {
+              router.push('/login')
+            }}
+            >
+              Sign in
+            </button>
+            <button className="border-[1.5px] rounded-[15px] py-[6.5px] px-[11.5px] border-[#D0D7DE] bg-white text-black font-[400] hover:scale-[1.1]  transition duration-500 ease-in-out"
+            onClick={() => {
+              router.push('/sign-up')
+            }}
+            >
+              <p>
+                Sign Up
+                </p>
             </button>
           </div>
         </div>
@@ -92,14 +106,14 @@ const footerItems = [
           </div>
 
           <p className="font-[700] text-responsive text-white">
-            Start Your <br />
-            Professional Journey
+            Your Dream Job <br />
+            Starts with the Right Resume
           </p>
 
           <p className="lg:text-[#8B949E]   font-[400] text-[clamp(1rem,2.5vw,1.5rem)]">
             Create, customize, and download your perfect CV—no <br />
-            fees, no hassle, just results. Fast, easy, and tailored for <br />
-            success.
+            fees, no hassle, just results. Fast, easy, and tailored to <br />
+            land you interviews
           </p>
 
           <div className="w-full h-fit flex flex-row items-center gap-7 mt-7 justify-start">
@@ -109,16 +123,22 @@ const footerItems = [
                 onChange={onChangeHandler}
                 value={email}
                 placeholder="Email address"
-                className="placeholder-[#6E7781] text-black p-2 rounded-s-lg  focus:outline-none focus:ring-0"
+                className="placeholder-[#6E7781] text-black p-2 rounded-s-lg  focus:outline-none focus:ring-0 bg-white"
               />
-              <button className="text-center p-[7.3px]  bg-black rounded-e-lg border-[1px] border-white hover:opacity-50 ">
-                Sign Up for CV
+              <button className="text-center p-[7.3px]  bg-black rounded-e-lg border-[1px] border-white hover:opacity-50 "
+              onClick={() => {
+                router.push("/sign-up?email=sopeadegboyega@gmail.com")
+              }}>
+                Build Your Resume Now
               </button>
             </div>
 
             <hr className=" hidden md:flex h-full  border-[0.4px] " />
 
-            <button className=" hidden md:flex text-center p-[7.3px] bg-black rounded-lg border-[1px]  border-white ">
+            <button className=" hidden md:flex text-center p-[7.3px] bg-black rounded-lg border-[1px]  border-white "
+            onClick={() => {
+              router.push("/login")
+            }}>
               Sign In →{" "}
             </button>
           </div>
@@ -350,8 +370,8 @@ const footerItems = [
   Sign up or log in now and take the first step toward your dream career!"</p>
 
   <div className="w-fit h-fit flex flex-col md:flex-row gap-2 ">
-    <button className="bg-white w-[300px] text-black px-[16px] py-[12px]  rounded-md font-[700] hover:bg-transparent  hover:text-white transition duration-300 ease-in-out">Sign Up for CV Builder  ›</button>
-    <button className="bg-transparent w-[300px] text-white px-[16px] py-[12px] rounded-md border-[1px] border-white font-[700] hover:bg-white hover:text-black transition duration-500 ease-in-out">Sign in to CV Builder</button>
+    <button className="bg-white w-[300px] text-black px-[16px] py-[12px]  rounded-md font-[700] hover:bg-transparent  hover:text-white transition duration-300 ease-in-out" onClick={() => {router.push("/sign-up")}}>Sign Up for CV Builder  ›</button>
+    <button className="bg-transparent w-[300px] text-white px-[16px] py-[12px] rounded-md border-[1px] border-white font-[700] hover:bg-white hover:text-black transition duration-500 ease-in-out" onClick={() => {router.push("/login")}}>Sign in to CV Builder</button>
   </div>
 </div>
 

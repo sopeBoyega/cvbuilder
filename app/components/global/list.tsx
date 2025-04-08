@@ -1,5 +1,5 @@
 import React from 'react'
-import { notoSans } from '../fonts/fonts';
+import { notoSans } from '../../fonts/fonts';
 
 interface ListProps {
   list: string[];
