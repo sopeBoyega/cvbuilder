@@ -67,7 +67,7 @@ useEffect(() => {
         </p>
       </div>
 
-      <div className="w-full bg-white h-[39px] rounded-full flex items-center gap-2 justify-center ">
+      <div className="w-full bg-white h-[39px] rounded-full flex items-center gap-2 justify-center cursor-pointer">
         <Image src="/google.svg" width={16} height={16} alt="Google" />
 
         <p className="text-black font-[500] text-[12px]">

@@ -1,7 +1,9 @@
-import { StatusType } from "@/global/types";
 import React from "react";
 
-
+type StatusType =
+  | "downloaded"
+  | "drafts"
+  | "saved";
 
 interface StatusTagProps {
   status: StatusType;
@@ -28,13 +30,12 @@ const StatusTag: React.FC<StatusTagProps> = ({ status }) => {
   const { color, bgColor } = statusStyles[status];
 
   return (
-    <div
-      className="flex items-center justify-center gap-1 px-1  rounded-full  text-sm font-medium"
-      style={{ backgroundColor: bgColor }}
+    <span
+      className={`inline-flex bg-[${bgColor}] items-center gap-2 px-3 py-1 rounded-md text-sm font-medium`}
     >
-      <p style={{ color }} className="mb-1">•</p>
-      <span className="text-[8px] font-[600]" style={{ color }}>{status.toUpperCase()}</span>
-    </div>
+      <span>•</span>
+      <span className={`text-[12px] font-[500] text-[${color}]`}>{status.toUpperCase()}</span>
+    </span>
   );
 };
 
