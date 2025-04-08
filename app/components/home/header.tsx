@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { SetStateAction } from 'react'
 import IconItem from '../global/icon'
 
-type Props = {}
 
-const Header = (props: Props) => {
+export interface HeaderProps {
+  setShowSettings: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Header = ({setShowSettings} :HeaderProps) => {
   return (
     <>
     
@@ -17,7 +20,8 @@ const Header = (props: Props) => {
           <div className=" h-fit w-fit rounded-full p-[5px] border-[1px] border-white">
             <IconItem name="trash" />
           </div>
-          <div className=" h-fit w-fit rounded-full p-[5px] border-[1px] border-white">
+          <div className=" h-fit w-fit rounded-full p-[5px] border-[1px] bg-black border-white cursor-pointer"
+          onClick={() => setShowSettings(true)}>
             <svg
               width="20"
               height="20"
