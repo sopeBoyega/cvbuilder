@@ -7,24 +7,24 @@ import { PJS } from "@/app/fonts/fonts";
 import React, { useState } from "react";
 
 
+type Props = {};
 
-
-const page = () => {
+const page = (props: Props) => {
   const [showSettings, setShowSettings] = useState<boolean>(false);
 
   return (
     <div className={`${PJS.className} relative p-5`}>
       {showSettings && (
-        <div className="w-full md:w-[25%] h-full bg-black absolute  top-0 right-0 z-[1001]  ">
+        <div className="w-full h-full bg-black absolute left-0 top-0 right-0 z-[1001]  ">
       
             <Settings setShowSettings={setShowSettings} />
        
         </div>
       )}
       <Header setShowSettings={setShowSettings} />
-      <div className="w-full h-fit flex-col lg:flex-row flex-nowrap flex justify-center items-center gap-3  md:items-start ">
+      <div className="w-full h-fit flex-row lg:flex-row  justify-center items-center gap-3  md:items-start ">
         <TextEditor />
-        <div className="mt-3 w-fit">
+        <div className="mt-3">
           <RightBar />
         </div>
       </div>

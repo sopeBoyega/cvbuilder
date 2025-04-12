@@ -21,7 +21,7 @@ const RightBar = (props: Props) => {
   ]; 
 
   return (
-    <div className={` ${PJS.className}  w-full h-full flex flex-col items-start justify-start gap-3 px-4`}>
+    <div className={` ${PJS.className}  w-fit h-full flex flex-col items-start justify-start gap-3 px-4`}>
       {/* Resume Status/Rating Box */}
       <div className="w-[300px] bg-black/80 border-[1.2px] border-gray-500 rounded-2xl text-white font-sans">
         <div

@@ -31,10 +31,11 @@ const StatusTag: React.FC<StatusTagProps> = ({ status }) => {
 
   return (
     <span
-      className={`inline-flex bg-[${bgColor}] items-center gap-2 px-3 py-1 rounded-md text-sm font-medium`}
+      style={{ backgroundColor: bgColor }}
+      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm font-medium"
     >
       <span>•</span>
-      <span className={`text-[12px] font-[500] text-[${color}]`}>{status.toUpperCase()}</span>
+      <span style={{ color }} className="text-[12px] font-[500]">{status.toUpperCase()}</span>
     </span>
   );
 };

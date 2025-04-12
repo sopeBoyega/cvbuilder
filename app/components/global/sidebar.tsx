@@ -5,16 +5,17 @@ import Image from "next/image";
 
 import IconItem from "./icon";
 import { sideBar } from "@/global/types";
-import { useRouter } from "next/navigation";
+import { useRouter,usePathname } from "next/navigation";
 
 export default function Sidebar() {
   const [activeTab, setActiveTab] = useState<string>("Home");
   const [adVisible, setAdVisible] = useState<boolean>(true);
+  const pathName = usePathname()
 
   const router = useRouter();
 
   const handleTabNavigate = (tab: sideBar) => {
-    setActiveTab(tab.title);
+
     // Also removed the /(slash that was infront of the tab
     router.push(tab.url);
   };
@@ -39,7 +40,7 @@ export default function Sidebar() {
           <div
             key={item.title}
             className={`flex w-full  border-[3.03px] border-white rounded-full h-fit items-center justify-between cursor-pointer px-[12px] py-[px] ${
-              activeTab === item.title
+              pathName === item.url
                 ? "bg-[#F6F8FA] rounded-[8px] text-[#0A0D14]"
                 : "text-white font-[700]"
             }`}

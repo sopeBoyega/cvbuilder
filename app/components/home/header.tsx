@@ -1,3 +1,4 @@
+"use client"
 import React, { SetStateAction } from 'react'
 import IconItem from '../global/icon'
 
