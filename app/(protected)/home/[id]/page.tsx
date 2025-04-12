@@ -7,15 +7,15 @@ import { PJS } from "@/app/fonts/fonts";
 import React, { useState } from "react";
 
 
+type Props = {};
 
-
-const page = () => {
+const page = (props: Props) => {
   const [showSettings, setShowSettings] = useState<boolean>(false);
 
   return (
     <div className={`${PJS.className} relative p-5`}>
       {showSettings && (
-        <div className="w-full md:w-[25%] h-fit bg-black absolute  top-0 right-0 z-[1001]  ">
+        <div className="w-full h-full bg-black absolute left-0 top-0 right-0 z-[1001]  ">
       
             <Settings setShowSettings={setShowSettings} />
        
