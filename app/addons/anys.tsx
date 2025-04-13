@@ -2,8 +2,8 @@
 
 import React, {ReactNode, useReducer, useState} from "react"
 
-export type Dict<T = any> = {[key:string]:T}
 export type dict<T = any> = {[key:string]:T}
+
 
 export function mergeText(...texts:string[]){
     return texts.join(" ")
@@ -154,7 +154,10 @@ export function useUpdate(){
   const [, forceUpdate] = useReducer(x => x + 1, 1);
       return forceUpdate;
 }
-export function useStateUpdate(){
+export function useStateUpdate(onUpdate:()=>any = ()=>{}){
   const [, forceUpdate] = useState(0);
-      return ()=>forceUpdate(()=>Math.random());
+      return ()=>forceUpdate(()=>{
+        onUpdate()
+        return Math.random()
+      });
 }

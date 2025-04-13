@@ -22,6 +22,7 @@
 }
 
 .testStyle{
+    /* text-wrap:100%; */
     color: rgba(45, 45, 45, 0.49);
 }
 

@@ -1,9 +1,10 @@
 "use client"
-import React, {FC, ReactNode, useState} from "react"
-import { _cssHelper } from "./css"
-import { BaseElementProps, Div, Hidden } from "./csml"
-import {Dict, ReplaceAll, useStateUpdate, useUpdate} from "@/app/addons/anys";
+import React, {FC, ReactNode, useEffect, useState} from "react"
+import { _cssHelper, ICssHelper } from "./css"
+import { BaseElementProps, ConvertDictToStyle, Div, Hidden } from "./csml"
+import {dict, ReplaceAll, useStateUpdate, useUpdate} from "@/app/addons/anys";
 import {ListChildren} from "@/app/addons/anys";
+import { ObjectEvent } from "./ObjectEvent";
 
 /**
      * 
@@ -33,22 +34,24 @@ import {ListChildren} from "@/app/addons/anys";
      * ```
      * *GUDITTON*
      */
-export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement>{
+export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>{
     
     protected ref:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>
     public style
     public isMediaDestroyed: boolean
     protected Component
-    public medias:Dict<AtMedia> = {}
-    public variables:Dict = {}
+    public medias:dict<AtMedia> = {}
+    public variables:dict = {}
     public existAs
     protected forceUpdate?:Function
-    public Addons:Dict<any[]> = {}
+    public Addons:dict<any[]> = {}
     protected setAddons:any
     protected setAddonProps:any
-    protected addonProps:Dict = {}
+    protected addonProps:dict = {}
     protected ConstTypeName = "-Const"
     protected onChangeTypeName = "-ChangeFunc"
+    protected EventControl = new ObjectEvent()
+    protected clientLoaded = "CLIENT-LOADED"
 
     SetVariable(name:string, value?: any,onChange?:(name?:string,val?:any)=>void){
         let key = ReplaceAll(name, this.ConstTypeName,"")
@@ -161,10 +164,27 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement
         }
         return ""
     }
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions){
+        this.AtWindow(()=>{
+            (this.Element as any).addEventListener(type,listener)
+        })
+    }
 
-    innerHTML (val?:any){
+    AtWindow(Func:Function){
+        if (this.Element){
+            Func()
+        }else{
+            this.EventControl.on(this.clientLoaded,Func)
+        }
+        
+    }
+
+    innerHTML (val?:any,style?:ICssHelper){
         if (this.Element){
             if (val){
+                if (style){
+                    val = `<span style = "${ConvertDictToStyle(style)}">${val}</span>`
+                }
                 (this.Element as any).innerHTML = val
             }
             else{
@@ -217,7 +237,9 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLBaseElement
             const addonPropsState = useState([])
             this.addonProps = addonPropsState[0]
             this.setAddonProps = addonPropsState[1]
-            
+            useEffect(()=>{
+                this.EventControl.emit(this.clientLoaded)
+            })
             return <this.Component Ref = {this.ref} {...props} {...this.addonProps} >
                 {props.children}
                 {Object.values(this.Addons)}

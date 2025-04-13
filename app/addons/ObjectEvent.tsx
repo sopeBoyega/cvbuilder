@@ -1,9 +1,9 @@
-import { Dict } from "./anys";
+import { dict } from "./anys";
 import { Hidden } from "./csml";
 
 
 export class ObjectEvent{
-    events: Dict<Function[]> = {};
+    events: dict<Function[]> = {};
 
     on(eventName: string, callback: Function) {
         if (!this.events[eventName]) {
@@ -29,7 +29,7 @@ export class ObjectEvent{
 
 export class OERModel{
     modelType:string
-    dispatcher:Dict<Function> = {}
+    dispatcher:dict<Function> = {}
     events:ObjectEvent = new ObjectEvent()
 
     constructor (type:string){

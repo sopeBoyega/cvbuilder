@@ -652,7 +652,7 @@ cssFloat: (value?:string)=>{value},
 cssText: (value?:string)=>{value},
 }
 
-export interface ICssHelper{
+export type ICssHelper = {
         accentColor?:string
         additiveSymbols?:string
         alignContent?:string

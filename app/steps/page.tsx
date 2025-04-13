@@ -3,10 +3,11 @@ import { Div, Center, TextArea,Input, BaseElementProps,EButton,Form } from "../a
 import BaseHOC, { HOCS, InputHOC } from "../addons/HOC"
 import SliderHOC from "../addons/Slider"
 import React, { HTMLInputTypeAttribute, useEffect, useState } from "react"
-import {Dict, mergeText, useStateUpdate, useUpdate} from "../addons/anys"
+import {dict, mergeText, useStateUpdate, useUpdate} from "../addons/anys"
 import styles from "./styles.module.css"
 import {CEXModel, CIEvent} from "@/app/addons/cexmodel";
 import { FormatListNumbered } from "@mui/icons-material"
+import Alerter from "../addons/alerter"
 
 const SubmitHandle = new CEXModel("SubmitEventDispatcherModel")
 const jdVarName = "jobDescription"
@@ -104,21 +105,19 @@ class ICOn{
 
 
                 </this.analysis.Render>
-                <Div fontSize="13px" color="rgba(156, 163, 175, 1)">Form</Div>
+                <Div fontSize="13px" color="rgba(156, 163, 175, 1)">Questions</Div>
             </Div>
         </Div>
     }
 }
 //software engineering
-function AISession({base,loadingHoc,jobDesHoc}:{base:BaseHOC,loadingHoc:BaseHOC,jobDesHoc:InputHOC}){
+function AISession({base,loadingHoc,jobDesHoc,alerter}:{base:BaseHOC,loadingHoc:BaseHOC,jobDesHoc:InputHOC,alerter:Alerter}){
     const questSlider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:true})
     const update = useStateUpdate()
     const message = new BaseHOC()
     const questCount = new BaseHOC()
     const bar = new BaseHOC()
     const jobDesView = new BaseHOC()
-    const resetAskDiv = new BaseHOC()
-    const resetConfirmDiv = new BaseHOC()
     const loadingIcon:BaseHOC = base.GetVariable("loadingIcon")
     let jobDescription = jobDesHoc.value()
     base.SetVariable('hba',base.GetVariable('hba') || false)
@@ -126,13 +125,12 @@ function AISession({base,loadingHoc,jobDesHoc}:{base:BaseHOC,loadingHoc:BaseHOC,
         jobDesView.Execute(()=>{
             jobDesView.innerText(base.GetVariable(jdVarName))
             message.innerText("")
-            loadingIcon.style.display("none")
 
             if (base.GetVariable(jdVarName) != jobDescription){
                 if (base.GetVariable('AiStarted') == true){
-                    if (base.GetVariable('hba') == false){loadingHoc.style.display("flex")
+                    if (base.GetVariable('hba') == false){
                         loadingHoc.Element?.focus()
-                    resetAskDiv.style.display("flex")}
+                    ResetQuestions()}
                 }
             }
         })
@@ -165,9 +163,11 @@ function AISession({base,loadingHoc,jobDesHoc}:{base:BaseHOC,loadingHoc:BaseHOC,
             console.log(err)
             base.SetVariable("AiStarted",false)
             base.SetVariable("form",[])
-            setTimeout(()=>{loadingHoc.style.display("none")},4000)
-            message.innerText("ERROR")
-            update()
+            // setTimeout(()=>{loadingHoc.style.display("none");update()},2000)
+            loadingHoc.style.display("none");update()
+            // message.innerHTML("Could not connect to server",{color:"red",fontWeight:"bolder"})
+            alerter.Alert("An error ocurred while accessing the server.")
+            
         })
     }
     function FormGive(){
@@ -197,61 +197,107 @@ function AISession({base,loadingHoc,jobDesHoc}:{base:BaseHOC,loadingHoc:BaseHOC,
         }).catch(err=>{
             console.log(err)
             base.SetVariable("CVID","")
-            setTimeout(()=>{loadingHoc.style.display("none")},2000)
-            message.innerText("ERROR")
+            // setTimeout(()=>{loadingHoc.style.display("none");update()},2000)
+            loadingHoc.style.display("none");update()
+            // message.innerHTML("Could not connect to server",{color:"red",fontWeight:"bolder"})
+            alerter.Alert("An error ocurred while accessing the server.")
+            
+
         })
     }
 
     useEffect(()=>{
         loadingHoc.style.display("none")
-        
+        window.addEventListener("offline",()=>{
+            alerter.Alert("You are OFFLINE.")
+        })
+        if (!window.navigator.onLine){
+            alerter.Alert("You are OFFLINE.")
+        }
     },[])
     function onSlide(){
         bar.style.width(`${Math.ceil(questSlider.currentIndex/(questSlider.children.length-1)*100)}%`)
         questCount.innerText(`${questSlider.currentIndex+1} of ${questSlider.children.length}`)
     }
     questSlider.onSlide = onSlide
+    function ResetQuestions(){
+        alerter.ask("you have changed your Job description.\n you have to reset your questions.",
+            [
+                {
+                    innerText:"Cancel",
+                    onClick:()=>{
+                        alerter.close()
+                        base.SetVariable("hba",true)
+                        },
+                    backgroundColor:"black",
+                    color:"white"
+                },
+                {
+                    innerText:"Reset",
+                    onClick:()=>{
+                        alerter.close()
+                        base.SetVariable("hba",true)
+                        base.SetVariable("AiStarted",false);
+                        base.SetVariable("form",[]);
+                        console.log(base.GetVariable('AiStarted'));
+                        update()
+                        },
+                    color:"white"
+                },
+            ]
+        )
+    }
+    function resetConfirm(){
+        alerter.ask("Questions will be wiped out.\n Confirm to reset.",
+            [
+                {
+                    innerText:"Cancel",
+                    onClick:()=>{
+                        alerter.close()
+                    },
+                    backgroundColor:"black",
+                    color:"white"
+                },
+                {
+                    innerText:"Reset",
+                    onClick:()=>{
+                        alerter.close()
+                        base.SetVariable("AiStarted",false);
+                        base.SetVariable("form",[]);
+                        console.log(base.GetVariable('AiStarted'));
+                        update()
+                    }
+                },
+            ]
+        )
+    }
+    function GenConfirm(){
+        alerter.ask("Confirm to generate.\n Cross check your description.",
+            [
+                {
+                    innerText:"Cancel",
+                    onClick:()=>{
+                        alerter.close()
+                    },
+                    backgroundColor:"black",
+                    color:"white"
+                },
+                {
+                    innerText:"Confirm",
+                    onClick:()=>{
+                        alerter.close()
+                        FormFetch()
+                    }
+                },
+            ]
+        )
+    }
+
     return <Div>
         <loadingHoc.ToRender renderId={"loaderMessage"} display="none" >
             <message.Render></message.Render>
-            <resetAskDiv.Render display="none" flexDirection="column" background="rgba(100,100,100,0.3)" borderRadius="10px" padding="20px" alignItems="center" gap="0px">
-                <Div>you have changed your Job description.</Div>
-                <Div>you have to reset your questions.</Div>
-                <Div display="flex" gap="20px" marginTop="10px">
-                <EButton backgroundColor={"black"} color={"white"} onClick={()=>{
-                    loadingHoc.style.display("none")
-                    resetAskDiv.style.display("none")
-                    base.SetVariable("hba",true)
-                    }}>Cancel</EButton>
-                <EButton backgroundColor={"rgba(59, 130, 246, 0.7)"} color={"white"} onClick={()=>{
-                    loadingHoc.style.display("none");
-                    resetAskDiv.style.display("none");
-                    base.SetVariable("hba",true)
-                    base.SetVariable("AiStarted",false);
-                    base.SetVariable("form",[]);
-                    console.log(base.GetVariable('AiStarted'));
-                    
-                    update()}}>Reset</EButton>
-                </Div>
-            </resetAskDiv.Render>
-            <resetConfirmDiv.Render display="none" flexDirection="column" background="rgba(100,100,100,0.3)" borderRadius="10px" padding="20px" alignItems="center" gap="0px">
-                <Div>Questions will be wiped out.</Div>
-                <Div>Confirm to reset.</Div>
-                <Div display="flex" gap="20px" marginTop="10px">
-                <EButton backgroundColor={"black"} color={"white"} onClick={()=>{
-                    loadingHoc.style.display("none")
-                    resetConfirmDiv.style.display("none")
-                    }}>Cancel</EButton>
-                <EButton backgroundColor={"rgba(59, 130, 246, 0.7)"} color={"white"} onClick={()=>{
-                    loadingHoc.style.display("none");
-                    resetConfirmDiv.style.display("none");
-                    base.SetVariable("AiStarted",false);
-                    base.SetVariable("form",[]);
-                    console.log(base.GetVariable('AiStarted'));
-                    
-                    update()}}>Reset</EButton>
-                </Div>
-            </resetConfirmDiv.Render>
+            
+            
         </loadingHoc.ToRender>
 
         <Div>
@@ -260,12 +306,7 @@ function AISession({base,loadingHoc,jobDesHoc}:{base:BaseHOC,loadingHoc:BaseHOC,
         </Div>
         <Div display="flex" gap="20px" justifyContent="right" width="100%">
             {base.GetVariable('AiStarted') && <EButton backgroundColor={"rgba(59, 130, 246, 0.7)"} color={"white"} onClick={()=>{
-                loadingHoc.style.display("flex")
-                resetAskDiv.style.display("none")
-                loadingIcon.style.display("none")
-
-                resetConfirmDiv.style.display("flex")
-                message.innerText("")
+                resetConfirm()
                 }}>Reset</EButton>}
         </Div>
         <br />
@@ -276,7 +317,7 @@ function AISession({base,loadingHoc,jobDesHoc}:{base:BaseHOC,loadingHoc:BaseHOC,
             <Div fontSize="15px" color="rgba(156, 163, 175, 1)">Generate your Ai questions based on the job description</Div>
 
             <Div display={"grid"} placeItems={"center"} height={"150px"}>
-                <EButton backgroundColor={"black"} color={"white"} onClick={FormFetch}>Generate</EButton>
+                <EButton backgroundColor={"black"} color={"white"} onClick={GenConfirm}>Generate</EButton>
             </Div>
             </Div> : <>
             <Div className={styles.barww}>
@@ -326,22 +367,22 @@ export default function StepPage(){
     const base = new BaseHOC({Component:Center})
     const haveJobDes = new BaseHOC()
     const loadingHoc = new BaseHOC()
-    const yesJobHaveOne = new BaseHOC({Component:Center})
-    const noJobHaveOne = new BaseHOC({Component:Center})
     const yesCVHaveOne = new BaseHOC({Component:Center})
     const noCVHaveOne = new BaseHOC({Component:Center})
     const haveCVDes = new BaseHOC()
+    const alerter = new Alerter({backgroundColor:"rgba(69, 140, 256, 0.4)"})
+    alerter.defaultButton = {...alerter.defaultButton,fontWeight:"bolder"}
     base.SetVariable("form",[])
     const jobDes  = new InputHOC({Component:TextArea})
     const cvFileNameDis = new BaseHOC()
     const ico = new ICOn(slider)
-    const form:Dict<Dict<string> | string>  = {}
+    const form:dict<dict<string> | string>  = {}
     const nextBtn = new BaseHOC()
     const loadingIcon = new BaseHOC()
     const CVInput = new InputHOC({Component:Input})
     base.SetVariable("loadingIcon",loadingIcon)
     
-    
+    base.addEventListener("click",()=>{console.log("base clicked")})
 
     React.useEffect(()=>{
         setTimeout(()=>{
@@ -387,6 +428,7 @@ export default function StepPage(){
             <loadingIcon.Render className={styles.gendiv}></loadingIcon.Render>
 
          </loadingHoc.Render>
+         <alerter.Render ></alerter.Render>
         <Div maxWidth="1000px" width="100vw" height="100vh" overflow="auto" display="flex" flexDirection="column" gap="30px" boxSizing="border-box" padding = "20px" paddingTop="30px" >
             <Div comment="top info view" display="flex" flexDirection="column" gap="20px">
                     <Center gap="20px" >
@@ -443,7 +485,7 @@ export default function StepPage(){
 
                             </Div>
                         <Div display="flex" flexDirection="column" width={"100%"} gap="20px">
-                            <AISession base={base} loadingHoc={loadingHoc} jobDesHoc={jobDes} />
+                            <AISession base={base} alerter={alerter} loadingHoc={loadingHoc} jobDesHoc={jobDes} />
                         </Div>
                         {/* <Div display="flex" flexDirection="column" gap="20px">
                             <Div fontSize="20px">Submit</Div>

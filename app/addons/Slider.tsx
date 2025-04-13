@@ -1,7 +1,7 @@
 "use client"
 
 import React, { FC, ReactNode, useEffect } from "react"
-import { Dict, ListChildren } from "./anys"
+import { dict, ListChildren } from "./anys"
 import { BaseElementProps, Div } from "./csml"
 import BaseHOC from "./HOC"
 // import {LastIndex, useUpdate} from "./anys"
@@ -86,19 +86,19 @@ export default class SliderHOC{
     }
 
     Render:FC<BaseElementProps<HTMLDivElement>> = ({...props}:BaseElementProps<HTMLDivElement>)=>{
-        return <this.control.Render  {...props}></this.control.Render>
+        return <this.control.Render  comment="Slider" {...props}></this.control.Render>
     }
 
     protected _SliderComponent = ({...props}:BaseElementProps<HTMLDivElement>)=>{
         const _children = props.children
         const children:ReactNode[] = ListChildren(_children,{})
         this.children = children
-        const Style:Dict = {
+        const Style:dict = {
             ...props.style,
             overflow:"hidden",
             boxSizing:"border-box"
         }
-        const innerFrameStyle:Dict = {
+        const innerFrameStyle:dict = {
             display:"flex",
             width:"100%",
             height:"100%",

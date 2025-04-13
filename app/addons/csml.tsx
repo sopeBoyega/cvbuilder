@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from "react"
 import { useEffect, FC } from "react"
 import CSSHelper, { ICssHelper } from "./css"
 
-import { mergeText } from "./anys";
+import { dict, mergeText } from "./anys";
 
 
 export var css = CSSHelper()
@@ -78,6 +78,24 @@ export function Center(props:BaseElementProps<HTMLDivElement>&{Ref?:any}){
  * ```
  * 
  */
+
+export function ConvertDictToStyle (styles:ICssHelper){
+    let result = ''
+    const Dict:dict = styles
+    for(let key of Object.keys(Dict)){
+      let newKey = ""
+        for (let char of key){
+            if (char == char.toLowerCase()){
+              newKey += char
+            }else{
+              newKey += `-${char.toLowerCase()}`
+            }
+        }
+        result += `${newKey}: ${Dict[key]};`
+    }
+    return result
+}
+
 export function BaseElement({className,tag = "div",children,id,Ref,onClick,comment=null,style={},ReElement = undefined,...props}:any){
   useEffect(()=>{
       css = CSSHelper({...document.createElement("div").style})
@@ -183,6 +201,9 @@ export const H2:FC<BaseElementProps<HTMLElement>> = function({className,children
 }
 export const Hr:FC<BaseElementProps<HTMLHRElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="hr" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const Pre:FC<BaseElementProps<HTMLPreElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="pre" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 export const EButton:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <Div borderRadius="8px" paddingInline="22px" paddingBlock="10px" {...props} onClick={onClick} Ref={Ref} id={id} className={className}>{children}</Div>
