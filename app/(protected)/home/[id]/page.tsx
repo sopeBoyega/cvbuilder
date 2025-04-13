@@ -4,6 +4,7 @@ import Header from "@/app/components/home/header";
 import Settings from "@/app/components/home/mobile-settings";
 import RightBar from "@/app/components/home/right-bar";
 import { PJS } from "@/app/fonts/fonts";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
 
@@ -11,7 +12,8 @@ type Props = {};
 
 const page = (props: Props) => {
   const [showSettings, setShowSettings] = useState<boolean>(false);
-
+  const id = useParams().id
+  
   return (
     <div className={`${PJS.className} relative p-5`}>
       {showSettings && (
