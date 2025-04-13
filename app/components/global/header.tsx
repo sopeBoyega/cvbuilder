@@ -15,7 +15,7 @@ export default function Header() {
   console.log(currentPage?.icon)
   return (
     <>
-      <div className="w-full h-fit p-[17px] border-b-[#E2E8F0] border-b-[1px] flex items-center justify-between">
+      <div className="w-full h-fit p-[17px] border-b-[#E2E8F0] border-b-[1px] flex items-center  justify-between">
         <div className="flex w-fit h-fit gap-2 ">
           <div className="bg-[#2563EB] flex py-[7px] px-[12px]  items-center justify-center gap-2 rounded-3xl  ">
           <IconItem name={currentPage?.icon?.toString()} color="white" fillColor="none"/>
