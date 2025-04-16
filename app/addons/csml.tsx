@@ -62,7 +62,7 @@ export function filterOutStyles(Styles:any = {}){
   return propforit
 }
 
-export type BaseElementProps<T> =  ICssHelper & React.DetailedHTMLProps<React.HTMLAttributes<T>,T> & React.HTMLAttributes<HTMLBaseElement>  & PropsWithChildren & {comment?:string,Ref?:any}
+export type BaseElementProps<T> =  ICssHelper & React.DetailedHTMLProps<React.HTMLAttributes<T>,T> & PropsWithChildren & {comment?:string,Ref?:any,translate?:any | string}
 
 export function Center(props:BaseElementProps<HTMLDivElement>&{Ref?:any}){
       return <Div  display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%" {...props}>

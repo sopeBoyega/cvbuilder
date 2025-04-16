@@ -3,7 +3,7 @@ import { Div, Center, TextArea,Input, BaseElementProps,EButton,Form } from "../a
 import BaseHOC, { HOCS, InputHOC } from "../addons/HOC"
 import SliderHOC from "../addons/Slider"
 import React, { HTMLInputTypeAttribute, useEffect, useState } from "react"
-import {dict, mergeText, useStateUpdate, useUpdate} from "../addons/anys"
+import {CredentioFetch, dict, mergeText, useStateUpdate, useUpdate} from "../addons/anys"
 import styles from "./styles.module.css"
 import {CEXModel, CIEvent} from "@/app/addons/cexmodel";
 import { FormatListNumbered } from "@mui/icons-material"
@@ -11,6 +11,8 @@ import Alerter from "../addons/alerter"
 
 const SubmitHandle = new CEXModel("SubmitEventDispatcherModel")
 const jdVarName = "jobDescription"
+export const ApiLink = "http://localhost:8089"
+export const ApiLinkRoute = (route:string)=> route[0] == "/"? ApiLink + route : `${ApiLink}/${route}`
 class ICOn{
     JobDes
     upCV
@@ -141,7 +143,7 @@ function AISession({base,loadingHoc,jobDesHoc,alerter}:{base:BaseHOC,loadingHoc:
         loadingHoc.style.display("flex")
         loadingIcon.style.display("grid")
         message.innerText("Generating ...")
-        fetch("http://localhost:8089/ai/questions",{
+        CredentioFetch(ApiLink+"/ai/questions",{
             method:"POST",
             /* headers:{
                 "Content-Type":"application/json"
@@ -174,12 +176,13 @@ function AISession({base,loadingHoc,jobDesHoc,alerter}:{base:BaseHOC,loadingHoc:
         loadingHoc.style.display("flex")
         loadingIcon.style.display("grid")
         message.innerText("Generating CV ...")
-        fetch("http://localhost:8089/ai/cv",{
+        CredentioFetch(ApiLink+"/ai/cv",{
             method:"POST",
             /* headers:{
                 "Content-Type":"application/json"
             }, */
             body:JSON.stringify({
+                questions:base.GetVariable("form"),
                 jobDescription:jobDescription
             })
         }).then(res=>{
@@ -188,7 +191,7 @@ function AISession({base,loadingHoc,jobDesHoc,alerter}:{base:BaseHOC,loadingHoc:
                 base.SetVariable("CVID",data["id"])
                 message.innerText("Redirecting ...")
                 setTimeout(()=>{                                           
-                    // window.location.href =`/cv/${base.GetVariable("CVID")}`
+                    window.location.href =`/home/${base.GetVariable("CVID")}`
                     loadingHoc.style.display("none")
                 }
                     ,2000)

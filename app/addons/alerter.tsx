@@ -24,10 +24,19 @@ export default class Alerter{
     open(){
         this.wrapper.SetVariable("display","grid")
         this.update()
+        setTimeout(() => {
+            this.control.style.opacity ("1")
+            this.control.style.translate ("0px 0px")
+        }, 10);
+        
     }
     close(){
         this.wrapper.SetVariable("display","none")
-        this.update()
+        this.control.style.translate ("0px 40px")
+        this.control.style.opacity ("0")
+        setTimeout(() => {
+            this.update()
+        }, 300);
     }
     constructor(button:BaseElementProps<HTMLDivElement> = {}){
             this.globalButtonsProps  = {
@@ -61,6 +70,7 @@ export default class Alerter{
         
         this.info.SetVariable("innerText",message)
         this.open()
+        
     }
 
     Alert(message:string){
@@ -69,8 +79,8 @@ export default class Alerter{
 
     Render = ({...props}:BaseElementProps<HTMLDivElement>)=>{
         this.update = useStateUpdate()
-        return <this.wrapper.Render comment="Alerter" background="rgba(0,0,0,0.7)" backdropFilter="blur(10px)" {...(this.wrapperStyle as dict)} position="fixed" width="100vw" height="100vh" top="0" left="0"  zIndex="1000" display={this.wrapper.GetVariable("display")} placeItems="center">
-                <this.control.Render minHeight="150px" gap="20px" boxSizing="border-box" minWidth="200px" maxWidth="300px" width="90%" overflowX="hidden"  padding="20px" display="flex" alignItems="center" justifyContent="center" flexDirection="column" borderRadius="15px" background="rgba(80,80,80,0.3)" {...props}>
+        return <this.wrapper.Render comment="Alerter"  background="rgba(0,0,0,0.7)" backdropFilter="blur(10px)" {...(this.wrapperStyle as dict)} position="fixed" width="100vw" height="100vh" top="0" left="0"  zIndex="1000" display={this.wrapper.GetVariable("display")} placeItems="center">
+                <this.control.Render minHeight="150px" transition="translate 0.4s ease-in-out, opacity 0.4s ease-in-out" opacity="1" translate="0px 0px" gap="20px" boxSizing="border-box" minWidth="200px" maxWidth="300px" width="90%" overflowX="hidden"  padding="20px" display="flex" alignItems="center" justifyContent="center" flexDirection="column" borderRadius="15px" background="rgba(80,80,80,0.3)" {...props}>
                     <this.info.Render width="100%" textAlign="center" {...(this.infoStyle as dict)}>
                            {String(this.info.GetVariable("innerText")).split("\n").map((str:string,index:number)=><Div width="100%" textAlign="center" key={index}>{str}</Div>)}
                     </this.info.Render>

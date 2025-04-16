@@ -40,6 +40,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     public style
     public isMediaDestroyed: boolean
     protected Component
+    public hasRendered = false
     public medias:dict<AtMedia> = {}
     public variables:dict = {}
     public existAs
@@ -74,6 +75,17 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         }
     }
 
+    set(name:string, value?: any,onChange?:(name?:string,val?:any)=>void){
+        this.SetVariable(name,value,onChange)
+    }
+
+    hasVariable(name:string){
+        return this.GetVariable(name) != undefined
+    }
+
+    has(name:string){
+        return this.hasVariable(name)
+    }
     
     
     ConstVariable(name:string, value: any){
@@ -91,6 +103,9 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     GetVariable(name:string) {
         // let key = ReplaceAll(name, this.ConstTypeName,"")        
         return this.variables[name]
+    }
+    get(name:string){
+        return this.GetVariable(name)
     }
 
     GetVariableType(name:string) {
@@ -237,6 +252,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
             const addonPropsState = useState([])
             this.addonProps = addonPropsState[0]
             this.setAddonProps = addonPropsState[1]
+            this.hasRendered = true
             useEffect(()=>{
                 this.EventControl.emit(this.clientLoaded)
             })

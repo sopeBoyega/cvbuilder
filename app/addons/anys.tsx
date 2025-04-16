@@ -9,6 +9,18 @@ export function mergeText(...texts:string[]){
     return texts.join(" ")
 }
 
+export function getCookie(name:string) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  if (match) return match[2];
+  return null;
+}
+
+ 
+export function CredentioFetch(link:string,init?:RequestInit){
+    const INIT:RequestInit = {...(init?init:{}) ,cache:"no-cache" , credentials: 'include'}
+    return fetch(link,INIT)
+}
+
 export function ListChildren(children:any,CloneWithProps = {}){
     const childrenWithProps:ReactNode[] = React.Children.map(children, (child) =>
         React.cloneElement(child, {  ...CloneWithProps })

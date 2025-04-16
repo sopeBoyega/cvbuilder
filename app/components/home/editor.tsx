@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import Document from "@tiptap/extension-document";
 import CharacterCount from '@tiptap/extension-character-count'
@@ -42,13 +42,14 @@ import { MenuItem, MenuContent, MenuRoot, MenuTrigger } from "../ui/menu";
 import { Button } from "../ui/button";
 import IconItem from "../global/icon";
 import { Input } from "@chakra-ui/react";
+import BaseHOC from "@/app/addons/HOC";
 
-const TextEditor = () => {
+const TextEditor = ({defaultContent = "Write Your Post....",base}:{defaultContent?:string,base:BaseHOC}) => {
   const [selectedValue, setSelectedValue] = useState<string>("Normal Text");
   const [value, setValue] = useState<string>("");
   const [disabled, setDisable] = useState<boolean>(true);
   const [heading, setHeading] = useState<string>("Head of Sale position");
-
+  // const editorContent = new BaseHOC({existAs:()=>document.getElementById("editorContent")})
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -75,10 +76,21 @@ const TextEditor = () => {
       Image,
       Color,
     ],
-    content: "<p> Write Your Post....</p>",
+    content: `<pre> ${defaultContent}</pre>`,
     immediatelyRender: false,
   });
-
+  useEffect(()=>{
+    // console.log(defaultContent)
+    if (!base.has("editorHasCv")){
+      base.set("editorHasCv",0)
+    }
+    if (base.get("editorHasCv") != 10){
+      editor?.chain().focus().setContent(`<pre> ${defaultContent}</pre>`).run()
+      console.log(base.get("editorHasCv"))
+      base.set("editorHasCv",base.get("editorHasCv")+1)
+    }
+    // editor?.chain().focus().setContent(`<pre> ${defaultContent}</pre>`).run()
+  })
   const addImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {

@@ -1,20 +1,34 @@
 "use client"
-import React, { SetStateAction } from 'react'
+import React, { SetStateAction, useEffect } from 'react'
 import IconItem from '../global/icon'
+import BaseHOC from '@/app/addons/HOC';
+import { Hidden, Span } from '@/app/addons/csml';
+import { ApiLinkRoute } from '@/app/steps/page';
+import { CredentioFetch, useStateUpdate } from '@/app/addons/anys';
+import Alerter from '@/app/addons/alerter';
+import { getUser } from './anys';
 
 
 export interface HeaderProps {
   setShowSettings: React.Dispatch<React.SetStateAction<boolean>>;
+  base?:BaseHOC
+  alerter?:Alerter
 }
 
-const Header = ({setShowSettings} :HeaderProps) => {
+const Header = ({setShowSettings, base, alerter} :HeaderProps) => {
+ const update = useStateUpdate()
+ base = base || new BaseHOC({Component:Hidden})
+ alerter = alerter || new Alerter()
+  useEffect(()=>{
+    getUser(base,alerter,update)
+  })
   return (
     <>
-    
-
+    {!base.hasRendered && <base.Render></base.Render>}
+    {!alerter.control.hasRendered && <alerter.Render></alerter.Render>}
     <div className="flex flex-col md:flex-row justify-between w-full items-start md:items-center mb-[15px]">
         <p className="text-white text-[23px] font-[700]">
-          Good Afternoon , Mosope
+          Good Afternoon , {!base.has("user")? "NO NAME": base.GetVariable("user")["username"]}
         </p>
         
         <div className="flex w-fit h-fit gap-2">
