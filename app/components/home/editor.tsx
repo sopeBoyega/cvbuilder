@@ -43,6 +43,7 @@ import { Button } from "../ui/button";
 import IconItem from "../global/icon";
 import { Input } from "@chakra-ui/react";
 import BaseHOC from "@/app/addons/HOC";
+import { useStateUpdate } from "@/app/addons/anys";
 
 const TextEditor = ({defaultContent = "Write Your Post....",base}:{defaultContent?:string,base:BaseHOC}) => {
   const [selectedValue, setSelectedValue] = useState<string>("Normal Text");
@@ -56,7 +57,7 @@ const TextEditor = ({defaultContent = "Write Your Post....",base}:{defaultConten
       Document,
       Paragraph,
       CharacterCount.configure({
-        limit: 240,
+        limit: 24000,
       }),      
       Heading.configure({ levels: [1, 2, 3] }),
       Bold,
@@ -76,21 +77,22 @@ const TextEditor = ({defaultContent = "Write Your Post....",base}:{defaultConten
       Image,
       Color,
     ],
-    content: `<pre> ${defaultContent}</pre>`,
+    content: "",
     immediatelyRender: false,
   });
   useEffect(()=>{
-    // console.log(defaultContent)
-    if (!base.has("editorHasCv")){
-      base.set("editorHasCv",0)
+    if (editor && base.get("CV")){
+      console.log("CV")
+      console.log(base.get("CV"))
+      const content = (base.get("CV") as string)
+      // editor?.chain().focus().setContent(base.get("CV")).run()
+      editor?.chain().focus().setContent(`<pre><code>${content}</code></pre>`).run()
+      console.log("content ",content)
+      console.log(editor?.getHTML())
     }
-    if (base.get("editorHasCv") != 10){
-      editor?.chain().focus().setContent(`<pre> ${defaultContent}</pre>`).run()
-      console.log(base.get("editorHasCv"))
-      base.set("editorHasCv",base.get("editorHasCv")+1)
-    }
-    // editor?.chain().focus().setContent(`<pre> ${defaultContent}</pre>`).run()
-  })
+    
+  },[editor,base.get("CV")])
+
   const addImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -412,8 +414,9 @@ const TextEditor = ({defaultContent = "Write Your Post....",base}:{defaultConten
         <div className="prose lg:prose-lg ">
           <EditorContent
             editor={editor}
+            // content={`<pre> ${base.has("CV")?base.get("CV"):defaultContent}</pre>`}
             className=" custom-editor p-5 text-white h-[400px] bg-transparent rounded focus:outline-none focus-visible:outline-none"
-          />
+          ></EditorContent>
         </div>
       
       </div>

@@ -4,7 +4,13 @@ import HomeIcon from "@mui/icons-material/Home";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import Button from "@/app/components/global/button";
+import { CredentioFetch, getCookie, useStateUpdate } from "@/app/addons/anys";
+import DataSaver from "@/app/addons/DataSaver";
+import Enc from "@/app/addons/Encryptor";
+import { ApiLinkRoute } from "@/app/steps/page";
+import Alerter from "@/app/addons/alerter";
 
+const enc = new Enc()
 interface SignUpDetails {
   name: string;
   email: string;
@@ -15,6 +21,8 @@ interface SignUpDetails {
 const page = (props: any) => {
 
   const params = useParams()
+  const data = new DataSaver("xcfvgjkfgb")
+  const alerter = new Alerter()
   const email = params?.email
   console.log("email")
   const router = useRouter();
@@ -24,27 +32,47 @@ const page = (props: any) => {
     password: "",
     confirmPassword: "",
   });
+  // data.save("name","jonathan")
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
+    data.save(name, value)
     setSignUpDetails({ ...signUpDetails, [name]: value });
   };
 
   const onSumbitHandler = (event :any) => {
     event.preventDefault()
-
+    
     if(signUpDetails && signUpDetails.password === signUpDetails.confirmPassword){
       localStorage.setItem("user",JSON.stringify(signUpDetails))
-      router.push('/sign-up/code')
+      console.log({username:data.load("name"),password:data.load("password"),email:data.load("email")})
+      CredentioFetch(ApiLinkRoute("auth/register"),{method:"post",body:JSON.stringify({username:data.load("name"),password:data.load("password"),email:data.load("email")})}).then(
+        res=>{
+          console.log(res)
+          console.log(Array.from(res.headers))
+          console.log("json")
+          res.json().then(data=>{
+            console.log(data)
+            console.log(document.cookie)
+            console.log("localid")
+            console.log(getCookie("localid"))
+
+          })
+        }
+      ).catch(()=>{
+        alerter.Alert("An error ocurred while accessing the server.")
+      })
+      // router.push('/sign-up/code')
     }
     else{
-      alert("Please make sure passwords match!")
+      alerter.Alert("Please make sure passwords match!")
     }
 console.log(params)
 }
 
 useEffect(() => {
+  
   if(email) {
     console.log(email)
     if (typeof email === 'string') {
@@ -58,6 +86,7 @@ useEffect(() => {
   }
   return (
     <div className="w-[330px] flex flex-col gap-5 h-fit">
+      <alerter.Render></alerter.Render>
       <div className="flex flex-col gap-2=1">
         <p className="text-white text-center font-semibold text-[22.55px] ">
           Create your account

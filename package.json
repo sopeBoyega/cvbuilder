@@ -24,6 +24,7 @@
     "@tiptap/pm": "^2.11.5",
     "@tiptap/react": "^2.11.5",
     "@tiptap/starter-kit": "^2.11.5",
+    "crypto-js": "^4.2.0",
     "lucide-react": "^0.479.0",
     "motion": "^12.6.3",
     "next": "^15.3.0",

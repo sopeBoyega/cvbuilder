@@ -4,17 +4,24 @@ import HomeIcon from "@mui/icons-material/Home";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Button from "@/app/components/global/button";
+import Alerter from "@/app/addons/alerter";
+import DataSaver from "@/app/addons/DataSaver";
+import { CredentioFetch, getCookie } from "@/app/addons/anys";
+import { ApiLinkRoute } from "@/app/steps/page";
+import { randomBytes } from "crypto";
 
 interface LoginDetails {
-  email: string;
+  name: string;
   password: string;
   confirmPassword?: string;
 }
 
 const page = (props: any) => {
   const router = useRouter();
+  const data = new DataSaver("xcfvgjkffgfgfgb")
+  const alerter = new Alerter()
   const [loginDetails, setLoginDetails] = useState<LoginDetails>({
-    email: "",
+    name: "",
     password: "",
     confirmPassword: "",
   });
@@ -22,10 +29,41 @@ const page = (props: any) => {
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
+    data.save(name, value)
     setLoginDetails({ ...loginDetails, [name]: value });
   };
+
+const onSumbitHandler = (event :any) => {
+    event.preventDefault()
+    
+    if(loginDetails && loginDetails.password === loginDetails.confirmPassword){
+      localStorage.setItem("user",JSON.stringify(loginDetails))
+      console.log({username:data.load("name"),password:data.load("password"),email:data.load("email")})
+      CredentioFetch(ApiLinkRoute("auth/login"),{method:"post",body:JSON.stringify({username:data.load("name"),password:data.load("password")})}).then(
+        res=>{
+          console.log(res)
+          console.log(Array.from(res.headers))
+          console.log("json")
+          res.json().then(data=>{
+            console.log(data)
+            console.log(document.cookie)
+            console.log("localid")
+            console.log(getCookie("localid"))
+
+          })
+        }
+      ).catch(()=>{
+        alerter.Alert("An error ocurred while accessing the server.")
+      })
+      // router.push('/sign-up/code')
+    }
+    else{
+      alerter.Alert("Please make sure passwords match!")
+    }
+}
   return (
     <div className="w-[330px] flex flex-col gap-5 h-fit">
+      <alerter.Render></alerter.Render>
       <div className="flex flex-col gap-2=1">
         <p className="text-white text-center font-semibold text-[22.55px] ">
           Sign In to your account
@@ -55,9 +93,9 @@ const page = (props: any) => {
         <input
           className="w-full text-[13px] h-[39px] rounded-full pl-3 mb-3 placeholder:text-[14px] bg-white text-black focus:outline-none focus:ring-0"
           placeholder="Email"
-          type="email"
-          name="email"
-          value={loginDetails.email}
+          type="name"
+          name="name"
+          value={loginDetails.name}
           onChange={onChangeHandler}
         />
 
