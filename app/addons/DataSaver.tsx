@@ -15,7 +15,7 @@ export default class DataSaver{
         this.secretKey = secretKey
         this.id = id
         this.enc = new Encryptor(this.secretKey)
-        this.elementId = `DATASAVER-INIT-ID-${this.id}`
+        this.elementId = `DATASAVER_INIT-ID-${this.id}`
         this.__init__()
     }
 
