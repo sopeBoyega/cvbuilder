@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactEventHandler, useState } from "react";
+import React, { ReactEventHandler, useEffect, useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ import DataSaver from "@/app/addons/DataSaver";
 import { CredentioFetch, getCookie } from "@/app/addons/anys";
 import { ApiLinkRoute } from "@/app/steps/page";
 import { randomBytes } from "crypto";
+import { Div } from "@/app/addons/csml";
 
 interface LoginDetails {
   name: string;
@@ -32,14 +33,17 @@ const page = (props: any) => {
     data.save(name, value)
     setLoginDetails({ ...loginDetails, [name]: value });
   };
-
+  useEffect(()=>{
+    // alerter.Alert("Please make sure passwords masrdgsssssssssssssssch!")
+    // alerter.Iconify([<Div className="loadingIcon"></Div>])
+  })
 const onSumbitHandler = (event :any) => {
     event.preventDefault()
     
     if(loginDetails && loginDetails.password === loginDetails.confirmPassword){
       localStorage.setItem("user",JSON.stringify(loginDetails))
       console.log({username:data.load("name"),password:data.load("password"),email:data.load("email")})
-      CredentioFetch(ApiLinkRoute("auth/login"),{method:"post",body:JSON.stringify({username:data.load("name"),password:data.load("password")})}).then(
+      CredentioFetch(ApiLinkRoute("auth/login"),{method:"post",body:JSON.stringify({username:data.load("name"),password:data.load("password")})},()=>{alerter.Iconify([<Div className="loadingIcon"></Div>])}).then(
         res=>{
           console.log(res)
           console.log(Array.from(res.headers))
@@ -49,7 +53,12 @@ const onSumbitHandler = (event :any) => {
             console.log(document.cookie)
             console.log("localid")
             console.log(getCookie("localid"))
-
+            alerter.Alert(data.detail == "YES"?"Login successful":"Invalid username or password")
+            if (data.detail == "YES"){
+              setTimeout(() => {
+                router.push('/home')
+              }, 1000);
+            }
           })
         }
       ).catch(()=>{
