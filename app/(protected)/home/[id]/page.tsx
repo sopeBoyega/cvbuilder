@@ -1,6 +1,7 @@
 "use client";
 import Alerter from "@/app/addons/alerter";
 import { CredentioFetch, getCookie, useStateUpdate } from "@/app/addons/anys";
+import { Div } from "@/app/addons/csml";
 import BaseHOC from "@/app/addons/HOC";
 import TextEditor from "@/app/components/home/editor";
 import Header from "@/app/components/home/header";
@@ -37,9 +38,8 @@ function TextEditorAPIFriend ({alerter,CVId,base}:{alerter:Alerter,CVId?:string,
       ).catch(()=>{
         alerter.Alert("An error ocurred while accessing the server.")
       }) */
-
       if (base.GetVariable("ax") == false ){
-          CredentioFetch(ApiLinkRoute("/ai/cvget"),{method:"post",body:JSON.stringify({cvid:id})}).then(res=>{
+          CredentioFetch(ApiLinkRoute("/ai/cvget"),{method:"post",body:JSON.stringify({cvid:id})},()=>{alerter.Iconify([<Div className="loadingIcon"></Div>])}).then(res=>{
           res.json().then(json=>{
             if (json.cv != undefined){
               base.SetVariable("CV",json.cv)
@@ -47,6 +47,7 @@ function TextEditorAPIFriend ({alerter,CVId,base}:{alerter:Alerter,CVId?:string,
               alerter.Alert(json.detail)
             }
             // console.log(base.GetVariable("CV"))
+            alerter.close()
             console.log(json)
             base.SetVariable("ax",true)
             update()
