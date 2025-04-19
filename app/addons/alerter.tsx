@@ -20,7 +20,9 @@ export default class Alerter{
     isOpened = false
     innerText:ReactNode = undefined
     display = ""
+    loadingIconClassName = "loadingIcon"
     cache:dict = {}
+    protected previousAlert: "NONE" | "ASK" | "ALERT" | "LOADIFY" | "ICONIFY" = "NONE"
     protected daButtons:any[] = [
         <EButton key = {1} backgroundColor={"rgba(59, 130, 246, 0.7)"} onClick={()=>{this.close()}} color={"white"}>ok</EButton>,
         
@@ -28,13 +30,17 @@ export default class Alerter{
     protected update:any
     
     protected open(){
+        if (this.previousAlert == "LOADIFY"){
+            this.innerControlStyle = {}
+        }
         this.display = "grid"
         this.update()
         this.isOpened = true
         setTimeout(() => {
             this.control.style.opacity ("1")
             this.control.style.translate ("0px 0px")
-            this.innerControlStyle = {}
+            
+
         }, 10);
         
     }
@@ -42,9 +48,9 @@ export default class Alerter{
         this.display = "none"
         this.control.style.translate ("0px 40px")
         this.control.style.opacity ("0")
+        this.isOpened = false
         setTimeout(() => {
             this.update()
-            this.isOpened = false
         }, 300);
     }
     constructor(button:BaseElementProps<HTMLDivElement> = {}){
@@ -78,26 +84,34 @@ export default class Alerter{
         }
     }
     ask(message:ReactNode,buttons?:DictButton[]){
+       
         this.generateButtons(buttons)        
         this.innerText = message
         this.open()
+         this.previousAlert = "ASK"
     }
 
     Alert(message:string){
         this.ask(message)
+        this.previousAlert = "ALERT"
     }
 
     Iconify(com:ReactNode,buttons:DictButton[] = []){
         this.ask(com,buttons)
+        this.previousAlert = "ICONIFY"
        
     }
 
-    Loadify(text?:ReactNode,{className = "loadingIcon",style = {background:"transparent"}}:{className?:string ,style?:ICssHelper} = {}){
+    Loadify(text?:ReactNode,{className,style = {background:"transparent"}}:{className?:string ,style?:ICssHelper} = {}){
+        if (className == undefined){
+            className = this.loadingIconClassName
+        }
         this.innerControlStyle  = style
         this.Iconify(<Div display="flex" alignItems="center" justifyContent="center" gap="20px">
             <Div className={className}></Div>
             {text != undefined &&text}
         </Div>)
+        this.previousAlert = "LOADIFY"
     }
 
     Render = ({...props}:BaseElementProps<HTMLDivElement>)=>{

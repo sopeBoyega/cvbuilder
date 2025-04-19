@@ -119,6 +119,7 @@ function AISession({base,jobDesHoc,alerter}:{base:BaseHOC,jobDesHoc:InputHOC,ale
     const questCount = new BaseHOC()
     const bar = new BaseHOC()
     const jobDesView = new BaseHOC()
+    alerter.loadingIconClassName = styles.gendiv
     let jobDescription = jobDesHoc.value()
     base.SetVariable('hba',base.GetVariable('hba') || false)
     function jobDesViewUpdate(){
@@ -204,7 +205,6 @@ function AISession({base,jobDesHoc,alerter}:{base:BaseHOC,jobDesHoc:InputHOC,ale
     }
 
     useEffect(()=>{
-        alerter.close()
         window.addEventListener("offline",()=>{
             alerter.Alert("You are OFFLINE.")
         })
