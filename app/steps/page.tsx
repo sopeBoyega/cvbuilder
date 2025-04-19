@@ -113,25 +113,21 @@ class ICOn{
     }
 }
 //software engineering
-function AISession({base,loadingHoc,jobDesHoc,alerter}:{base:BaseHOC,loadingHoc:BaseHOC,jobDesHoc:InputHOC,alerter:Alerter}){
+function AISession({base,jobDesHoc,alerter}:{base:BaseHOC,jobDesHoc:InputHOC,alerter:Alerter}){
     const questSlider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:true})
     const update = useStateUpdate()
-    const message = new BaseHOC()
     const questCount = new BaseHOC()
     const bar = new BaseHOC()
     const jobDesView = new BaseHOC()
-    const loadingIcon:BaseHOC = base.GetVariable("loadingIcon")
     let jobDescription = jobDesHoc.value()
     base.SetVariable('hba',base.GetVariable('hba') || false)
     function jobDesViewUpdate(){
         jobDesView.Execute(()=>{
             jobDesView.innerText(base.GetVariable(jdVarName))
-            message.innerText("")
-
             if (base.GetVariable(jdVarName) != jobDescription){
                 if (base.GetVariable('AiStarted') == true){
                     if (base.GetVariable('hba') == false){
-                        loadingHoc.Element?.focus()
+                        alerter.control.Element?.focus()
                     ResetQuestions()}
                 }
             }
@@ -140,9 +136,8 @@ function AISession({base,loadingHoc,jobDesHoc,alerter}:{base:BaseHOC,loadingHoc:
 
     base.SetVariable(jdVarName, base.GetVariable(jdVarName),jobDesViewUpdate)
     function FormFetch(){
-        loadingHoc.style.display("flex")
-        loadingIcon.style.display("grid")
-        message.innerText("Generating ...")
+
+        alerter.Loadify("Generating ...")
         CredentioFetch(ApiLink+"/ai/questions",{
             method:"POST",
             /* headers:{
@@ -156,7 +151,7 @@ function AISession({base,loadingHoc,jobDesHoc,alerter}:{base:BaseHOC,loadingHoc:
                 console.log(data)
                 base.SetVariable("AiStarted",true)
                 base.SetVariable("form",data["questions"])
-                loadingHoc.style.display("none")
+                alerter.close()
                 base.SetVariable("hba",false)
                 update()
 
@@ -165,17 +160,16 @@ function AISession({base,loadingHoc,jobDesHoc,alerter}:{base:BaseHOC,loadingHoc:
             console.log(err)
             base.SetVariable("AiStarted",false)
             base.SetVariable("form",[])
-            // setTimeout(()=>{loadingHoc.style.display("none");update()},2000)
-            loadingHoc.style.display("none");update()
+            // setTimeout(()=>{alerter.close();update()},2000)
+            alerter.close();update()
             // message.innerHTML("Could not connect to server",{color:"red",fontWeight:"bolder"})
             alerter.Alert("An error ocurred while accessing the server.")
             
         })
     }
     function FormGive(){
-        loadingHoc.style.display("flex")
-        loadingIcon.style.display("grid")
-        message.innerText("Generating CV ...")
+        
+        alerter.Loadify("Generating CV ...")
         CredentioFetch(ApiLink+"/ai/cv",{
             method:"POST",
             /* headers:{
@@ -189,19 +183,19 @@ function AISession({base,loadingHoc,jobDesHoc,alerter}:{base:BaseHOC,loadingHoc:
             res.json().then(data=>{
                 console.log(data)
                 base.SetVariable("CVID",data["id"])
-                message.innerText("Redirecting ...")
+                alerter.Loadify("Redirecting ...")
                 setTimeout(()=>{                                           
                     window.location.href =`/home/${base.GetVariable("CVID")}`
-                    loadingHoc.style.display("none")
+                    alerter.close()
                 }
                     ,2000)
-                // loadingHoc.style.display("none")
+                // alerter.close()
             })
         }).catch(err=>{
             console.log(err)
             base.SetVariable("CVID","")
-            // setTimeout(()=>{loadingHoc.style.display("none");update()},2000)
-            loadingHoc.style.display("none");update()
+            // setTimeout(()=>{alerter.close();update()},2000)
+            alerter.close();update()
             // message.innerHTML("Could not connect to server",{color:"red",fontWeight:"bolder"})
             alerter.Alert("An error ocurred while accessing the server.")
             
@@ -210,7 +204,7 @@ function AISession({base,loadingHoc,jobDesHoc,alerter}:{base:BaseHOC,loadingHoc:
     }
 
     useEffect(()=>{
-        loadingHoc.style.display("none")
+        alerter.close()
         window.addEventListener("offline",()=>{
             alerter.Alert("You are OFFLINE.")
         })
@@ -297,11 +291,6 @@ function AISession({base,loadingHoc,jobDesHoc,alerter}:{base:BaseHOC,loadingHoc:
     }
 
     return <Div>
-        <loadingHoc.ToRender renderId={"loaderMessage"} display="none" >
-            <message.Render></message.Render>
-            
-            
-        </loadingHoc.ToRender>
 
         <Div>
             <Div fontSize="16px" color="rgba(156, 163, 175, 1)">Job Description</Div>
@@ -369,7 +358,6 @@ export default function StepPage(){
     const slider = new SliderHOC({blockLoop:true,slideTime:1000,fitContent:false,direction:"row"})
     const base = new BaseHOC({Component:Center})
     const haveJobDes = new BaseHOC()
-    const loadingHoc = new BaseHOC()
     const yesCVHaveOne = new BaseHOC({Component:Center})
     const noCVHaveOne = new BaseHOC({Component:Center})
     const haveCVDes = new BaseHOC()
@@ -381,9 +369,7 @@ export default function StepPage(){
     const ico = new ICOn(slider)
     const form:dict<dict<string> | string>  = {}
     const nextBtn = new BaseHOC()
-    const loadingIcon = new BaseHOC()
     const CVInput = new InputHOC({Component:Input})
-    base.SetVariable("loadingIcon",loadingIcon)
     
     base.addEventListener("click",()=>{console.log("base clicked")})
 
@@ -427,10 +413,7 @@ export default function StepPage(){
     }
     slider.onSlide  = onSlide;
     return <base.Render backgroundColor="rgb(13,17,23)">
-        <loadingHoc.Render backdropFilter="blur(10px)" zIndex="1000" width="100%" height="100%" display="flex" gap="20px" alignItems="center" justifyContent="center" top="0" left="0" background="rgba(0,0,0,0.7)" position="fixed" >
-            <loadingIcon.Render className={styles.gendiv}></loadingIcon.Render>
 
-         </loadingHoc.Render>
          <alerter.Render ></alerter.Render>
         <Div maxWidth="1000px" width="100vw" height="100vh" overflow="auto" display="flex" flexDirection="column" gap="30px" boxSizing="border-box" padding = "20px" paddingTop="30px" >
             <Div comment="top info view" display="flex" flexDirection="column" gap="20px">
@@ -488,7 +471,7 @@ export default function StepPage(){
 
                             </Div>
                         <Div display="flex" flexDirection="column" width={"100%"} gap="20px">
-                            <AISession base={base} alerter={alerter} loadingHoc={loadingHoc} jobDesHoc={jobDes} />
+                            <AISession base={base} alerter={alerter}  jobDesHoc={jobDes} />
                         </Div>
                         {/* <Div display="flex" flexDirection="column" gap="20px">
                             <Div fontSize="20px">Submit</Div>
