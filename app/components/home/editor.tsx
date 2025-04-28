@@ -84,7 +84,7 @@ const TextEditor = ({defaultContent = "Write Your Post....",base}:{defaultConten
     if (editor && base.get("CV")){
       console.log("CV")
       console.log(base.get("CV"))
-      const content = (base.get("CV") as string)
+      const content = (base.get("CV").cv as string)
       // editor?.chain().focus().setContent(base.get("CV")).run()
       editor?.chain().focus().setContent(`<pre><code>${content}</code></pre>`).run()
       console.log("content ",content)

@@ -14,7 +14,7 @@ export default class Alerter{
     globalButtonsProps:dict = {}
     wrapperStyle:ICssHelper = {}
     controlStyle:ICssHelper = {}
-    protected innerControlStyle:ICssHelper = {}
+    protected loadingControlStyle:ICssHelper = {}
     infoStyle:ICssHelper = {}
     defaultButton:DictButton = {innerText:"OK",textAlign:"left"}
     isOpened = false
@@ -22,6 +22,8 @@ export default class Alerter{
     display = ""
     loadingIconClassName = "loadingIcon"
     cache:dict = {}
+    isloadify = false
+    tapParentToClose = false
     protected previousAlert: "NONE" | "ASK" | "ALERT" | "LOADIFY" | "ICONIFY" = "NONE"
     protected daButtons:any[] = [
         <EButton key = {1} backgroundColor={"rgba(59, 130, 246, 0.7)"} onClick={()=>{this.close()}} color={"white"}>ok</EButton>,
@@ -30,9 +32,7 @@ export default class Alerter{
     protected update:any
     
     protected open(){
-        if (this.previousAlert == "LOADIFY"){
-            this.innerControlStyle = {}
-        }
+
         this.display = "grid"
         this.update()
         this.isOpened = true
@@ -83,41 +83,54 @@ export default class Alerter{
             this.daButtons.push(buttonCom[0])
         }
     }
-    ask(message:ReactNode,buttons?:DictButton[]){
-       
+    ask(message:ReactNode,buttons?:DictButton[],tapParentToClose?:boolean){
+        this.tapParentToClose = tapParentToClose != undefined ? tapParentToClose : true
+        this.isloadify = false
         this.generateButtons(buttons)        
         this.innerText = message
         this.open()
-         this.previousAlert = "ASK"
+        this.previousAlert = "ASK"
     }
 
-    Alert(message:string){
+    Alert(message:ReactNode){
         this.ask(message)
         this.previousAlert = "ALERT"
     }
 
-    Iconify(com:ReactNode,buttons:DictButton[] = []){
-        this.ask(com,buttons)
+    Iconify(com:ReactNode,buttons:DictButton[] = [],tapParentToClose?:boolean){
+        this.ask(com,buttons,tapParentToClose)
         this.previousAlert = "ICONIFY"
        
     }
 
-    Loadify(text?:ReactNode,{className,style = {background:"transparent"}}:{className?:string ,style?:ICssHelper} = {}){
+    Loadify(text?:ReactNode,{className,loadifyWrapperStyle = {gap:"20px"},style = {background:"transparent"}}:{className?:string ,style?:ICssHelper,loadifyWrapperStyle?:ICssHelper} = {}){
         if (className == undefined){
             className = this.loadingIconClassName
         }
-        this.innerControlStyle  = style
-        this.Iconify(<Div display="flex" alignItems="center" justifyContent="center" gap="20px">
+        this.isloadify = true
+        this.loadingControlStyle  = style
+        this.Iconify(<Div display="flex" alignItems="center" justifyContent="center" {...(loadifyWrapperStyle as dict)}>
             <Div className={className}></Div>
             {text != undefined &&text}
-        </Div>)
+        </Div>,undefined,false)
+        this.isloadify = true
         this.previousAlert = "LOADIFY"
     }
 
     Render = ({...props}:BaseElementProps<HTMLDivElement>)=>{
         this.update = useStateUpdate()
-        return <this.wrapper.Render comment="Alerter"  background="rgba(0,0,0,0.7)" backdropFilter="blur(10px)" {...(this.wrapperStyle as dict)} position="fixed" width="100vw" height="100vh" top="0" left="0"  zIndex="1000" display={this.display} placeItems="center">
-                <this.control.Render minHeight="150px" transition="translate 0.4s ease-in-out, opacity 0.4s ease-in-out" opacity="1" translate="0px 0px" gap="20px" boxSizing="border-box" minWidth="200px" maxWidth="300px" width="90%" overflowX="hidden"  padding="20px" display="flex" alignItems="center" justifyContent="center" flexDirection="column" borderRadius="15px" background="rgba(80,80,80,0.3)" {...(this.controlStyle as dict)} {...this.innerControlStyle as dict} {...props}>
+        return <this.wrapper.Render comment="Alerter"  background="rgba(0,0,0,0.7)" backdropFilter="blur(10px)" {...(this.wrapperStyle as dict)} position="fixed" width="100vw" height="100vh" top="0" left="0"  zIndex="1000" display={this.display} placeItems="center" onClick={
+            (e)=>{
+                this.wrapper.Execute((element)=>{
+                    if (e.target == element){
+                        if (this.tapParentToClose && this.previousAlert != "LOADIFY"){
+                            this.close()
+                        }
+                    }
+                })
+            }
+        }>
+                <this.control.Render minHeight="150px" transition="translate 0.4s ease-in-out, opacity 0.4s ease-in-out" opacity="1" translate="0px 0px" gap="20px" boxSizing="border-box" minWidth="200px" maxWidth="300px" width="90%" overflowX="hidden"  padding="20px" display="flex" alignItems="center" justifyContent="center" flexDirection="column" borderRadius="15px" background="rgba(80,80,80,0.3)" {...(this.controlStyle as dict)} {...(this.isloadify? this.loadingControlStyle as dict:{})} {...props}>
                     <this.info.Render width="100%" display="flex" justifyContent="center" gap="20px" alignItems="center" flexDirection="column" {...(this.infoStyle as dict)}>
                            {this.innerText != undefined && <Div width="100%" textAlign="center">{this.innerText}</Div>}
                     </this.info.Render>

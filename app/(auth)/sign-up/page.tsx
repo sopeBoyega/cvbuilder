@@ -47,7 +47,7 @@ const page = (props: any) => {
     if(signUpDetails && signUpDetails.password === signUpDetails.confirmPassword){
       localStorage.setItem("user",JSON.stringify(signUpDetails))
       console.log({username:data.load("name"),password:data.load("password"),email:data.load("email")})
-      CredentioFetch(ApiLinkRoute("auth/register"),{method:"post",body:JSON.stringify({username:data.load("name"),password:data.load("password"),email:data.load("email")})}).then(
+      CredentioFetch(ApiLinkRoute("auth/register"),{method:"post",body:JSON.stringify({username:data.load("name"),password:data.load("password"),email:data.load("email")})},()=>alerter.Loadify()).then(
         res=>{
           console.log(res)
           console.log(Array.from(res.headers))
@@ -57,7 +57,19 @@ const page = (props: any) => {
             console.log(document.cookie)
             console.log("localid")
             console.log(getCookie("localid"))
+            if (data.detail == "YES"){
+              alerter.Alert("Registration Successful")
+            }else if (data.detail == "EXISTS"){
+              alerter.Alert("User Exists.")
+            }else{
+              alerter.Alert("Missing required fields")
 
+            }
+            if (data.detail == "YES"){
+              setTimeout(() => {
+                router.push('/home')
+              }, 1000);
+            }
           })
         }
       ).catch(()=>{

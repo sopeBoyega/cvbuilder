@@ -35,7 +35,7 @@ const page = (props: any) => {
   };
   useEffect(()=>{
     // alerter.Alert("Please make sure passwords masrdgsssssssssssssssch!")
-    // alerter.Iconify([<Div className="loadingIcon"></Div>])
+    // alerter.Loadify()
   })
 const onSumbitHandler = (event :any) => {
     event.preventDefault()
@@ -43,7 +43,7 @@ const onSumbitHandler = (event :any) => {
     if(loginDetails && loginDetails.password === loginDetails.confirmPassword){
       localStorage.setItem("user",JSON.stringify(loginDetails))
       console.log({username:data.load("name"),password:data.load("password"),email:data.load("email")})
-      CredentioFetch(ApiLinkRoute("auth/login"),{method:"post",body:JSON.stringify({username:data.load("name"),password:data.load("password")})},()=>{alerter.Iconify([<Div className="loadingIcon"></Div>])}).then(
+      CredentioFetch(ApiLinkRoute("auth/login"),{method:"post",body:JSON.stringify({username:data.load("name"),password:data.load("password")})},()=>{alerter.Loadify()}).then(
         res=>{
           console.log(res)
           console.log(Array.from(res.headers))

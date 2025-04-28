@@ -42,6 +42,9 @@ export default class DataSaver{
         }
         this.dump()
     }
+    has(name:string){
+        return this.load(name) != undefined
+    }
     
     __init__(){
         this.Clientable(()=>{
@@ -66,7 +69,7 @@ export default class DataSaver{
                 func()
             }catch(e){}
            
-        }, 1);
+        }, 0.01);
     }
 
     Execute(func:(el:HTMLElement )=>any,unAble:Function = ()=>{}){

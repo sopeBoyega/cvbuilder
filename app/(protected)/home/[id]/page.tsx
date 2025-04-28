@@ -2,6 +2,7 @@
 import Alerter from "@/app/addons/alerter";
 import { CredentioFetch, getCookie, useStateUpdate } from "@/app/addons/anys";
 import { Div, Span } from "@/app/addons/csml";
+import DataSaver from "@/app/addons/DataSaver";
 import BaseHOC from "@/app/addons/HOC";
 import TextEditor from "@/app/components/home/editor";
 import Header from "@/app/components/home/header";
@@ -20,7 +21,7 @@ type Props = {};
 function TextEditorAPIFriend ({alerter,CVId,base}:{alerter:Alerter,CVId?:string,base:BaseHOC}){
   const id = CVId
   const update = useStateUpdate()
-  
+  const datasaver = new DataSaver("dgmofggosdfsfk")
   useEffect(()=>{
       /* CredentioFetch(ApiLinkRoute("auth/login"),{method:"post",body:JSON.stringify({username:"testAgent",password:"golgotah",email:"ciaAgent@gmail.com"})}).then(
         res=>{
@@ -43,13 +44,16 @@ function TextEditorAPIFriend ({alerter,CVId,base}:{alerter:Alerter,CVId?:string,
           res.json().then(json=>{
             if (json.cv != undefined){
               base.SetVariable("CV",json.cv)
+              datasaver.save("CV",json.cv)
+              console.log("CV",json.cv)
+              alerter.Alert(<Div>CV loaded: <br /> {json.cv.title}</Div>)
             }else{
               alerter.Alert(json.detail)
             }
             // console.log(base.GetVariable("CV"))
             // alerter.close()
-            alerter.Alert("Done")
-            alerter.Loadify(<Span fontWeight="bolder">Testing ...</Span>)
+            // alerter.Alert("Done")
+            // alerter.Loadify(<Span fontWeight="bolder">Testing ...</Span>)
             console.log(json)
             base.SetVariable("ax",true)
             update()
