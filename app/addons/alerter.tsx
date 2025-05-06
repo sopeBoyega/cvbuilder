@@ -5,7 +5,7 @@ import { BaseElementProps, Div, EButton, Pre } from "./csml";
 import { ICssHelper } from "./css";
 import { FC, ReactNode, useEffect } from "react";
 
-type DictButton = {innerText:string} & BaseElementProps<HTMLDivElement>
+type DictButton = {innerText:ReactNode} & BaseElementProps<HTMLDivElement>
 
 export default class Alerter{
     protected wrapper = new BaseHOC()
@@ -29,7 +29,7 @@ export default class Alerter{
         <EButton key = {1} backgroundColor={"rgba(59, 130, 246, 0.7)"} onClick={()=>{this.close()}} color={"white"}>ok</EButton>,
         
     ]
-    protected update:any
+    update:any
     
     protected open(){
 
@@ -53,13 +53,13 @@ export default class Alerter{
             this.update()
         }, 300);
     }
-    constructor(button:BaseElementProps<HTMLDivElement> = {}){
+    constructor(globalButtonsProps:BaseElementProps<HTMLDivElement> = {}){
             this.globalButtonsProps  = {
-                backgroundColor:"rgba(59, 130, 246, 0.7)",
+                backgroundColor:globalButtonsProps.background || "rgba(59, 130, 246, 0.7)",
                 color:"white",
                 textAlign:"center",
                 onClick:()=>{this.close()},
-                ...button
+                ...globalButtonsProps
             }
         this.display = "none"
     }

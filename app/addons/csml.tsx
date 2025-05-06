@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from "react"
 import { useEffect, FC } from "react"
 import CSSHelper, { ICssHelper } from "./css"
 
-import { dict, mergeText } from "./anys";
+import { dict, filterOutDict, mergeText } from "./anys";
 
 
 export var css = CSSHelper()
@@ -62,7 +62,13 @@ export function filterOutStyles(Styles:any = {}){
   return propforit
 }
 
-export type BaseElementProps<T> =  ICssHelper & React.DetailedHTMLProps<React.HTMLAttributes<T>,T> & PropsWithChildren & {comment?:string,Ref?:any,translate?:any | string}
+export type BaseElementProps<T> =  ICssHelper & React.DetailedHTMLProps<React.HTMLAttributes<T>,T> & PropsWithChildren & {
+  comment?:string,
+  Ref?:any,
+  translate?:any | string,
+  square?:string,
+  bg?:string
+}
 
 export function Center(props:BaseElementProps<HTMLDivElement>&{Ref?:any}){
       return <Div  display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%" {...props}>
@@ -96,16 +102,31 @@ export function ConvertDictToStyle (styles:ICssHelper){
     return result
 }
 
+export function UpdateElementStyle(element:HTMLElement,Style:dict){
+  let key:any 
+    for( key of Object.keys(Style)){
+        element.style[key] = Style[key]
+    }
+    return element
+}
+
+
 export function BaseElement({className,tag = "div",children,id,Ref,onClick,comment=null,style={},ReElement = undefined,...props}:any){
   useEffect(()=>{
-      css = CSSHelper({...document.createElement("div").style})
+      // css = CSSHelper({...document.createElement("div").style})
   })
   const UnClassName = comment?`/*${String(comment).split(" ").join("_")}*/`:""
   className = `${className?className:""} ${UnClassName}`
-  const Element =ReElement?({Ref,...props}:any)=><ReElement ref={Ref} {...props}> {props.children}</ReElement>: ({children,Ref,...attr}:any)=>{return React.createElement(tag,{ref:Ref,...attr},children)}
-  const propsforstyle = filterInStyles(props)
-  
-  const Style = {
+  const Element =ReElement?({Ref,...newProps}:any)=><ReElement ref={Ref} {...newProps}> {newProps.children}</ReElement>: ({children,Ref,...attr}:any)=>{return React.createElement(tag,{ref:Ref,...attr},children)}
+  let propsforstyle = filterInStyles(props)
+  const square:string = props.square 
+  const bg:string = props.bg 
+  props = filterOutDict(props,"square")
+  const Style:ICssHelper = {
+      width: square? square.toLowerCase() == "doc"?"100vw":square : undefined,
+      height:square? square.toLowerCase() == "doc"?"100vh":square : undefined,
+      ...bg?{backgroundColor:bg ,
+      background:  bg ,}:{} ,
       ...style,
       ...propsforstyle  
   }

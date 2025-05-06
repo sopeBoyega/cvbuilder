@@ -1,4 +1,5 @@
-import { json } from "stream/consumers"
+"use client"
+
 import { dict } from "./anys"
 import { ObjectEvent } from "./ObjectEvent"
 import Enc, { Encryptor } from "./Encryptor"
@@ -19,13 +20,13 @@ export default class DataSaver{
         this.__init__()
     }
 
-    private collect(){
+    collect(){
         this.Execute((element)=>{
             this.variables = JSON.parse(this.enc.decrypt(element.innerText))
         })
     }
 
-    private dump(){
+    dump(){
         this.Execute((element)=>{
             element.innerText = this.enc.encrypt(JSON.stringify(this.variables))
         })

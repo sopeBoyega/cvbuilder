@@ -1,3 +1,5 @@
+"use client"
+
 import { dict } from "./anys"
 import CryptoJS from "crypto-js"
 
@@ -230,7 +232,6 @@ class Enc{
             ${filteredStrFunc}
         ${FUNCName}(${params.map((obj:any)=>`"${obj}"`)})
             `.replaceAll('\\','\\\\').replaceAll('this','enc')
-
         value = eval(FUNC(Attr))
         return value
     }

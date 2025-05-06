@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useRef,FC } from "react"
-import { mergeText,Dict } from "./anys"
-import {Div} from "@/app/addons/csml";
+import { mergeText,dict } from "./anys"
+import {Div} from "./csml";
 
 export interface CIEvent extends Event{
     detail:{
@@ -17,20 +17,20 @@ export class CEXModel{
     
     uniType
     channels:string[] = []
-    dispatcher:Dict<Function> = {Public:(data:string|Dict|number)=>{},Every:(data:string|Dict|number)=>{}}
+    dispatcher:dict<Function> = {Public:(data:string|dict|number)=>{},Every:(data:string|dict|number)=>{}}
     constructor(uniType:string){
         this.uniType = uniType
 
     }
 
     MakeChannelDispatcher(channel:string){
-        this.dispatcher[channel] = (data:string|Dict|number)=>{
+        this.dispatcher[channel] = (data:string|dict|number)=>{
             this.CEXDispatch(channel, data)
         }
-        this.dispatcher["Public"] = (data:string|Dict|number)=>{
+        this.dispatcher["Public"] = (data:string|dict|number)=>{
             this.CEXDispatch("Public", data)
         }
-        this.dispatcher["Every"] = (data:string|Dict|number)=>{
+        this.dispatcher["Every"] = (data:string|dict|number)=>{
             this.CEXDispatch("Every", data)
         }
     }
@@ -46,7 +46,7 @@ export class CEXModel{
         }
     }
 
-    protected CEXDispatch(channel:string,data:string|Dict|number = {}){this.FIDispatch(this.CEventX(channel,data),this.uniType)}
+    protected CEXDispatch(channel:string,data:string|dict|number = {}){this.FIDispatch(this.CEventX(channel,data),this.uniType)}
 
     CEXEffectCreate ({channel,Public,existOn = ()=>document.body,onEvent,idAdd=""}:{channel:string,Public?:Function,existOn?:Function, onEvent?:Function,idAdd?:string}){
       Public = Public || function(..._arg:any[]){}

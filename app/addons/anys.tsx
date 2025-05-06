@@ -9,6 +9,31 @@ export function mergeText(...texts:string[]){
     return texts.join(" ")
 }
 
+export function empty(str:string){
+  return str.trim() == ""
+}
+
+export function filterOutDict(Dict:dict,...exclude:string[]){
+  let newDict:dict = {}
+  Object.keys(Dict).map((key)=>{
+    if (!exclude.includes(key)){
+      newDict[key] = Dict[key]
+    }
+  })
+  return newDict
+
+}
+export function filterInDict(Dict:dict,...include:string[]){
+  let newDict:dict = {}
+  Object.keys(Dict).map((key)=>{
+    if (include.includes(key)){
+      newDict[key] = Dict[key]
+    }
+  })
+  return newDict
+
+}
+
 export function getCookie(name:string) {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   if (match) return match[2];

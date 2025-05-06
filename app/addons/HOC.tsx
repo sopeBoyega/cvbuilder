@@ -2,9 +2,10 @@
 import React, {FC, ReactNode, useEffect, useState} from "react"
 import { _cssHelper, ICssHelper } from "./css"
 import { BaseElementProps, ConvertDictToStyle, Div, Hidden } from "./csml"
-import {dict, ReplaceAll, useStateUpdate, useUpdate} from "@/app/addons/anys";
-import {ListChildren} from "@/app/addons/anys";
+import {dict, ReplaceAll, useStateUpdate} from "./anys";
+import {ListChildren} from "./anys";
 import { ObjectEvent } from "./ObjectEvent";
+import IObserver from "./IObserver";
 
 /**
      * 
@@ -39,13 +40,14 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     protected ref:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>
     public style
     public isMediaDestroyed: boolean
-    protected Component
     public hasRendered = false
     public medias:dict<AtMedia> = {}
     public variables:dict = {}
     public existAs
-    protected forceUpdate?:Function
     public Addons:dict<any[]> = {}
+    public cnio:IObserver
+    protected Component
+    protected forceUpdate?:Function
     protected setAddons:any
     protected setAddonProps:any
     protected addonProps:dict = {}
@@ -53,7 +55,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     protected onChangeTypeName = "-ChangeFunc"
     protected EventControl = new ObjectEvent()
     protected clientLoaded = "CLIENT-LOADED"
-
+    
     SetVariable(name:string, value?: any,onChange?:(name?:string,val?:any)=>void){
         let key = ReplaceAll(name, this.ConstTypeName,"")
         key = ReplaceAll(key, this.onChangeTypeName,"")
@@ -61,7 +63,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
             if (!(onChange == undefined)){
                 this.variables[key+this.onChangeTypeName] = onChange
             }else if (!this.variables[key+this.onChangeTypeName]){
-                this.variables[key+this.onChangeTypeName] = (name?:string,val?:any)=>{}
+                this.variables[key+this.onChangeTypeName] = (_name?:string,_val?:any)=>{}
             }
             if (!(value == undefined)){
                 if (this.variables[key]){
@@ -137,8 +139,21 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this.style = {..._cssHelper}
         this.Component = Component
         this.EffectifyStyle()
+        this.cnio = new IObserver()
 
     }
+
+    IObserve({styleIn,styleOut,classIn,classOut}:{styleIn?:ICssHelper,styleOut?:ICssHelper,classIn?:string,classOut?:string} = {}){
+        this.cnio.init({styleIn,styleOut,classIn,classOut})
+        if (this.Element){
+            this.cnio.Observe(this.Element as any)
+        }
+    }
+
+    UnObserve(){
+        this.cnio.UnObserve(this.Element as any)
+    }
+
     AddMedia(id:string,Media:AtMedia){
         this.medias = {
             ...this.medias,
@@ -179,7 +194,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         }
         return ""
     }
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions){
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, _options?: boolean | AddEventListenerOptions){
         this.AtWindow(()=>{
             (this.Element as any).addEventListener(type,listener)
         })
@@ -227,7 +242,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         }
     }
 
-     public Execute(func = (ele:ElementInterface)=>{}){
+     public Execute(func = (_ele:ElementInterface)=>{}){
         const element =this.Element
         if (element){
             func(element)
@@ -244,7 +259,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
 
         return <Hidden></Hidden>
     }
-    Render:FC<BaseElementProps<ElementInterface>& CustomProps> =(props:BaseElementProps<ElementInterface>& CustomProps) =>{
+    Render =(props:BaseElementProps<ElementInterface>& CustomProps) =>{
             this.forceUpdate = useStateUpdate()
             const addonsState = useState({})
             this.Addons = addonsState[0]
@@ -273,15 +288,15 @@ export class AtMedia{
     mediaElementFunc = ()=>window
     styleat = {}
     stylebef = {}
-    atMedia = (HOC:BaseHOC) => {}
-    beforeMedia = (HOC:BaseHOC) => {}
+    atMedia = (_HOC:BaseHOC) => {}
+    beforeMedia = (_HOC:BaseHOC) => {}
     hasAtMedia = false
     hasBeforeMedia = false
     hoc:BaseHOC
     listMedia:string[] = []
     determinant:string ='and'
-    aliveTest = (media:AtMedia) =>{}
-    constructor(hoc:BaseHOC,{media = (["max-width"] as string | string[]),determinant = "and",test = (media:AtMedia)=>{},pixels = ([800] as number | number[]),mediaElementFunc = ()=>window ,styleat = {},stylebef = {},atMedia = (HOC:BaseHOC) => {},beforeMedia = (HOC:BaseHOC) => {}} = {}){
+    aliveTest = (_media:AtMedia) =>{}
+    constructor(hoc:BaseHOC,{media = (["max-width"] as string | string[]),determinant = "and",test = (_media:AtMedia)=>{},pixels = ([800] as number | number[]),mediaElementFunc = ()=>window ,styleat = {},stylebef = {},atMedia = (_HOC:BaseHOC) => {},beforeMedia = (_HOC:BaseHOC) => {}} = {}){
         this.media = typeof(media) == "string" ?[media]:media
         this.mediaElementFunc = mediaElementFunc
         this.stylebef = stylebef
@@ -349,6 +364,9 @@ export class AtMedia{
     }
 }
 
+// callback:(entries:IntersectionObserverEntry[], cnio: IntersectionObserver) => void,options?:IntersectionObserverInit
+
+
 
 export var HOCS = {
     
@@ -365,45 +383,13 @@ export class InputHOC extends BaseHOC<React.InputHTMLAttributes<HTMLInputElement
         return ""
     }
 }
+
+
+
+
 export class AnchorHOC extends BaseHOC<React.AnchorHTMLAttributes<HTMLAnchorElement>,HTMLAnchorElement>{}
 export class LinkHOC extends BaseHOC<React.LinkHTMLAttributes<HTMLLinkElement>,HTMLLinkElement>{}
 export class VideoHOC extends BaseHOC<React.VideoHTMLAttributes<HTMLVideoElement>,HTMLVideoElement>{}
-
-
-/**
- *  Don't use this
- */
-export class MessageLabelHOC{
-    Ref
-    PRef
-    Com
-    constructor(labelCom = Div,ref = React.useRef<HTMLDivElement>(null),pref = React.useRef<HTMLDivElement>(null)){
-        this.Ref = ref
-        this.PRef = pref
-        this.Com = labelCom
-    }
-
-    DisplayMessage({message = "",timeout = 4000,color="cyan",ondone=()=>{},leavetime = 300,...props}){
-        if (this.Ref.current && this.PRef.current){
-            this.Ref.current.innerHTML = `<span >${message}</span>`
-            this.Ref.current.style.color = color
-            for (var key in props){
-                this.Ref.current.style[(key as any)] = props[key]
-            }
-            this.PRef.current.style.opacity = "1"
-            this.PRef.current.style.transition=`opacity ${leavetime/1000}s ease-in-out`
-            setTimeout(() => {
-            if (this.PRef.current){this.PRef.current.style.opacity = "0";
-           setTimeout(()=>{ ondone()},leavetime)}
-
-            }, timeout);
-        }
-
-    }
-    Run = (props: BaseElementProps<HTMLDivElement>) => {
-
-        return <this.Com  opacity="0" { ...props} Ref={this.PRef}><Div Ref={this.Ref}>{props.children}</Div></this.Com>
-    }
-
-}
-
+export class AudioHOC extends BaseHOC<React.AudioHTMLAttributes<HTMLAudioElement>,HTMLAudioElement>{}
+export class ImageHOC extends BaseHOC<React.ImgHTMLAttributes<HTMLImageElement>,HTMLImageElement>{}
+export class TextAreaHOC extends BaseHOC<React.TextareaHTMLAttributes<HTMLTextAreaElement>,HTMLTextAreaElement>{}

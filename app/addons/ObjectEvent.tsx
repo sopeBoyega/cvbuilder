@@ -1,3 +1,4 @@
+"use client"
 import { dict } from "./anys";
 import { Hidden } from "./csml";
 

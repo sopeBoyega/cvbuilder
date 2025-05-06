@@ -1,5 +1,5 @@
-import { dict } from "./anys"
-
+"use client"
+import { dict } from "./anys"  
 
 export default function Class(...option:any[]){
     let Extends:Function[] = []
@@ -29,23 +29,33 @@ export default function Class(...option:any[]){
                 return ty},
             __clone__(){return {...this}},
             ...Attr,
-            __extends__(){
-                return Extends.map(ex=>ex())
-            },
-
-            init(...args:any){
-                if (Extends){
-                    Extends.forEach(ex=>{
-                        let adobj = ex()
-                        Object.keys(adobj).map(key=>{
-                            if (key != "init"){
-                                this[key] = adobj[key]
-                            }
-                        })
-                    })
+            super(index?:number){
+                return (...props:any[])=>{
+                    if (Extends){
+                        if (index == undefined){
+                            Extends.forEach(ex=>{
+                                let adobj = ex(...props)
+                                Object.keys(adobj).map(key=>{
+                                    if (key != "init"){
+                                        this[key] = adobj[key]
+                                    }
+                                })
+                            })
+                        }else{
+                            var ex = Extends[index]
+                            let adobj = ex(...props)
+                                Object.keys(adobj).map(key=>{
+                                    if (key != "init"){
+                                        this[key] = adobj[key]
+                                    }
+                                })
+                        }
+                    }
                 }
+            },
+            init(...args:any){
+                
                 if (Object.keys(Attr).includes("init")){
-                    
                     let init = this.init
                     this.init = Attr.init
                     this.init(...args)
