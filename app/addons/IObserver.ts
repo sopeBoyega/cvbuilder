@@ -4,7 +4,7 @@ import { ICssHelper } from "./css"
 
 export default class IObserver{
 
-    observer:IntersectionObserver = new IntersectionObserver(()=>{})
+    observer?:IntersectionObserver 
     onIntersection?:Function
     onLeave?:Function
     isDestroyed = false
@@ -17,6 +17,7 @@ export default class IObserver{
         this.styleOut = styleOut
         this.classIn = classIn
         this.classOut = classOut
+        // this.observer = new IntersectionObserver(()=>{})
     }
 
     init({styleIn,styleOut,classIn,classOut}:{styleIn?:ICssHelper,styleOut?:ICssHelper,classIn?:string,classOut?:string} = {}){
@@ -62,13 +63,13 @@ export default class IObserver{
         this.classOut = className
     }
     Observe(element:Element){
-        this.observer.observe(element)
+        if (this.observer) this.observer.observe(element)
     }
     UnObserve(element:Element){
-        this.observer.unobserve(element)
+        if (this.observer) this.observer.unobserve(element)
     }
     Disconnect(){
-        this.observer.disconnect()
+        if (this.observer) this.observer.disconnect()
         this.isDestroyed = true
     }
 }

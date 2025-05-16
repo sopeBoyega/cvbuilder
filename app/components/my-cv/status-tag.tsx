@@ -1,8 +1,8 @@
 import React from "react";
 
-type StatusType =
+export type StatusType =
   | "downloaded"
-  | "drafts"
+  | "draft"
   | "saved";
 
 interface StatusTagProps {
@@ -13,7 +13,7 @@ interface StatusTagProps {
 const StatusTag: React.FC<StatusTagProps> = ({ status }) => {
   // Map styles for each status
   const statusStyles: Record<StatusType, { color: string; bgColor: string }> = {
-    drafts: {
+    draft: {
       color: "#000000",
       bgColor: "#FFCF4B",
     },

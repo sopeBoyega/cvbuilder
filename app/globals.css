@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 .slider::-webkit-scrollbar,
 .videos-slider::-webkit-scrollbar {
   display: none;

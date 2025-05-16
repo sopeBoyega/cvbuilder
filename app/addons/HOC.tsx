@@ -1,11 +1,13 @@
 "use client"
 import React, {FC, ReactNode, useEffect, useState} from "react"
-import { _cssHelper, ICssHelper } from "./css"
+import { _cssHelper, ICssHelper, styleKeys } from "./css"
 import { BaseElementProps, ConvertDictToStyle, Div, Hidden } from "./csml"
-import {dict, ReplaceAll, useStateUpdate} from "./anys";
+import {__all__, dict, ReplaceAll, useStateUpdate} from "./anys";
 import {ListChildren} from "./anys";
 import { ObjectEvent } from "./ObjectEvent";
 import IObserver from "./IObserver";
+import DataSaver from "./DataSaver";
+import XListener, { XEvent } from "./ExtensibleListener";
 
 /**
      * 
@@ -55,7 +57,23 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     protected onChangeTypeName = "-ChangeFunc"
     protected EventControl = new ObjectEvent()
     protected clientLoaded = "CLIENT-LOADED"
+    protected _onStyleChangeEvent = new ObjectEvent()
+    protected Props:BaseElementProps<ElementInterface> = {}
+    protected _rootData:DataSaver
+    protected _rootListener:XListener
     
+    onStyleChange(styleKey:styleKeys,func:Function){
+        this._onStyleChangeEvent.on(styleKey,func)
+    }
+
+    ClearStyleChangeEvent(styleKey:styleKeys){
+        this._onStyleChangeEvent.events[styleKey] = []
+    }
+
+    get rootdata(){
+        return this._rootData
+    }
+
     SetVariable(name:string, value?: any,onChange?:(name?:string,val?:any)=>void){
         let key = ReplaceAll(name, this.ConstTypeName,"")
         key = ReplaceAll(key, this.onChangeTypeName,"")
@@ -88,7 +106,20 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     has(name:string){
         return this.hasVariable(name)
     }
+
+    get rootListener(){
+        return this._rootListener
+    }
     
+    Listen(key:string, func:(e:XEvent)=>void){
+        this._rootListener.Listen(key,func)
+    }
+    Announce(key:string,xevent:XEvent){
+        this._rootListener.Announce(key,xevent)
+    }
+    Distract(key:string){
+        this._rootListener.Distract(key)
+    }
     
     ConstVariable(name:string, value: any){
             let key = ReplaceAll(name, this.ConstTypeName,"")
@@ -129,10 +160,9 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
             this.forceUpdate()
         }
     }
-
    
 
-    constructor ({Component = Div,existAs, refee = React.useRef(null) }:{Component?:FC ,existAs?:Function,refee?:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>} = {}){
+    constructor ({Component = Div,existAs, refee = React.useRef(null),Props = {} }:{Component?:FC ,existAs?:Function,Props?:BaseElementProps<ElementInterface>,refee?:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>} = {}){
         this.isMediaDestroyed = false
         this.ref = refee
         this.existAs = existAs
@@ -140,6 +170,9 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this.Component = Component
         this.EffectifyStyle()
         this.cnio = new IObserver()
+        this.Props = Props
+        this._rootData = new DataSaver("__root-data__")
+        this._rootListener = new XListener("__root-listener__")
 
     }
 
@@ -154,7 +187,8 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this.cnio.UnObserve(this.Element as any)
     }
 
-    AddMedia(id:string,Media:AtMedia){
+    AddMedia(id:string,{media = ("max-width" as string | string[]),mediaElementFunc = ()=>window ,styleon = ({} as ICssHelper),styleoff = ({} as ICssHelper),pixels = (800 as number | number[]),onMedia = (_HOC:BaseHOC) => {},offMedia = (_HOC:BaseHOC) => {}} ={}){
+        const Media = new AtMedia(this as any,{media,mediaElementFunc,styleon,styleoff,onMedia,offMedia,pixels})
         this.medias = {
             ...this.medias,
             [id]:Media
@@ -200,6 +234,19 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         })
     }
 
+    set onenter(func:Function){
+        this.AtWindow(()=>{(this.Element as any).onmouseenter = func})
+    }
+    set onleave(func:Function){
+        this.AtWindow(()=>{(this.Element as any).onmouseleave = func})
+    }
+    set onfocus(func:Function){
+        this.AtWindow(()=>{(this.Element as any).onfocus = func})
+    }
+    Focus(){
+        this.AtWindow(()=>{(this.Element as any).focus()})
+    }
+
     AtWindow(Func:Function){
         if (this.Element){
             Func()
@@ -231,13 +278,14 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
                     if (element){
                         if (value) {
                             (element as any).style[key] = value
-                            // console.log((element as any).style[key])
+                            if (Object.keys(this._onStyleChangeEvent.events).includes(key)){ 
+                                this._onStyleChangeEvent.emit(key,value)}
                             }
                         else{
                         return (element as any).style[key]
                         }
                     }
-
+                
             }}
         }
     }
@@ -271,10 +319,32 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
             useEffect(()=>{
                 this.EventControl.emit(this.clientLoaded)
             })
-            return <this.Component Ref = {this.ref} {...props} {...this.addonProps} >
+            return <this.Component Ref = {this.ref} {...this.Props} {...props} {...this.addonProps} >
                 {props.children}
                 {Object.values(this.Addons)}
             </this.Component>
+    }
+}
+
+export class SpiritHOC<CustomProps = {} ,ElementInterface = HTMLDivElement>{
+    component:FC
+    soulprops:BaseElementProps<ElementInterface>
+    constructor ({Component=Div,soulprops={}}:{Component?:FC,soulprops?:BaseElementProps<ElementInterface>} = {}){
+        this.component = Component
+        this.soulprops = soulprops
+    }
+
+
+    CreateBody(addSoulprops:BaseElementProps<ElementInterface> = {}){
+        const soul = (props:BaseElementProps<ElementInterface> & CustomProps)=>{
+            return <this.component {...this.soulprops} {...addSoulprops} {...props}>{props.children}</this.component>
+        }
+        const body = new BaseHOC<CustomProps,ElementInterface>({Component:soul as any})
+        return body
+    }
+
+    CreateSoul:(props?:BaseElementProps<ElementInterface> & CustomProps)=>ReactNode = (props:BaseElementProps<ElementInterface> = {})=>{
+        return <this.component {...this.soulprops} {...props}>{props.children}</this.component>
     }
 }
 
@@ -286,24 +356,24 @@ export class AtMedia{
     pixels:number[] = [800]
     interval:any
     mediaElementFunc = ()=>window
-    styleat = {}
-    stylebef = {}
-    atMedia = (_HOC:BaseHOC) => {}
-    beforeMedia = (_HOC:BaseHOC) => {}
-    hasAtMedia = false
-    hasBeforeMedia = false
+    styleon = {}
+    styleoff = {}
+    onMedia = (_HOC:BaseHOC) => {}
+    offMedia = (_HOC:BaseHOC) => {}
+    hasOnMedia = false
+    hasOffMedia = false
     hoc:BaseHOC
     listMedia:string[] = []
     determinant:string ='and'
     aliveTest = (_media:AtMedia) =>{}
-    constructor(hoc:BaseHOC,{media = (["max-width"] as string | string[]),determinant = "and",test = (_media:AtMedia)=>{},pixels = ([800] as number | number[]),mediaElementFunc = ()=>window ,styleat = {},stylebef = {},atMedia = (_HOC:BaseHOC) => {},beforeMedia = (_HOC:BaseHOC) => {}} = {}){
+    constructor(hoc:BaseHOC,{media = ("max-width" as string | string[]),determinant = "and",test = (_media:AtMedia)=>{},pixels = (800 as number | number[]),mediaElementFunc = ()=>window ,styleon = {},styleoff = {},onMedia = (_HOC:BaseHOC) => {},offMedia = (_HOC:BaseHOC) => {}} = {}){
         this.media = typeof(media) == "string" ?[media]:media
         this.mediaElementFunc = mediaElementFunc
-        this.stylebef = stylebef
-        this.styleat = styleat
+        this.styleoff = styleoff
+        this.styleon = styleon
         this.pixels = typeof(pixels) == "number" ?[pixels]:pixels
-        this.atMedia = atMedia
-        this.beforeMedia = beforeMedia
+        this.onMedia = onMedia
+        this.offMedia = offMedia
         this.hoc = hoc
         this.determinant = determinant
         this.aliveTest = test
@@ -338,24 +408,24 @@ export class AtMedia{
                      this.aliveTest(this)
                     if (this.listMedia[this.determinant.toLowerCase() == "and"?"every":"some"]((stringMedia:string)=>mediaer.matchMedia(stringMedia).matches)) {
                         // console.log(this.stringMedia)
-                        if (!this.hasAtMedia){
-                            this.atMedia(this.hoc)
-                            this.hasBeforeMedia = false
-                            this.hasAtMedia = true
+                        if (!this.hasOnMedia){
+                            this.onMedia(this.hoc)
+                            this.hasOffMedia = false
+                            this.hasOnMedia = true
                         }
-                        for (const key of Object.keys(this.styleat)) {
-                            (this.hoc as any).style[(key)]((this.styleat as any)[(key)]);
-                            // console.log(`[${this.styleat[key]}] ${this.style[key]()}`)
+                        for (const key of Object.keys(this.styleon)) {
+                            (this.hoc as any).style[(key)]((this.styleon as any)[(key)]);
+                            // console.log(`[${this.styleon[key]}] ${this.style[key]()}`)
                         }
                     } else {
-                        if (!this.hasBeforeMedia){
-                            this.beforeMedia(this.hoc)
-                            this.hasAtMedia = false
-                            this.hasBeforeMedia = true
+                        if (!this.hasOffMedia){
+                            this.offMedia(this.hoc)
+                            this.hasOnMedia = false
+                            this.hasOffMedia = true
                         }
-                        for (const key of Object.keys(this.stylebef)) {
-                            (this.hoc as any).style[(key)]((this.stylebef as any)[(key)]);
-                            // console.log(`[${stylebef[key]}] ${this.style[key]()}`)
+                        for (const key of Object.keys(this.styleoff)) {
+                            (this.hoc as any).style[(key)]((this.styleoff as any)[(key)]);
+                            // console.log(`[${styleoff[key]}] ${this.style[key]()}`)
                         }
                     }
                 }

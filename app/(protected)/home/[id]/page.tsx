@@ -46,7 +46,8 @@ function TextEditorAPIFriend ({alerter,CVId,base}:{alerter:Alerter,CVId?:string,
               base.SetVariable("CV",json.cv)
               datasaver.save("CV",json.cv)
               console.log("CV",json.cv)
-              alerter.Alert(<Div>CV loaded: <br /> {json.cv.title}</Div>)
+              alerter.close()
+              // alerter.Alert(<Div>CV loaded: <br /> {json.cv.title}</Div>)
             }else{
               alerter.Alert(json.detail)
             }

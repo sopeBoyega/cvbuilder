@@ -223,6 +223,9 @@ export const H2:FC<BaseElementProps<HTMLElement>> = function({className,children
 export const Hr:FC<BaseElementProps<HTMLHRElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="hr" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
+export const Br:FC<BaseElementProps<HTMLBRElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="br" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
 export const Pre:FC<BaseElementProps<HTMLPreElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="pre" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
