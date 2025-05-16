@@ -13,6 +13,15 @@ export function empty(str:string){
   return str.trim() == ""
 }
 
+export function pairIf(name:string,attr?:any){
+    if (attr == undefined){
+      return {}
+    }
+    else {
+      return {[name]:attr}
+    }
+}
+
 export function filterOutDict(Dict:dict,...exclude:string[]){
   let newDict:dict = {}
   Object.keys(Dict).map((key)=>{

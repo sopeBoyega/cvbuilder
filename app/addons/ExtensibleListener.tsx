@@ -63,14 +63,19 @@ export default class XListener{
                 
                 }
             }
-        this.listeners.Clientable(()=>{
-            if (this.listeners.has(listenid)){
-                if (this.listeners.load(listenid).intervals.length > 0){
-                    return 
+            
+
+             if (listener.destroyed){
+                    clearInterval(interval)
+                    return
+            } 
+            try{
+                if (!window){
+                    this.listeners.save(listenid,listener)
                 }
-            }   
-            this.listeners.save(listenid,listener)
-        })
+            }catch(e){}
+            
+
         }, 1);
     }
 
