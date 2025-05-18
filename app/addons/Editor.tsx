@@ -82,7 +82,7 @@ export default class Editor{
 
     
 
-    Render = (props:BaseElementProps<HTMLTextAreaElement>)=>{
+    Render = (props:BaseElementProps<HTMLTextAreaElement> & React.TextareaHTMLAttributes<HTMLTextAreaElement>)=>{
         return <this.editor.Render {...props}/>
 
     }

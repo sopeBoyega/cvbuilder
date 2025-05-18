@@ -1,4 +1,4 @@
-import { dict } from "./anys";
+import { Clientable, dict } from "./anys";
 import DataSaver from "./DataSaver";
 import { ObjectEvent } from "./ObjectEvent";
 
@@ -29,9 +29,8 @@ export default class XListener{
     }
 
 
-    Listen(key:string,func:(e:XEvent)=>void){
-        let numid = Object.keys(this.listeners.access).length
-        const listenid:string = String(func)
+    Listen(key:string,func:(e:XEvent)=>void,lid?:string){
+        const listenid:string = lid || String(func)
         let listener:Listener = this.listeners.has(listenid)?this.listeners.load(listenid):{
                 called:0,
                 listenid:listenid,
@@ -42,9 +41,12 @@ export default class XListener{
         const Caller = func
         let xevent:XEvent
          if (this.listeners.has(listenid)){
-                if (this.listeners.load(listenid).intervals.length > 0){
-                    return 
-                }
+            if (listener.destroyed){
+                listener.destroyed = false
+            }else{
+                return 
+            }
+                 
         }
         let interval = setInterval(() => {
            
@@ -56,7 +58,7 @@ export default class XListener{
                     listener.called = xevent.called as any
                     xevent.interval = interval
                     listener.intervals.push(interval)
-                    this.listeners.Clientable(()=>{
+                    Clientable(()=>{
                         this.listeners.save(listenid,listener)
                     })
                     Caller(xevent)
@@ -70,9 +72,13 @@ export default class XListener{
                     return
             } 
             try{
-                if (!window){
-                    this.listeners.save(listenid,listener)
-                }
+                if (window){
+                    if(!this.listeners.has(listenid)){
+                        this.listeners.save(listenid,listener)
+                    }
+                }else{
+                        clearInterval(interval)
+                    }
             }catch(e){}
             
 
@@ -83,9 +89,7 @@ export default class XListener{
         for (var lnrid of Object.keys(this.listeners.access)){
             const lnr =  this.listeners.load(lnrid) as Listener
             if (lnr.key == key){
-                for(var int of lnr.intervals){
-                    clearInterval(int)
-                }
+                lnr.destroyed = true
             }
             lnr.intervals = []
             this.listeners.save(lnrid,lnr)

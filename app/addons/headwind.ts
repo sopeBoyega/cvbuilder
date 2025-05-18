@@ -16,6 +16,10 @@ import { dict, pairIf } from "./anys";
             width = "100%"
             height = "100%"
         }
+        else if (val == "fit" || val == "_"){
+            width = "fit-content"
+            height = "fit-content"
+        }
         return {
            width:width,
            height:height, 
@@ -123,6 +127,40 @@ import { dict, pairIf } from "./anys";
             alignItems:"center"
         } 
     }
+    export function  FlexRowJustifyEnd(gap?:string){
+        return {
+            ...pairIf("gap",gap),
+            display:"flex",
+            flexDirection:"row",
+            justifyContent:"end",
+        } 
+    }
+    export function  FlexColumnJustifyEnd(gap?:string){
+        return {
+            ...pairIf("gap",gap),
+            display:"flex",
+            flexDirection:"column",
+            justifyContent:"end",
+        } 
+    }
+    export function  FlexRowAlignCenterJustifyEnd(gap?:string){
+        return {
+            ...pairIf("gap",gap),
+            display:"flex",
+            flexDirection:"row",
+            justifyContent:"end",
+            alignItems:"center"
+        } 
+    }
+    export function  FlexColumnAlignCenterJustifyEnd(gap?:string){
+        return {
+            ...pairIf("gap",gap),
+            display:"flex",
+            flexDirection:"column",
+            justifyContent:"end",
+            alignItems:"center"
+        } 
+    }
     export function  FlexRowJustifyAround(gap?:string){
         return {
             ...pairIf("gap",gap),
@@ -159,24 +197,67 @@ import { dict, pairIf } from "./anys";
     }
 
     // # Grid
-    export function GridRowCenter(gridTemplateRows?:string,gap?:string){
+    export function GridRow(gridTemplateRows:string,gap?:string){
         return {
             ...pairIf("gap",gap),
             display:"grid",
-            ...pairIf("gridTemplateRows",gridTemplateRows),
+            gridTemplateRows:gridTemplateRows,
+        } 
+    }
+    export function GridRowCenter(gridTemplateRows:string,gap?:string){
+        return {
+            ...pairIf("gap",gap),
+            display:"grid",
+            gridTemplateRows:gridTemplateRows,
             placeItems:"center"
         } 
     }
 
-    export function GridColumnRowCenter(gridTemplateColumns?:string,gap?:string){
+    export function GridColumn(gridTemplateColumns:string,gap?:string){
         return {
             ...pairIf("gap",gap),
             display:"grid",
-            ...pairIf("gridTemplateColumns",gridTemplateColumns),
+            gridTemplateColumns:gridTemplateColumns,
+        } 
+    }
+    export function GridColumnCenter(gridTemplateColumns:string,gap?:string){
+        return {
+            ...pairIf("gap",gap),
+            display:"grid",
+            gridTemplateColumns:gridTemplateColumns,
             placeItems:"center"
         } 
     }
-
+    export function GridColumnAutoFitMinMax(minmax:string = "250px , 1fr",gap?:string){
+        return {
+            ...pairIf("gap",gap),
+            display:"grid",
+            gridTemplateColumns:`repeat(auto-fit, minmax(${minmax})`
+        }
+    }
+    export function GridColumnCenterAutoFitMinMax(minmax:string = "250px , 1fr",gap?:string){
+        return {
+            ...pairIf("gap",gap),
+            display:"grid",
+            gridTemplateColumns:`repeat(auto-fit, minmax(${minmax})`,
+            placeItems:"center"
+        }
+    }
+    export function GridRowAutoFitMinMax(minmax:string = "250px , 1fr",gap?:string){
+        return {
+            ...pairIf("gap",gap),
+            display:"grid",
+            gridTemplateRows:`repeat(auto-fit, minmax(${minmax})`
+        }
+    }
+    export function GridRowCenterAutoFitMinMax(minmax:string = "250px , 1fr",gap?:string){
+        return {
+            ...pairIf("gap",gap),
+            display:"grid",
+            gridTemplateRows:`repeat(auto-fit, minmax(${minmax})`,
+            placeItems:"center"
+        }
+    }
 
     export function bg(val:string){
         return {
@@ -184,6 +265,18 @@ import { dict, pairIf } from "./anys";
             background:val
             
         }
+    }
+    export function OverflowOnlyY(overflowY:string = "auto"){
+        return{
+            overflowX:"hidden",
+            overflowY: overflowY
+        } 
+    }
+    export function OverflowOnlyX(overflowX:string = "auto"){
+        return{
+            overflowY:"hidden",
+            overflowX: overflowX
+        } 
     }
 
 }

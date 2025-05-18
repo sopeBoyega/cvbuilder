@@ -94,6 +94,25 @@ export function LastIndex(list:any[]){
   return count
 }
 
+export function Clientable(func:Function){
+        const interval = setInterval(() => {
+            let inWindow = false
+            try{
+                if (window){
+                    inWindow = true
+                }
+            }catch{
+                inWindow = false
+            }
+            if (inWindow == true){
+              clearInterval(interval)
+                func()
+            }
+           
+        }, 0.01);
+    }
+
+
 export function countDown(sec:number,onCount:Function = (_c:number)=>{},onDone:Function = ()=>{},onCut:Function = ()=>{}){
     var count = sec
     var interval = setInterval(()=>{

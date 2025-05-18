@@ -1,12 +1,12 @@
 "use client"
 import React, { PropsWithChildren } from "react"
 import { useEffect, FC } from "react"
-import CSSHelper, { ICssHelper } from "./css"
+import  { FCssHelper, ICssHelper } from "./css"
 
 import { dict, filterOutDict, mergeText } from "./anys";
 
 
-export var css = CSSHelper()
+// export var css = {} as ICssHelper
 
 
 // generates unique id
@@ -41,7 +41,7 @@ export function genId(p = "b",length = 8){
 
 export function filterInStyles(Styles:any = {}){
   var allCSSProperties
-      allCSSProperties = {...css};
+      allCSSProperties = {...FCssHelper};
       var propsforstyle:any = {}
       for (var cssAttr in  allCSSProperties){
           if (cssAttr in Styles){
@@ -52,7 +52,7 @@ export function filterInStyles(Styles:any = {}){
 }
 export function filterOutStyles(Styles:any = {}){
   var allCSSProperties
-      allCSSProperties = {...css};
+      allCSSProperties = {...FCssHelper};
       var propforit:any = {}
       for (let key in Styles){
           if (!(key in allCSSProperties)){
@@ -113,7 +113,7 @@ export function UpdateElementStyle(element:HTMLElement,Style:dict){
 
 export function BaseElement({className,tag = "div",children,id,Ref,onClick,comment=null,style={},ReElement = undefined,...props}:any){
   useEffect(()=>{
-      // css = CSSHelper({...document.createElement("div").style})
+      // FCssHelper = CSSHelper({...document.createElement("div").style})
   })
   const UnClassName = comment?`/*${String(comment).split(" ").join("_")}*/`:""
   className = `${className?className:""} ${UnClassName}`
@@ -163,7 +163,7 @@ export const Span:FC<BaseElementProps<HTMLSpanElement>> = function({className,ch
 export const Div:FC<BaseElementProps<HTMLDivElement> >= function({className,children,id,Ref,onClick,...props}){
   return <BaseElement tag="div"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
-export const A:FC<BaseElementProps<HTMLAnchorElement> >= function({className,children,id,Ref,onClick,...props}){
+export const A:FC<BaseElementProps<HTMLAnchorElement>& {href:string} >= function({className,children,id,Ref,onClick,...props}){
   return <BaseElement tag="a"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 export const Footer:FC<BaseElementProps<HTMLElement>>= function({className,children,id,Ref,onClick,...props}){

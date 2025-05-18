@@ -1,6 +1,6 @@
 "use client"
 import React, {FC, ReactNode, useEffect, useState} from "react"
-import { _cssHelper, ICssHelper, styleKeys } from "./css"
+import { FCssHelper, ICssHelper, styleKeys } from "./css"
 import { BaseElementProps, ConvertDictToStyle, Div, Hidden } from "./csml"
 import {__all__, dict, ReplaceAll, useStateUpdate} from "./anys";
 import {ListChildren} from "./anys";
@@ -60,6 +60,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     protected _onStyleChangeEvent = new ObjectEvent()
     protected Props:BaseElementProps<ElementInterface> = {}
     protected _rootData:DataSaver
+    protected _rootStorage:DataSaver
     protected _rootListener:XListener
     
     onStyleChange(styleKey:styleKeys,func:Function){
@@ -70,8 +71,13 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this._onStyleChangeEvent.events[styleKey] = []
     }
 
+   
+
     get rootdata(){
         return this._rootData
+    }
+    get storage(){
+        return this._rootStorage
     }
 
     SetVariable(name:string, value?: any,onChange?:(name?:string,val?:any)=>void){
@@ -111,8 +117,8 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         return this._rootListener
     }
     
-    Listen(key:string, func:(e:XEvent)=>void){
-        this._rootListener.Listen(key,func)
+    Listen(key:string, func:(e:XEvent)=>void,lid?:string){
+        this._rootListener.Listen(key,func,lid)
     }
     Announce(key:string,xevent:XEvent){
         this._rootListener.Announce(key,xevent)
@@ -166,12 +172,13 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this.isMediaDestroyed = false
         this.ref = refee
         this.existAs = existAs
-        this.style = {..._cssHelper}
+        this.style = {...FCssHelper}
         this.Component = Component
         this.EffectifyStyle()
         this.cnio = new IObserver()
         this.Props = Props
-        this._rootData = new DataSaver("__root-data__")
+        this._rootData = new DataSaver("__root-data__",undefined)
+        this._rootStorage = new DataSaver("__root-data__",undefined,"storage")
         this._rootListener = new XListener("__root-listener__")
 
     }
@@ -272,7 +279,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     }
 
     protected EffectifyStyle(){
-        for ( const key of Object.keys(_cssHelper)){
+        for ( const key of Object.keys(FCssHelper)){
             this.style = {...this.style,[key]:(value?:string)=>{
                 const element = this.Element
                     if (element){
@@ -329,22 +336,33 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
 export class SpiritHOC<CustomProps = {} ,ElementInterface = HTMLDivElement>{
     component:FC
     soulprops:BaseElementProps<ElementInterface>
-    constructor ({Component=Div,soulprops={}}:{Component?:FC,soulprops?:BaseElementProps<ElementInterface>} = {}){
+    protected bodys:dict<BaseHOC> = {}
+    constructor ({Component=Div,soulprops={}}:{Component?:FC<any>,soulprops?:BaseElementProps<ElementInterface>} = {}){
         this.component = Component
         this.soulprops = soulprops
     }
 
+     GetSoulBySoulId(soulId:string){
+        return this.bodys[soulId]
+    }
 
-    CreateBody(addSoulprops:BaseElementProps<ElementInterface> = {}){
+    CreateSoul({soulId,...addSoulprops}:BaseElementProps<ElementInterface> & {soulId?:string} = {}){
         const soul = (props:BaseElementProps<ElementInterface> & CustomProps)=>{
             return <this.component {...this.soulprops} {...addSoulprops} {...props}>{props.children}</this.component>
         }
         const body = new BaseHOC<CustomProps,ElementInterface>({Component:soul as any})
+        if (soulId){
+            this.bodys[soulId] = body as any
+        }
         return body
     }
 
-    CreateSoul:(props?:BaseElementProps<ElementInterface> & CustomProps)=>ReactNode = (props:BaseElementProps<ElementInterface> = {})=>{
-        return <this.component {...this.soulprops} {...props}>{props.children}</this.component>
+    RenderSoul = ({soulId,...props}:BaseElementProps<ElementInterface> & CustomProps & {soulId?:string} )=>{
+        const body = new BaseHOC<CustomProps,ElementInterface>({Component:this.component as any})
+        if (soulId){
+            this.bodys[soulId] = body as any
+        }
+        return <body.Render {...this.soulprops as any} {...props as any}>{props.children}</body.Render>
     }
 }
 
