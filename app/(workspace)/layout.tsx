@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
-import Alerter from "../addons/alerter";
+import Alerter, { DangerousLoadify } from "../addons/alerter";
 import { dict, useStateUpdate } from "../addons/anys";
 import { A, Br, Div } from "../addons/csml";
 import { CENTER, DocumentAddStyle, FLEX, GRID, StyleToSheet } from "../addons/css";
@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 import { FaceSharp } from "@mui/icons-material";
 import XListener from "../addons/ExtensibleListener";
 import { FiLogOut } from "react-icons/fi";
+import HeadWind from "../addons/headwind";
 
 const btnt = new SpiritHOC<{href?:string}>({Component:A, soulprops:{fontSize:"12px",display:FLEX,alignItems:CENTER,justifyContent:CENTER, gap:"10px", borderRadius:"30px",width:"fit-content",paddingInline:"20px",paddingBlock:"10px"}})
 export const bdcolor = "rgb(226,232,240)"
@@ -41,7 +42,7 @@ function NavBar({user, alerter}:{user:dict | undefined,alerter:Alerter}){
                 </svg>
                 Home
             </btnt.RenderSoul>
-            <btnt.RenderSoul soulId="newbtn" border="1px solid rgb(203,213,225)">
+            <btnt.RenderSoul href="/steps" soulId="newbtn" border="1px solid rgb(203,213,225)">
                 <svg width="15px" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M42.5622 23.7752C42.5622 24.3577 42.3308 24.9162 41.9189 25.3281C41.5071 25.7399 40.9485 25.9713 40.3661 25.9713H26.4576V39.8797C26.4576 40.4622 26.2262 41.0208 25.8144 41.4326C25.4026 41.8444 24.844 42.0758 24.2615 42.0758C23.6791 42.0758 23.1205 41.8444 22.7087 41.4326C22.2968 41.0208 22.0655 40.4622 22.0655 39.8797V25.9713H8.15701C7.57458 25.9713 7.016 25.7399 6.60415 25.3281C6.19231 24.9162 5.96094 24.3577 5.96094 23.7752C5.96094 23.1928 6.19231 22.6342 6.60415 22.2224C7.016 21.8105 7.57458 21.5791 8.15701 21.5791H22.0655V7.67068C22.0655 7.08825 22.2968 6.52967 22.7087 6.11782C23.1205 5.70598 23.6791 5.47461 24.2615 5.47461C24.844 5.47461 25.4026 5.70598 25.8144 6.11782C26.2262 6.52967 26.4576 7.08825 26.4576 7.67068V21.5791H40.3661C40.9485 21.5791 41.5071 21.8105 41.9189 22.2224C42.3308 22.6342 42.5622 23.1928 42.5622 23.7752Z" fill="white"/>
                 </svg>
@@ -55,7 +56,6 @@ function NavBar({user, alerter}:{user:dict | undefined,alerter:Alerter}){
 }
 
 function Sidebar({alerter}:{alerter:Alerter}){
-    const widthControl = new XListener("sidebarwidthcontroller")
     const bar = new BaseHOC()
     const pathname = usePathname()
     const SideBarLink = new SpiritHOC<{href?:string}>({Component:A,soulprops:{borderRadius:btnt.soulprops.borderRadius,boxSizing:"border-box",transition:"border-color 0.3s ease-in-out, background 0.3s ease-in-out,color 0.3s ease-in-out", className:"sidebarLinks lh", overflow:"hidden", display:"flex",alignItems:"center", gap:"10px",paddingLeft:"8px", paddingBlock:"8px", border:"3px solid " + bdcolor, width:"100%"}})
@@ -187,11 +187,11 @@ function Sidebar({alerter}:{alerter:Alerter}){
 
 export default function layout({children}:{children:any}){
     const datasaver = new DataSaver("user-init")
-    const listener = new XListener("layout")
     const [user, setUser] = useState<dict | undefined>(undefined)
     const alerter = new Alerter()
     const base = new BaseHOC()
     const main = new BaseHOC()
+    const loadify = new DangerousLoadify("loadingIcon4")
     DocumentAddStyle(
             {
                 "::-webkit-scrollbar":{
@@ -206,15 +206,27 @@ export default function layout({children}:{children:any}){
             }
         )
     useEffect(()=>{
-        
+        loadify.close()
+        window.onbeforeunload = (e)=>{
+            alerter.Loadify("ON-BEFOREUNLOAD ...",{className:"loadingIcon4"})
+        }
+        window.onunload = ()=>{
+            alerter.close()
+        }
+        window.onabort = ()=>{
+            alerter.close()
+        }
+        window.onpagehide = ()=>{
+            alerter.close()
+        }
         main.Listen("sidebarwidth",e=>{
         if (Number(e.data.width.replace("px","")) >= 100){
                 main.style.opacity("0")
-                console.log("sidebarwidth-max:",e.data.width)
+                // console.log("sidebarwidth-max:",e.data.width)
             }
             else{
                 main.style.opacity("1")
-                console.log("sidebarwidth-min:",e.data.width)
+                // console.log("sidebarwidth-min:",e.data.width)
             }
          })
         base.rootdata.save("bfg","rgba(30, 41, 59, 1)")
@@ -228,9 +240,10 @@ export default function layout({children}:{children:any}){
         
     
     })
-    return <Div onClick={()=>{listener.Announce("pop",{data:"success"})}} display="grid" square="doc" bg="rgb(13,17,23)" overflow="hidden" gridTemplateColumns="auto 1fr">
+    return <Div  display="grid" square="doc" bg="rgb(13,17,23)" overflow="hidden" gridTemplateColumns="auto 1fr">
         <Sidebar /* user = {user} */ alerter = {alerter}></Sidebar>
         <alerter.Render></alerter.Render>
+        <loadify.Render></loadify.Render>
         <Div overflow="hidden" minWidth="300px" display="grid" gridTemplateRows="auto 1fr">
             <NavBar user={user} alerter={alerter}></NavBar>
             <main.Render transition="opacity 0.3s ease-in-out" overflow="hidden" minWidth="300px" square="100%"  overflowX="hidden" overflowY="scroll">

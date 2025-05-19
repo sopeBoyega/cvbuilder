@@ -12,6 +12,7 @@ import { Editor } from "primereact/editor";
 import React, { useRef, useMemo } from 'react';
 import JoditEditor from 'jodit-react';
 import XListener from "@/app/addons/ExtensibleListener";
+import Alerter from "@/app/addons/alerter";
 
 // class CEditor extends Editor{
 //     editorListener:XListener
@@ -51,6 +52,7 @@ export default function ({id}:{id?:string}){
     const setdel = new SpiritHOC({soulprops:{borderRadius:"50%",...HeadWind.FlexRowAllCenter(), border:"2.34px solid rgba(203, 213, 225, 1)",...HeadWind.Square("30px")}})
     const [currentCv, setCurrentCv] = useState<icv | undefined>()
     const [text, setText] = useState<string>("")
+    const alerter  = new Alerter()
     
     content.AddMedia("mobile-desktop",{
         styleoff:{
@@ -60,6 +62,15 @@ export default function ({id}:{id?:string}){
         }
     })
     useEffect(()=>{
+        window.onbeforeunload = (e)=>{
+            alerter.Loadify(<Div>ON-BEFOREUNLOAD ... <Br/> <Div fontSize="12px"> you will lose your work </Div> </Div>,{className:"loadingIcon4"})
+           if(base.rootdata.has("editcv")) {
+                 e.preventDefault(); // Required for Chrome
+            }
+            
+            
+            // e.returnValue = "Are you sure you want to leave this page? Your changes will not be saved.";
+        }
         console.log("editcv",base.rootdata.load("editcv"))
         title.Listen("bfg",(e)=>{
             title.style.color(e.data)  
@@ -92,7 +103,7 @@ export default function ({id}:{id?:string}){
     })
 
     
-    return <base.Render  padding="20px" square="100%" paddingInline="20px">
+    return <base.Render  padding="20px" paddingInline="20px">
         <Div>
             <Div {...HeadWind.FlexRowAlignCenterJustifyBetween("20px")}>
                 <Div fontSize="18px" fontWeight="bolder"> Good <day.Render>Day</day.Render>, {user?user.username:""}</Div>
@@ -109,19 +120,7 @@ export default function ({id}:{id?:string}){
                     <Div {...HeadWind.Square("%")} boxSizing="border-box" {...HeadWind.GridRow("auto 1fr")} padding="10px" maxHeight="600px">
                         <Div></Div>
 
-                        <Editor placeholder="Create a New CV Project" value={!base.rootdata.has("editcv")?(currentCv?currentCv.cv:""):base.rootdata.access.editcv} style={{...HeadWind.Square("%")}}  onTextChange={(e) =>{base.rootdata.save("editcv",e.htmlValue)}} />
-
-{/* 
-export default function BasicDemo() {
-    const [text, setText] = useState('');
-
-    return (
-        <div className="card">
-            
-        </div>
-    )
-}
-         */}
+                        <Editor placeholder="Create a New CV Project" value={!base.rootdata.has("editcv")?(currentCv?currentCv.cv:""):base.rootdata.access.editcv} style={{width:"100%",height:"500px"}}  onTextChange={(e) =>{base.rootdata.save("editcv",e.htmlValue)}} />
                     </Div>
                 </Div>
                 <Div width="100%" display="grid" placeItems="center">

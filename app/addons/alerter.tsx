@@ -4,6 +4,7 @@ import BaseHOC from "./HOC";
 import { BaseElementProps, Div, EButton, Pre } from "./csml";
 import { ICssHelper } from "./css";
 import { FC, ReactNode, useEffect } from "react";
+import HeadWind from "./headwind";
 
 type DictButton = {innerText:ReactNode} & BaseElementProps<HTMLDivElement>
 
@@ -142,3 +143,61 @@ export default class Alerter{
     }
     
 }
+
+export class DangerousLoadify{
+    protected wrapper:BaseHOC
+    protected icon:BaseHOC
+    protected loadingIconClassName 
+    public wrapperProps:ICssHelper
+    public iconProps:ICssHelper
+    public time:number = 0.5
+    public openOnStart:boolean
+    public iconTranslate:string
+    update:any
+    constructor(iconClassName:string = "loadingIcon",openOnStart = true){
+        this.time = 0.5
+        this.wrapper = new BaseHOC()
+        this.wrapperProps = {}
+        this.iconProps = {}
+        this.iconTranslate = "40px"
+        this.icon = new BaseHOC()
+        this.openOnStart = openOnStart
+        this.loadingIconClassName = iconClassName
+    }
+    Render =()=>{
+        this.update = useStateUpdate()
+        return <this.wrapper.Render background="rgba(0,0,0,0.7)" zIndex="2000" backdropFilter="blur(10px)" opacity={this.openOnStart == true?"1":"0"} transition={`opacity ${this.time}s ease-in-out`} {...this.wrapperProps as any} position="fixed" top="0px" left="0px" {...HeadWind.Square("v")} {...HeadWind.GridColumnCenter("")}>
+                <Div {...HeadWind.Square("fit")} transform={this.openOnStart == true?"translateY(0px)":`translateY(${this.iconTranslate})`} transition={`transform ${this.time}s ease-in-out`}><this.icon.Render  className={this.loadingIconClassName}  {...this.iconProps as any}></this.icon.Render></Div>
+            </this.wrapper.Render>
+    }
+    addWrapperProps(props:ICssHelper){
+        this.wrapperProps = {...this.wrapperProps,...props}
+    }
+    addIconProps(props:ICssHelper){
+        this.iconProps = {...this.iconProps,...props}
+    }
+    setLoadingIconClassName(name:string){
+        this.loadingIconClassName = name
+    }
+    open(time?:number){
+        this.time = time || this.time
+        this.wrapper.style.transition(`opacity ${time}s ease-in-out`)
+        this.icon.style.transition(`transform ${time}s ease-in-out`)
+        this.wrapper.style.opacity("1")
+        this.icon.style.transform("translateY(0px)")
+        setTimeout(() => {
+            this.wrapper.style.display("grid")
+        }, this.time * 1000); 
+    }
+    close(time?:number){
+        this.time = time || this.time
+        this.wrapper.style.transform(`translateY(${this.iconTranslate})`)
+        this.wrapper.style.opacity("0")
+        setTimeout(() => {
+            this.wrapper.style.display("none")
+        }, this.time * 1000); 
+
+    }
+}
+
+
