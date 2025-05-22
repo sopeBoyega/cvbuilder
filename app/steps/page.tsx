@@ -7,7 +7,7 @@ import {CredentioFetch, dict, mergeText, useStateUpdate, useUpdate} from "../add
 import styles from "./styles.module.css"
 import {CEXModel, CIEvent} from "@/app/addons/cexmodel";
 import { FormatListNumbered } from "@mui/icons-material"
-import Alerter from "../addons/alerter"
+import Alerter, { DangerousLoadify } from "../addons/alerter"
 
 const SubmitHandle = new CEXModel("SubmitEventDispatcherModel")
 const jdVarName = "jobDescription"
@@ -119,7 +119,7 @@ function AISession({base,jobDesHoc,alerter}:{base:BaseHOC,jobDesHoc:InputHOC,ale
     const questCount = new BaseHOC()
     const bar = new BaseHOC()
     const jobDesView = new BaseHOC()
-    alerter.loadingIconClassName = styles.gendiv
+    alerter.loadingIconClassName = "loadingIcon5"
     let jobDescription = jobDesHoc.value()
     base.SetVariable('hba',base.GetVariable('hba') || false)
     function jobDesViewUpdate(){
@@ -186,7 +186,7 @@ function AISession({base,jobDesHoc,alerter}:{base:BaseHOC,jobDesHoc:InputHOC,ale
                 base.SetVariable("CVID",data["id"])
                 alerter.Loadify("Redirecting ...")
                 setTimeout(()=>{                                           
-                    window.location.href =`/home/${base.GetVariable("CVID")}`
+                    window.location.href =`/dashboard/${base.GetVariable("CVID")}`
                     alerter.close()
                 }
                     ,2000)
@@ -362,6 +362,8 @@ export default function StepPage(){
     const noCVHaveOne = new BaseHOC({Component:Center})
     const haveCVDes = new BaseHOC()
     const alerter = new Alerter({backgroundColor:"rgba(69, 140, 256, 0.4)"})
+    const loadify = new DangerousLoadify("loadingIcon4")
+    
     alerter.defaultButton = {...alerter.defaultButton,fontWeight:"bolder"}
     base.SetVariable("form",[])
     const jobDes  = new InputHOC({Component:TextArea})
@@ -374,6 +376,10 @@ export default function StepPage(){
     base.addEventListener("click",()=>{console.log("base clicked")})
 
     React.useEffect(()=>{
+        loadify.close()
+        window.onbeforeunload = (e)=>{
+            alerter.Loadify("ON-BEFOREUNLOAD ...",{className:"loadingIcon4"})
+        }
         setTimeout(()=>{
             // setDatas(()=>[1])9
         },2000)
@@ -415,6 +421,7 @@ export default function StepPage(){
     return <base.Render backgroundColor="rgb(13,17,23)">
 
          <alerter.Render ></alerter.Render>
+        <loadify.Render></loadify.Render>
         <Div maxWidth="1000px" width="100vw" height="100vh" overflow="auto" display="flex" flexDirection="column" gap="30px" boxSizing="border-box" padding = "20px" paddingTop="30px" >
             <Div comment="top info view" display="flex" flexDirection="column" gap="20px">
                     <Center gap="20px" >

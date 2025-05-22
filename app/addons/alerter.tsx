@@ -148,26 +148,50 @@ export class DangerousLoadify{
     protected wrapper:BaseHOC
     protected icon:BaseHOC
     protected loadingIconClassName 
+    protected _message:string | undefined
     public wrapperProps:ICssHelper
     public iconProps:ICssHelper
+    public textProps:ICssHelper
     public time:number = 0.5
     public openOnStart:boolean
     public iconTranslate:string
+    public text:BaseHOC
+    public flex
+    public gap
     update:any
-    constructor(iconClassName:string = "loadingIcon",openOnStart = true){
+    constructor(iconClassName:string = "loadingIcon",{message = undefined as string | undefined,openOnStart = true,flex="row",gap="20px"} = {}){
         this.time = 0.5
         this.wrapper = new BaseHOC()
+        this.text = new BaseHOC()
         this.wrapperProps = {}
+        this.textProps = {}
         this.iconProps = {}
         this.iconTranslate = "40px"
         this.icon = new BaseHOC()
         this.openOnStart = openOnStart
         this.loadingIconClassName = iconClassName
+        this._message = message
+        this.flex = flex
+        this.gap = gap
+    }
+    textInnerText(value:string | undefined){
+        this.text.Execute((element)=>{
+            if (value){
+                this.text.style.display("block")
+                this.text.innerHTML(value)
+            }else{
+                this.text.style.display("none")
+            }
+        })
     }
     Render =()=>{
         this.update = useStateUpdate()
         return <this.wrapper.Render background="rgba(0,0,0,0.7)" zIndex="2000" backdropFilter="blur(10px)" opacity={this.openOnStart == true?"1":"0"} transition={`opacity ${this.time}s ease-in-out`} {...this.wrapperProps as any} position="fixed" top="0px" left="0px" {...HeadWind.Square("v")} {...HeadWind.GridColumnCenter("")}>
-                <Div {...HeadWind.Square("fit")} transform={this.openOnStart == true?"translateY(0px)":`translateY(${this.iconTranslate})`} transition={`transform ${this.time}s ease-in-out`}><this.icon.Render  className={this.loadingIconClassName}  {...this.iconProps as any}></this.icon.Render></Div>
+                <Div {...HeadWind.Square("fit")} {...HeadWind.FlexRowAllCenter(this.gap)} flexDirection={this.flex} transform={this.openOnStart == true?"translateY(0px)":`translateY(${this.iconTranslate})`} transition={`transform ${this.time}s ease-in-out`}>
+                    <this.icon.Render  className={this.loadingIconClassName}  {...this.iconProps as any}>
+                        </this.icon.Render>
+                    <this.text.Render fontSize="18px" fontWeight="bolder" {...this.textProps as any} display={this._message?"block":"none"}>{this._message}</this.text.Render>
+                </Div>
             </this.wrapper.Render>
     }
     addWrapperProps(props:ICssHelper){
@@ -179,8 +203,10 @@ export class DangerousLoadify{
     setLoadingIconClassName(name:string){
         this.loadingIconClassName = name
     }
-    open(time?:number){
+    open({time=undefined as undefined | number, message = undefined as string |undefined} = {}){
         this.time = time || this.time
+        message = message || this._message
+        this.textInnerText(message)
         this.wrapper.style.transition(`opacity ${time}s ease-in-out`)
         this.icon.style.transition(`transform ${time}s ease-in-out`)
         this.wrapper.style.opacity("1")
@@ -189,7 +215,8 @@ export class DangerousLoadify{
             this.wrapper.style.display("grid")
         }, this.time * 1000); 
     }
-    close(time?:number){
+    close({time=undefined as undefined | number,message = undefined as string |undefined} = {}){
+        this.textInnerText(message)
         this.time = time || this.time
         this.wrapper.style.transform(`translateY(${this.iconTranslate})`)
         this.wrapper.style.opacity("0")

@@ -2,18 +2,19 @@
 import { useEffect, useState } from "react";
 import Alerter, { DangerousLoadify } from "../addons/alerter";
 import { dict, useStateUpdate } from "../addons/anys";
-import { A, Br, Div } from "../addons/csml";
+import { A, Br, Div, Input } from "../addons/csml";
 import { CENTER, DocumentAddStyle, FLEX, GRID, StyleToSheet } from "../addons/css";
 import DataSaver from "../addons/DataSaver";
-import BaseHOC, { AtMedia, SpiritHOC } from "../addons/HOC";
+import BaseHOC, { AtMedia, InputHOC, SpiritHOC } from "../addons/HOC";
 import { getUserToDataSaver } from "./anys";
 import { usePathname } from "next/navigation";
 import { FaceSharp } from "@mui/icons-material";
 import XListener from "../addons/ExtensibleListener";
-import { FiLogOut } from "react-icons/fi";
+import { FiHome, FiLogOut, FiPlus, FiSearch } from "react-icons/fi";
 import HeadWind from "../addons/headwind";
+import Glow from "../addons/glow";
 
-const btnt = new SpiritHOC<{href?:string}>({Component:A, soulprops:{fontSize:"12px",display:FLEX,alignItems:CENTER,justifyContent:CENTER, gap:"10px", borderRadius:"30px",width:"fit-content",paddingInline:"20px",paddingBlock:"10px"}})
+const btnt = new SpiritHOC<{href?:string}>({Component:A, soulprops:{fontSize:"12px",display:FLEX,alignItems:CENTER,justifyContent:CENTER, gap:"10px", borderRadius:"30px",width:"fit-content",paddingInline:"20px",fontWeight:"bold",paddingBlock:"8px"}})
 export const bdcolor = "rgb(226,232,240)"
 export const bd = "2px solid " + bdcolor
 
@@ -21,8 +22,9 @@ export const bd = "2px solid " + bdcolor
 
 function NavBar({user, alerter}:{user:dict | undefined,alerter:Alerter}){
     const name = new BaseHOC()
+    const glow = new Glow({color:"rgba(37, 99, 235)",opacity:0.05,size:400})
     // let newbtn = btnt.CreateSoul({border:"1px solid rgb(203,213,225)"})
-     
+
     useEffect(()=>{
        name.Listen("sidebarwidth",(e)=>{
             if (Number(e.data.width.replace("px","")) >= 100){
@@ -36,20 +38,18 @@ function NavBar({user, alerter}:{user:dict | undefined,alerter:Alerter}){
         },"dodfdfkdf")
     })
     return <Div display="flex" minWidth="300px" justifyContent="space-between" borderBottom={bd} paddingInline="10px" paddingBlock="10px" alignItems="center">
-        <Div display="flex" gap="10px">
-            <btnt.RenderSoul soulId="homebtn" background="rgb(37,99,235)" href=""> <svg width="15px" viewBox="0 0 38 39" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M36.2007 15.7219L21.5602 1.0814C20.8738 0.395233 19.943 0.00976562 18.9725 0.00976562C18.002 0.00976562 17.0712 0.395233 16.3848 1.0814L1.74431 15.7219C1.40305 16.061 1.13253 16.4646 0.948441 16.9091C0.764349 17.3536 0.670349 17.8303 0.671894 18.3114V35.88C0.671894 36.4624 0.903265 37.021 1.31511 37.4329C1.72695 37.8447 2.28553 38.0761 2.86797 38.0761H35.077C35.6595 38.0761 36.218 37.8447 36.6299 37.4329C37.0417 37.021 37.2731 36.4624 37.2731 35.88V18.3114C37.2746 17.8303 37.1806 17.3536 36.9966 16.9091C36.8125 16.4646 36.5419 16.061 36.2007 15.7219ZM32.881 33.6839H5.06404V18.6134L18.9725 4.70492L32.881 18.6134V33.6839Z" fill="white"/>
-                </svg>
+            <glow.Render></glow.Render>
+        <Div zIndex="2" display="flex" gap="10px">
+            <btnt.RenderSoul soulId="homebtn" background="rgb(37,99,235)" href="">
+                <FiHome size={14}/>
                 Home
             </btnt.RenderSoul>
-            <btnt.RenderSoul href="/steps" soulId="newbtn" border="1px solid rgb(203,213,225)">
-                <svg width="15px" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M42.5622 23.7752C42.5622 24.3577 42.3308 24.9162 41.9189 25.3281C41.5071 25.7399 40.9485 25.9713 40.3661 25.9713H26.4576V39.8797C26.4576 40.4622 26.2262 41.0208 25.8144 41.4326C25.4026 41.8444 24.844 42.0758 24.2615 42.0758C23.6791 42.0758 23.1205 41.8444 22.7087 41.4326C22.2968 41.0208 22.0655 40.4622 22.0655 39.8797V25.9713H8.15701C7.57458 25.9713 7.016 25.7399 6.60415 25.3281C6.19231 24.9162 5.96094 24.3577 5.96094 23.7752C5.96094 23.1928 6.19231 22.6342 6.60415 22.2224C7.016 21.8105 7.57458 21.5791 8.15701 21.5791H22.0655V7.67068C22.0655 7.08825 22.2968 6.52967 22.7087 6.11782C23.1205 5.70598 23.6791 5.47461 24.2615 5.47461C24.844 5.47461 25.4026 5.70598 25.8144 6.11782C26.2262 6.52967 26.4576 7.08825 26.4576 7.67068V21.5791H40.3661C40.9485 21.5791 41.5071 21.8105 41.9189 22.2224C42.3308 22.6342 42.5622 23.1928 42.5622 23.7752Z" fill="white"/>
-                </svg>
+            <btnt.RenderSoul href="/steps" soulId="newbtn" className="newbtn lh"  border={`1px solid ${bdcolor}`}>
+                <FiPlus size={14}/>
                 New
             </btnt.RenderSoul>
         </Div>
-        <Div display="flex" gap="10px">
+        <Div zIndex="2" display="flex" gap="10px">
             Hello,<name.Render> { !user?"NO NAME":user.username}</name.Render>
         </Div>
     </Div>
@@ -58,11 +58,13 @@ function NavBar({user, alerter}:{user:dict | undefined,alerter:Alerter}){
 function Sidebar({alerter}:{alerter:Alerter}){
     const bar = new BaseHOC()
     const pathname = usePathname()
-    const SideBarLink = new SpiritHOC<{href?:string}>({Component:A,soulprops:{borderRadius:btnt.soulprops.borderRadius,boxSizing:"border-box",transition:"border-color 0.3s ease-in-out, background 0.3s ease-in-out,color 0.3s ease-in-out", className:"sidebarLinks lh", overflow:"hidden", display:"flex",alignItems:"center", gap:"10px",paddingLeft:"8px", paddingBlock:"8px", border:"3px solid " + bdcolor, width:"100%"}})
+    const SideBarLink = new SpiritHOC<{href?:string}>({Component:A,soulprops:{borderRadius:btnt.soulprops.borderRadius,boxSizing:"border-box", className:"sidebarLinks lh", overflow:"hidden", display:"flex",alignItems:"center", gap:"10px",paddingLeft:"8px", paddingBlock:"8px", border:"3px solid " + bdcolor, width:"100%"}})
     const SideBarText = new SpiritHOC({soulprops:{className:"side-bar-text",boxSizing:"border-box",minWidth:"200px", width:"200px",display:"flex"}})
     const maxWidth = "300px"
     const minWidth = "64px"
+    const search  = new InputHOC({Component:Input})
     const [user, setUser] = useState<dict | undefined>()
+    const glow  = new Glow({color:"rgba(37, 99, 235)",opacity:0.1, size:200})
      DocumentAddStyle(
             {
                 ".lh:hover":{
@@ -70,11 +72,11 @@ function Sidebar({alerter}:{alerter:Alerter}){
                     color:bar.rootdata.access.bfg,
 
                 }
+                ,".lh":{
+                    transition:"border-color 0.3s ease-in-out, background 0.3s ease-in-out,color 0.3s ease-in-out"
+                }
             }
         )
-    // listener.Listen("pop",(e)=>{
-    //     console.log(listener.intervals.access)
-    //     console.log(e.data)})
 
     useEffect(()=>{
         if (!user){setUser(bar.rootdata.access.user)}
@@ -123,13 +125,14 @@ function Sidebar({alerter}:{alerter:Alerter}){
     }
 
     return <bar.Render  padding = '10px' gap="20px" boxSizing="border-box" width={maxWidth} overflow="hidden" display="grid" gridAutoRows="auto 1fr" transition="width 0.3s ease-in-out" height="100%" borderRight={bd}>
+        
         <SideBarLink.RenderSoul className="" borderColor="transparent" gap="0px"><Div color="transparent">▮</Div> <SideBarText.RenderSoul fontSize="17px" fontWeight="bold">CV Builder</SideBarText.RenderSoul> </SideBarLink.RenderSoul>
         <Div square="100%" overflow="hidden" display="flex" flexDirection="column" justifyContent={"space-between"}>
             <Div width="100%" display="flex" flexDirection="column" gap="30px">
-                <SideBarLink.RenderSoul><svg width="20px" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M43.1348 39.7832L34.4439 31.0886C37.0497 27.6929 38.2663 23.4331 37.8468 19.1733C37.4274 14.9136 35.4034 10.9729 32.1853 8.15062C28.9672 5.32833 24.7961 3.83582 20.518 3.97583C16.24 4.11584 12.1753 5.87789 9.14869 8.90455C6.12203 11.9312 4.35998 15.9958 4.21997 20.2739C4.07996 24.5519 5.57247 28.7231 8.39476 31.9411C11.217 35.1592 15.1577 37.1833 19.4175 37.6027C23.6772 38.0221 27.937 36.8055 31.3328 34.1997L40.031 42.8998C40.2353 43.1041 40.4778 43.2661 40.7447 43.3767C41.0116 43.4873 41.2977 43.5442 41.5866 43.5442C41.8755 43.5442 42.1615 43.4873 42.4284 43.3767C42.6953 43.2661 42.9379 43.1041 43.1421 42.8998C43.3464 42.6955 43.5085 42.453 43.619 42.1861C43.7296 41.9192 43.7865 41.6332 43.7865 41.3443C43.7865 41.0554 43.7296 40.7693 43.619 40.5024C43.5085 40.2355 43.3464 39.993 43.1421 39.7887L43.1348 39.7832ZM8.64001 20.8403C8.64001 18.379 9.36986 15.973 10.7373 13.9265C12.1047 11.8801 14.0482 10.285 16.3221 9.34314C18.5961 8.40125 21.0982 8.15481 23.5122 8.63498C25.9262 9.11515 28.1436 10.3004 29.8839 12.0407C31.6243 13.7811 32.8095 15.9985 33.2897 18.4125C33.7699 20.8265 33.5234 23.3286 32.5816 25.6025C31.6397 27.8765 30.0446 29.82 27.9982 31.1874C25.9517 32.5548 23.5457 33.2847 21.0844 33.2847C17.785 33.2813 14.6217 31.9691 12.2886 29.6361C9.95559 27.303 8.6434 24.1397 8.64001 20.8403Z" fill="white"/>
-                </svg>
-                <SideBarText.RenderSoul>Search ...</SideBarText.RenderSoul> </SideBarLink.RenderSoul>
+                <SideBarLink.RenderSoul soulId="searchBar" onClick={(e)=>{
+                    if (e.target == SideBarLink.GetSoulBySoulId("searchBar").Element){search.Focus()}
+                    }}><FiSearch size={19}/>
+                <SideBarText.RenderSoul><search.Render placeholder="Search" bg="transparent" outline="none" /></SideBarText.RenderSoul> </SideBarLink.RenderSoul>
                 <Div width="100%" display="flex" flexDirection="column" gap="10px">
                     <SideBarLink.RenderSoul href="/dashboard" {...(pathname.toLowerCase().includes("/dashboard")? {bg:bdcolor, color:"black"}: {})} ><svg width="20px" viewBox="0 0 57 57" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M49.3768 23.9327L31.8082 6.36409C30.9845 5.54069 29.8676 5.07812 28.7029 5.07812C27.5383 5.07812 26.4213 5.54069 25.5977 6.36409L8.02911 23.9327C7.6196 24.3397 7.29498 24.8239 7.07407 25.3573C6.85316 25.8908 6.74036 26.4628 6.74221 27.0401V48.1224C6.74221 48.8213 7.01986 49.4916 7.51407 49.9858C8.00828 50.48 8.67858 50.7577 9.3775 50.7577H48.0284C48.7273 50.7577 49.3976 50.48 49.8918 49.9858C50.386 49.4916 50.6637 48.8213 50.6637 48.1224V27.0401C50.6655 26.4628 50.5527 25.8908 50.3318 25.3573C50.1109 24.8239 49.7863 24.3397 49.3768 23.9327ZM45.3931 45.4871H12.0128V27.4025L28.7029 10.7123L45.3931 27.4025V45.4871Z" fill="#94A3B8"/>
@@ -155,12 +158,14 @@ function Sidebar({alerter}:{alerter:Alerter}){
                 </Div>
             </Div>
             <Div display="flex" flexDirection="column" gap="10px" width="100%" boxSizing="border-box" overflow="hidden">
-                <SideBarLink.RenderSoul  padding="0" borderRadius="20px" height="180px" >
-                    <SideBarText.RenderSoul flexDirection="column" padding="10px"  gap="10px">
-                        <Div fontSize="14px">Pro Plan</Div>
-                        <Div display="flex" fontSize="14px" alignItems="end" gap="5px"><Div fontWeight="bolder" fontSize="18px">$15.99</Div>/mo</Div>
-                        <Div fontSize="11px" >Enjoy unlimited access to our app with only a small price monthly.</Div>
-                        <Div display="flex" gap="20px"> <Div  fontSize="14px" >Dismiss</Div> <Div fontSize="14px"  color="blue">Go Pro</Div></Div>
+                <SideBarLink.RenderSoul position="relative" className="sidebarLinks"  padding="0" borderRadius="20px" height="180px" >
+                    <glow.Render display="block" />
+                    <SideBarText.RenderSoul  flexDirection="column" padding="10px"  gap="10px">
+                        
+                        <Div zIndex="2" fontSize="14px">Pro Plan</Div>
+                        <Div zIndex="2" display="flex" fontSize="14px" alignItems="end" gap="5px"><Div fontWeight="bolder" fontSize="18px">$15.99</Div>/mo</Div>
+                        <Div zIndex="2" fontSize="11px" >Enjoy unlimited access to our app with only a small price monthly.</Div>
+                        <Div zIndex="2" display="flex" gap="20px"> <Div  fontSize="14px" >Dismiss</Div> <Div fontSize="14px"  color="blue">Go Pro</Div></Div>
                     </SideBarText.RenderSoul>
                 </SideBarLink.RenderSoul>
                 <SideBarLink.RenderSoul  className="sidebarLinks"  padding="0" borderRadius="0"  border="0px solid transparent" borderTop={bd} width="100%" overflow="hidden">
@@ -181,6 +186,7 @@ function Sidebar({alerter}:{alerter:Alerter}){
                 
             </Div>
         </Div>
+        
     </bar.Render>
 }
 
@@ -191,7 +197,8 @@ export default function layout({children}:{children:any}){
     const alerter = new Alerter()
     const base = new BaseHOC()
     const main = new BaseHOC()
-    const loadify = new DangerousLoadify("loadingIcon4")
+    const loadify = new DangerousLoadify("loadingIcon6",{message:"LOADING ...",flex:"column-reverse"})
+    loadify.iconProps = {width:"200px"}
     DocumentAddStyle(
             {
                 "::-webkit-scrollbar":{
@@ -237,8 +244,6 @@ export default function layout({children}:{children:any}){
             base.rootdata.save("user",datasaver.access.user)
             base.Announce("user-init",{data:{user:datasaver.access.user}})
         })
-        
-    
     })
     return <Div  display="grid" square="doc" bg="rgb(13,17,23)" overflow="hidden" gridTemplateColumns="auto 1fr">
         <Sidebar /* user = {user} */ alerter = {alerter}></Sidebar>

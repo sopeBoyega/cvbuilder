@@ -166,7 +166,7 @@ background-repeat: no-repeat;
   display: grid;
   border: 4px solid #0000;
   border-radius: 50%;
-  border-right-color: #25b09b;
+  border-right-color: #ffffff;
   animation: l15 1s infinite linear;
 }
 .loadingIcon3::before,
@@ -200,4 +200,47 @@ background-repeat: no-repeat;
 }
 @keyframes l13{ 
   100%{transform: rotate(1turn)}
+}
+
+/* HTML: <div class="loadingIcon5"></div> */
+.loadingIcon5 {
+  width: 40px;
+  aspect-ratio: 1;
+  color: #1d6485;
+  position: relative;
+  background: radial-gradient(10px,currentColor 94%,#0000);
+}
+.loadingIcon5:before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(9px at bottom right,#0000 94%,currentColor) top    left,
+    radial-gradient(9px at bottom left ,#0000 94%,currentColor) top    right,
+    radial-gradient(9px at top    right,#0000 94%,currentColor) bottom left,
+    radial-gradient(9px at top    left ,#0000 94%,currentColor) bottom right;
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  animation: l18 1.5s infinite cubic-bezier(0.3,1,0,1);
+}
+@keyframes l18 {
+   33%  {inset:-10px;transform: rotate(0deg)}
+   66%  {inset:-10px;transform: rotate(90deg)}
+   100% {inset:0    ;transform: rotate(90deg)}
+}
+
+/* HTML: <div class="loader"></div> */
+.loadingIcon6 {
+  height: 4px;
+  width: 130px;
+  --c:no-repeat linear-gradient(#1d6485 0 0);
+  background: var(--c),var(--c),#d7b8fc2d;
+  background-size: 60% 100%;
+  animation: l16 3s infinite;
+}
+@keyframes l16 {
+  0%   {background-position:-150% 0,-150% 0}
+  66%  {background-position: 250% 0,-150% 0}
+  100% {background-position: 250% 0, 250% 0}
 }

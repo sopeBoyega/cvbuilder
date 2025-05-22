@@ -49,7 +49,7 @@ export default function ({id}:{id?:string}){
     const base = new BaseHOC()
     const content = new BaseHOC()
     const title = new InputHOC({Component:Input})
-    const setdel = new SpiritHOC({soulprops:{borderRadius:"50%",...HeadWind.FlexRowAllCenter(), border:"2.34px solid rgba(203, 213, 225, 1)",...HeadWind.Square("30px")}})
+    const setdel = new SpiritHOC({soulprops:{borderRadius:"50%",...HeadWind.FlexRowAllCenter(), className:"lh", border:"2.34px solid rgba(203, 213, 225, 1)",...HeadWind.Square("30px")}})
     const [currentCv, setCurrentCv] = useState<icv | undefined>()
     const [text, setText] = useState<string>("")
     const alerter  = new Alerter()
@@ -67,8 +67,6 @@ export default function ({id}:{id?:string}){
            if(base.rootdata.has("editcv")) {
                  e.preventDefault(); // Required for Chrome
             }
-            
-            
             // e.returnValue = "Are you sure you want to leave this page? Your changes will not be saved.";
         }
         console.log("editcv",base.rootdata.load("editcv"))

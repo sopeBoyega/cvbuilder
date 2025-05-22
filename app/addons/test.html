@@ -2,107 +2,112 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Web Text Editor</title>
+  <title>Cursor Follower in Button</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: sans-serif;
-      margin: 20px;
-    }
-    .toolbar {
-      margin-bottom: 10px;
+      margin: 0;
+      height: 100vh;
       display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      font-family: 'Segoe UI', sans-serif;
     }
-    .toolbar button, .toolbar select, .toolbar input {
-      padding: 5px;
-      font-size: 14px;
-      justify-content: ;
+
+    #myButton {
+      position: relative;
+      padding: 20px 48px;
+      font-size: 20px;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      overflow: hidden;
+      z-index: 1;
     }
-    #editor {
-      border: 1px solid #ccc;
-      padding: 10px;
-      min-height: 300px;
-      outline: none;
+
+    #follower {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: rgba(255, 0, 100, 0.15);
+      border: 2px solid rgba(255, 0, 100, 0.7);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0);
+      z-index: 0;
+      opacity: 0;
+      transition: transform 0.25s ease-out, opacity 0.2s ease;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 0 18px rgba(255, 0, 100, 0.4);
+    }
+
+    #follower.pulse {
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.25); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .button-text {
+      position: relative;
+      z-index: 2;
     }
   </style>
 </head>
 <body>
 
-  <div class="toolbar">
-    <!-- Formatting -->
-    <button onclick="format('bold')"><b>B</b></button>
-    <button onclick="format('italic')"><i>I</i></button>
-    <button onclick="format('underline')"><u>U</u></button>
+<button id="myButton">
+  <span class="button-text">Hover me</span>
+  <div id="follower"></div>
+</button>
 
-    <!-- Font -->
-    <select onchange="setFont(this.value)">
-      <option value="Arial">Arial</option>
-      <option value="Georgia">Georgia</option>
-      <option value="Courier New">Courier New</option>
-      <option value="Times New Roman">Times New Roman</option>
-    </select>
+<script>
+  const button = document.getElementById('myButton');
+  const follower = document.getElementById('follower');
 
-    <!-- Font size -->
-    <select onchange="setSize(this.value)">
-      <option value="1">8pt</option>
-      <option value="2">10pt</option>
-      <option value="3" selected>12pt</option>
-      <option value="4">14pt</option>
-      <option value="5">18pt</option>
-      <option value="6">24pt</option>
-      <option value="7">36pt</option>
-    </select>
+  let mouseX = 0, mouseY = 0;
+  let currentX = 0, currentY = 0;
 
-    <!-- Color -->
-    <input type="color" onchange="setColor(this.value)" />
+  function animateFollower() {
+    const speed = 0.2;
+    currentX += (mouseX - currentX) * speed;
+    currentY += (mouseY - currentY) * speed;
 
-    <!-- Alignment -->
-    <button onclick="format('justifyLeft')">Left</button>
-    <button onclick="format('justifyCenter')">Center</button>
-    <button onclick="format('justifyRight')">Right</button>
-    <button onclick="format('justifyFull')">Justify</button>
+    follower.style.left = `${currentX}px`;
+    follower.style.top = `${currentY}px`;
 
-    <!-- Lists -->
-    <button onclick="format('insertUnorderedList')">• List</button>
-    <button onclick="format('insertOrderedList')">1. List</button>
+    requestAnimationFrame(animateFollower);
+  }
 
-    <!-- Undo/Redo -->
-    <button onclick="format('undo')">Undo</button>
-    <button onclick="format('redo')">Redo</button>
+  animateFollower();
 
-    <!-- Link -->
-    <button onclick="insertLink()">Link</button>
-  </div>
+  button.addEventListener('mouseenter', () => {
+    follower.style.opacity = '1';
+    follower.style.transform = 'translate(-50%, -50%) scale(1)';
+    follower.classList.add('pulse');
+  });
 
-  <div id="editor" contenteditable="true">
-    Start typing here...
-  </div>
+  button.addEventListener('mouseleave', () => {
+    follower.style.opacity = '0';
+    follower.style.transform = 'translate(-50%, -50%) scale(0)';
+    follower.classList.remove('pulse');
+  });
 
-  <script>
-    function format(command) {
-      document.execCommand(command, false, null);
-    }
-
-    function setFont(font) {
-      document.execCommand("fontName", false, font);
-    }
-
-    function setSize(size) {
-      document.execCommand("fontSize", false, size);
-    }
-
-    function setColor(color) {
-      document.execCommand("foreColor", false, color);
-    }
-
-    function insertLink() {
-      const url = prompt("Enter the URL:");
-      if (url) {
-        document.execCommand("createLink", false, url);
-      }
-    }
-  </script>
+  button.addEventListener('mousemove', (e) => {
+    const rect = button.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+  });
+</script>
 
 </body>
 </html>

@@ -279,6 +279,11 @@ import { dict, pairIf } from "./anys";
         } 
     }
 
+    export function TransitionMerge(names:string[], transition:string){
+        return {
+            transition:names.map((name)=>`${name} ${transition}`).join(", ")
+        }
+    }
 }
 
 

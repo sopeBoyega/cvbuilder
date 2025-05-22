@@ -1,6 +1,7 @@
 "use client"
 
-import React, {ReactNode, useReducer, useState} from "react"
+import React, {ReactNode, useEffect, useReducer, useState} from "react"
+import { BaseElementProps } from "./csml"
 
 export type dict<T = any> = {[key:string]:T}
 
@@ -11,6 +12,13 @@ export function mergeText(...texts:string[]){
 
 export function empty(str:string){
   return str.trim() == ""
+}
+
+export function FromPercent(percent:number,number:number){
+  return (percent/100) * number
+}
+export function ToPercent(percent:number,number:number,max:number){
+  return (percent/number) * max
 }
 
 export function pairIf(name:string,attr?:any){
@@ -93,6 +101,15 @@ export function LastIndex(list:any[]){
   }
   return count
 }
+
+export function DictToStringProps(Dict:dict<string>){
+    let stringProps = ""
+    for (let key in Dict){
+        stringProps+= ` ${key} = "${Dict[key]}" `
+    }
+    return stringProps
+}
+
 
 export function Clientable(func:Function){
         const interval = setInterval(() => {

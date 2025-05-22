@@ -42,13 +42,13 @@ export default class XListener{
         let xevent:XEvent
          if (this.listeners.has(listenid)){
             if (listener.destroyed){
-                listener.destroyed = false
+                listener.destroyed = undefined
             }else{
                 return 
             }
                  
         }
-        let interval = setInterval(() => {
+        const Loop = () => {
            
             if (this.events.has(key)){
                 xevent = this.events.load(key)
@@ -56,8 +56,6 @@ export default class XListener{
                     /* console.log(xevent.called)
                     console.log(called) */
                     listener.called = xevent.called as any
-                    xevent.interval = interval
-                    listener.intervals.push(interval)
                     Clientable(()=>{
                         this.listeners.save(listenid,listener)
                     })
@@ -67,9 +65,8 @@ export default class XListener{
             }
             
 
-             if (listener.destroyed){
-                    clearInterval(interval)
-                    return
+             if (!listener.destroyed){
+                    requestAnimationFrame(Loop)
             } 
             try{
                 if (window){
@@ -77,12 +74,14 @@ export default class XListener{
                         this.listeners.save(listenid,listener)
                     }
                 }else{
-                        clearInterval(interval)
+                        listener.destroyed = true
+                        this.listeners.save(listenid,listener)
                     }
             }catch(e){}
             
 
-        }, 1);
+        }
+       Loop()
     }
 
     Distract(key:string){

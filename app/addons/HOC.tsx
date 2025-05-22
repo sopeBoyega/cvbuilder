@@ -172,7 +172,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this.isMediaDestroyed = false
         this.ref = refee
         this.existAs = existAs
-        this.style = {...FCssHelper}
+        this.style = {...FCssHelper,addStyle:(styleDict:ICssHelper)=>{}}
         this.Component = Component
         this.EffectifyStyle()
         this.cnio = new IObserver()
@@ -294,6 +294,11 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
                     }
                 
             }}
+        }
+        this.style.addStyle = (styleDict)=>{
+            for(var key in styleDict){
+                (this.style as any)[key]((styleDict as dict)[key])
+            }
         }
     }
 
