@@ -89,7 +89,7 @@ export default function ({id}:{id?:string}){
             <content.Render gap="20px" display="grid">
                 
                 <Div minHeight="80vh" {...HeadWind.FlexColumn("30px")}>
-                    <title.Render height="fit-content" fontSize="20px" value={currentCv?.title} width = "100%" maxWidth="700px" padding="20px" paddingBlock="10px" background="white" fontWeight="bold" borderRadius="15px" boxSizing="border-box" color="black" placeholder="Title"></title.Render>
+                    <title.Render height="fit-content" fontSize="20px" value={currentCv?.title} width = "100%" padding="20px" paddingBlock="10px" background="white" fontWeight="bold" borderRadius="15px" boxSizing="border-box" color="black" placeholder="Title"></title.Render>
                     <Div {...HeadWind.Square("%")} boxSizing="border-box" {...HeadWind.GridRow("auto 1fr")} padding="10px" maxHeight="600px">
                         <Div></Div>
 

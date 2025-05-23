@@ -10,11 +10,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db) 
 
+
+#### `CORS` will be changed at deployment ####
 CORS(
     app, 
     supports_credentials=True, 
-    origins=["*"],
-    allow_headers=["*"],
+    origins=["*"], ## Will Change this to your frontend URL on deployment
+    allow_headers=["*"], ## Allow all headers
     allow_methods=["*"],
 )
 
