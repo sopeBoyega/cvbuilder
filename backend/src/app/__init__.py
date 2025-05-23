@@ -16,7 +16,7 @@ CORS(
     app, 
     supports_credentials=True, 
     origins=["*"], ## Will Change this to your frontend URL on deployment
-    allow_headers=["*"], ## Allow all headers
+    allow_headers=["*"],
     allow_methods=["*"],
 )
 
