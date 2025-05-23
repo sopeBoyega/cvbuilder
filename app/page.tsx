@@ -53,7 +53,7 @@ const footerItems = [
           </div>
         </div>
 
-        <div className="  hidden absolute left-[3vw] z-[500]   top-[11vh] md:flex flex-col items-start justify-center">
+        <div className="  hidden absolute left-[3vw] z-[500]   top-[11vh] lg:flex flex-col items-start justify-center">
           <Image
             src="/branch.svg"
             width={350}
@@ -123,9 +123,9 @@ const footerItems = [
                 onChange={onChangeHandler}
                 value={email}
                 placeholder="Email address"
-                className="placeholder-[#6E7781] text-black p-2 rounded-s-lg  focus:outline-none focus:ring-0 bg-white"
+                className="placeholder-[#6E7781] text-black p-2 lg:rounded-s-lg  rounded-lg focus:outline-none focus:ring-0 bg-white"
               />
-              <button className="text-center p-[7.3px]  bg-black rounded-e-lg border-[1px] border-white hover:opacity-50 "
+              <button className="text-center p-[7.3px]  bg-black lg:rounded-e-lg rounded-lg border-[1px] border-white hover:opacity-50 "
               onClick={() => {
                 router.push("/sign-up?email=sopeadegboyega@gmail.com")
               }}>
@@ -146,7 +146,7 @@ const footerItems = [
       </div>
 
       {/* Simplicity */}
-      <div className="w-full h-[1000px]  md:h-[1700px] bg-[#0D1117]  ">
+      <div className="w-full h-[1000px] sm:h-[2000px]     bg-[#0D1117]  ">
         <div className=" lg:ml-[9vw] ml-[3vw] mt-[3.5rem] z-50 ">
           <p className="text-white text-[50px] font-[700]">Simplicity</p>
           <p className="font-[500] text-[27px]">
@@ -169,7 +169,7 @@ const footerItems = [
             className=""
           />
 
-          <div className="lg:left-[9vw] bottom-[6rem] scale-[0.8] lg:scale-[1.0]  lg:absolute ">
+          <div className="left-[9vw]  bottom-[6rem] md:bottom-[3rem] scale-[0.9]  lg:scale-[1.0]  lg:absolute ">
             <p className="text-[20px] center ">
               {" "}
               <span className="text-[#7EE787] ">Our CV builder</span> makes the
@@ -177,15 +177,15 @@ const footerItems = [
               seamless, guiding you step-by-step to <br />
               create a professional CV in just minutes —
               <br />
-              perfect for all career levels.
-            </p>
+                perfect for all career levels.
+              </p>
 
-            <p className="underline mt-[17px] cursor-pointer">
-              Generate Your World Cloud Instantly
-            </p>
+              <p className="underline mt-[17px] cursor-pointer">
+                Generate Your World Cloud Instantly
+              </p>
           </div>
 
-          <div className="absolute lg:left-[10vw] text-[#8AEB93] mt-5 lg:mt-0 pl-5">
+          <div className="absolute lg:left-[10vw] text-[#8AEB93] mt-7 lg:mt-0 pl-5">
             <div className="w-fit h-fit rounded-2xl bg-transparent  py-[3px] px-[15px] border-[1px] border-[#8AEB93] text-inherit text-[10px]">
               Did you know?
             </div>
@@ -196,7 +196,8 @@ const footerItems = [
               methods.
             </p>
           </div>
-          <div className="w-[80%] h-auto absolute bottom-[-600px] right-0">
+          <div className="w-[80%] h-auto absolute bottom-[-600px] right-0"
+          >
             <Image
               src="/bg-stars.png"
               width={0}
@@ -210,7 +211,7 @@ const footerItems = [
       </div>
 
       {/* Customization */}
-      <div className="w-full block h-[1000px] md:h-[1850px] bg-[#0D1117] mt-[5vw]">
+      <div className="w-full block h-[1000px] sm:h-[2000px]  md:h-[1850px] bg-[#0D1117] mt-[5vw]">
         <div className=" lg:ml-[9vw] ml-3   mt-[7rem]  z-50 ">
           <p className=" text-responsive font-[700]">Customization</p>
           <p className="font-[500] md:text-[25px] text-[17px]">
@@ -249,12 +250,12 @@ const footerItems = [
               impression.
             </p>
 
-            <p className="underline mt-[17px] ml-3 cursor-pointer ">
+            <p className="underline mt-[17px] scale-[0.93] ml-3 cursor-pointer ">
               Generate Your World Cloud Instantly
             </p>
           </div>
 
-          <div className="absolute md:left-[10vw] mt-5 md:mt-0 text-[#FFA28B] pl-5">
+          <div className="absolute md:left-[10vw] mt-7 md:mt-0 text-[#FFA28B] pl-5">
             <div className="w-fit h-fit rounded-2xl bg-transparent  py-[3px] px-[15px] border-[1px] border-[#FFA28B] text-inherit text-[10px]">
               Did you know?
             </div>

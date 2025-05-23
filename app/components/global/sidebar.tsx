@@ -5,17 +5,19 @@ import Image from "next/image";
 
 import IconItem from "./icon";
 import { sideBar } from "@/global/types";
-import { useRouter,usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { InputGroup } from "../ui/input-group";
+import { Input } from "@chakra-ui/react";
+import { LuSearch } from "react-icons/lu";
 
 export default function Sidebar() {
   const [activeTab, setActiveTab] = useState<string>("Home");
   const [adVisible, setAdVisible] = useState<boolean>(true);
-  const pathName = usePathname()
+  const pathName = usePathname();
 
   const router = useRouter();
 
   const handleTabNavigate = (tab: sideBar) => {
-
     // Also removed the /(slash that was infront of the tab
     router.push(tab.url);
   };
@@ -24,18 +26,22 @@ export default function Sidebar() {
 
   return (
     <div className="border-r-[1px] border-r-[#E2E4E9] fixed z-[1000] h-[80vh] hidden md:flex md:flex-col  bg-black w-[20%] top-0">
-      <div className="flex items-start justify-  mb-[5px] flex-col p-[20px]">
+      <div className="flex  items-start justify-between gap-5 mb-[5px] w-full flex-col p-[20px]">
         <p className={`font-[700] text-[20px] `}>CV Builder</p>
-        <input
-          type="search"
-          name=""
-          id=""
-          placeholder="Search"
-          className="flex w-full  border-[3.03px] border-white bg-black rounded-full h-fit items-center cursor-pointer px-[12px] py-[px] placeholder:text-white"
-        />
+        <InputGroup
+          startElement={<LuSearch className="text-white scale-[1.5]" />}
+        >
+          <Input
+            name="search"
+            type="search"
+            placeholder="Search..."
+            className="flex w-full  border-[3.03px] border-white bg-black rounded-full  placeholder:text-white"
+          />
+        </InputGroup>
       </div>
 
       <div className="mt-[5px] p-[20px] gap-y-3 flex  flex-col h-[85vh]">
+      
         {sidebarData.map((item: sideBar) => (
           <div
             key={item.title}
@@ -109,7 +115,12 @@ export default function Sidebar() {
               <p className="text-[10px]">Basic Member</p>
             </div>
           </div>
-          <span  onClick={() => {router.push("/")}} className="cursor-pointer">
+          <span
+            onClick={() => {
+              router.push("/");
+            }}
+            className="cursor-pointer"
+          >
             <IconItem name="exit" color="#8C55D4" />
           </span>{" "}
         </div>
