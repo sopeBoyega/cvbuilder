@@ -52,8 +52,11 @@ export default function (){
         setTimeout(()=>{console.log("user",base.rootdata.access)},4000)
     },[user])
     return <base.Render  padding="10px" width="100%">
-        <Div {...HeadWind.GridColumnAutoFitMinMax("300px, 1fr","20px")}>
-            {user?.Cvs.map((cv:icv)=><CVCard cv={cv}></CVCard>)}</Div>
+        <Div width="fit-content" maxWidth="100%" {...HeadWind.GridColumnAutoFitMinMax("300px, 1fr","20px")}>
+            {user && user.Cvs.length >0 ?user.Cvs.map((cv:icv)=><CVCard cv={cv}></CVCard>):<Div opacity="0.4" width="100%" {...HeadWind.FlexColumnAlignCenter("10px")} >
+                <Div fontSize="30px" fontWeight="bolder" >NO CV FOUND</Div>
+                <Div fontSize="14px"> Create a new CV project</Div>
+            </Div>}</Div>
         <Br></Br>
         <Br></Br>
         <Br></Br>

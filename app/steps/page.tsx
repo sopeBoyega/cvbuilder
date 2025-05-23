@@ -139,7 +139,7 @@ function AISession({base,jobDesHoc,alerter}:{base:BaseHOC,jobDesHoc:InputHOC,ale
     function FormFetch(){
 
         alerter.Loadify("Generating ...")
-        CredentioFetch(ApiLink+"/ai/questions",{
+        CredentioFetch(ApiLink+"/cv/questions",{
             method:"POST",
             /* headers:{
                 "Content-Type":"application/json"
@@ -171,7 +171,7 @@ function AISession({base,jobDesHoc,alerter}:{base:BaseHOC,jobDesHoc:InputHOC,ale
     function FormGive(){
         
         alerter.Loadify("Generating CV ...")
-        CredentioFetch(ApiLink+"/ai/cv",{
+        CredentioFetch(ApiLink+"/cv/generate",{
             method:"POST",
             /* headers:{
                 "Content-Type":"application/json"

@@ -9,7 +9,7 @@ view = Blueprint('view', __name__)
 
 
     
-@view.route('/cv', methods=['POST'])
+@view.route('/cv/generate', methods=['POST'])
 def GenerateCVEndPoint():
     current_user = get_user_from_cookie()
     if current_user is None:
@@ -20,8 +20,8 @@ def GenerateCVEndPoint():
         if not questions:
             return jsonify({"error": "No questions provided"}), 400
         generatedCv = GenerateCV(questions)
-        title = ai.generate(f"Generate the job title for this cv `{generatedCv}`. Return only the short title and nothing else. let it be unique from `{[cv.title for cv in current_user.Cvs]}`"),
-        theme = ai.generate(f"Generate a theme for this cv `{generatedCv}`. Return only the short theme and nothing else"),
+        title = ai.generate(f"Generate the job title for this cv `{generatedCv}`. Return only the short title and nothing else. let it be unique from `{[cv.title for cv in current_user.Cvs]}`")
+        theme = ai.generate(f"Generate a theme for this cv `{generatedCv}`. Return only the short theme and nothing else")
         cv = CV(
             title=title,
             content=generatedCv,
@@ -35,7 +35,7 @@ def GenerateCVEndPoint():
         )
         db.session.add(cv)
         db.session.commit()
-        return jsonify({"cv": cv.content}), 200
+        return jsonify({**cv.toJson()}), 200
     
 
 @view.route('/cv/questions', methods=['POST'])

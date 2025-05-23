@@ -66,7 +66,7 @@ function Sidebar({alerter}:{alerter:Alerter}){
     const minWidth = "64px"
     const search  = new InputHOC({Component:Input})
     const [user, setUser] = useState<dict | undefined>()
-    const glow  = new Glow({color:"rgba(37, 99, 235)",opacity:0.1, size:200})
+    const glow  = new Glow({color:"rgba(37, 99, 235)",opacity:0.1,speed:13, size:200})
      DocumentAddStyle(
             {
                 ".lh:hover":{
