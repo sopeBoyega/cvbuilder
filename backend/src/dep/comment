@@ -1,0 +1,205 @@
+
+data:dict ={
+    **Encrypted("C:\\Users\\MC DESMOND\\dextop\\Business\\PrimeResume\\src\\data.bin","2Raq3-V9i2h0Ob5s46X6ChpuCnu53lux0J5tztKiUsI=").load()
+    ,"google":{"modelName":"gemini-2.0-flash","key":"AIzaSyDR4ddDU4snyPYut5ZBiD5mcasZO9TKtac"}
+    }
+    
+
+
+Encrypted("C:\\Users\\MC DESMOND\\dextop\\Business\\PrimeResume\\src\\data.bin","2Raq3-V9i2h0Ob5s46X6ChpuCnu53lux0J5tztKiUsI=").save(data)
+data:dict =Encrypted("C:\\Users\\MC DESMOND\\dextop\\Business\\PrimeResume\\src\\data.bin","2Raq3-V9i2h0Ob5s46X6ChpuCnu53lux0J5tztKiUsI=").load()
+print(data)
+
+
+
+
+
+
+@aiend.post("/convert")
+@RequireLocalID
+def ConvertTextToCV(Text:str,localID:str = Cookie(None)):
+    prompt = f"""
+        <prompt> convert this `text` to Json CV based on the `jsonSchema`</prompt>
+        <text>
+            {Text}
+        </text>
+        <jsonSchema>
+            {CV.model_json_schema()}
+        </jsonSchema>
+        <roles>
+            <role>return only a json document</role>
+        </roles>
+    """
+    aiResponse = ai.generate(prompt=prompt)
+    aiResponse = (aiResponse.removeprefix("```")
+                    .removeprefix("json")
+                    .removesuffix("```"))
+    aiResponseToJson = from_json(aiResponse,allow_partial=True)
+    aiResponseToCV = CV(**aiResponseToJson)
+    return JSONResponse(aiResponseToCV.model_dump())
+    
+
+@aiend.post("/textifycv")
+# @RequireLocalID
+async def CreateTextToCV(request:Request):
+    body = await request.json()
+    print(body)
+    Form:CV = CV(**body["Form"])
+    jobTitle:str = body["jobTitle"]
+    jobDes:str = body["jobDes"]
+    prompt = f"""
+        <context> a professional cv for a {jobTitle} job. </context>
+        <prompt> Create a professional cv using the information in `json`</prompt>
+        <json>
+            {Form.model_dump_json(indent=4)}
+        </json>
+        <jsonSchema>
+            {CV.model_json_schema()}
+        </jsonSchema>
+        <roles>
+            <role>return only a text document</role>
+        </roles>
+    """
+    print(prompt)
+    aiResponse = ai.generate(prompt=prompt)
+    print(aiResponse)
+    return {"ai_response":aiResponse}
+    
+
+# @aiend.post("/textifycvalt")
+# # @RequireLocalID
+# async def CreateTextToCV(request:Request):
+#     body = await request.json()
+#     print(body)
+#     cv:CV = CV(**body["Form"])
+#     jobTitle:str = body["jobTitle"]
+#     jobDes:str = body["jobDes"]
+
+#     aTextCV = f"""
+# **John Doe**
+# Email: {cv.email}  |  Phone: {cv.phone} |  LinkedIn: {cv.linkedin}  |  Portfolio: {cv.portfolio}
+
+# ---
+
+# {f'''### **Professional Summary**
+# {cv.additional_info}'''if cv.additional_info.lower() != 'none' and cv.additional_info is not None else ''}
+
+# ---
+
+# ### **Skills**
+# {"\n-".join(cv.skills)}
+
+# ---
+
+# {f'''### **Professional Experience**
+# {"\n####".join([
+#     f"""
+# #### **{exp.job_title}**  
+# *{exp.company_name} | {exp.location} | {exp.start_date} - {exp.end_date} 
+# {"\n-".join(exp.responsibilities)}
+# """ for exp in cv.experience
+# ])}
+# ''' if len(cv.experience) > 0 else ''}
+
+# ---
+
+# {
+#     f'''### **Education**
+# {
+#     "\n".join([
+#         f"""
+# **{edu.degree}**  
+# *{edu.school} | Class of {edu.graduation_year}*
+# Relevant Coursework: {edu.relevant_coursework}
+# """ for edu in cv.education
+#     ])
+# }
+# ''' if len(cv.education) > 0 else ''
+
+# }
+
+# ---
+
+# {
+#     f'''#### **Certifications**
+# {"-".join([
+#     f"""
+# - {cert.name} - *{cert.issuing_organization} (Issued {cert.date_issued})*
+#     """
+#     for cert in cv.certifications
+#     ])}
+# ''' if len(cv.certifications) > 0 else ''
+
+# }
+
+# ---
+
+# {
+#     f'''#### **Projects**
+# {"-".join([
+#     f"""
+# #### **{proj.name}**
+# - {proj.description}
+# - **Technologies Used:** {",".join(proj.technologies_used)}
+#     """
+#     for proj in cv.projects
+#     ])}
+# ''' if len(cv.projects) > 0 else ''
+
+# }
+
+# ---
+
+# ### **Languages**
+# {"\n-".join(cv.languages)}
+
+# ---
+
+
+#     """
+    
+
+#     prompt = f"""
+#         <context> a professional cv for a {jobTitle} job. </context>
+#         <prompt> Make this `Cv` sound more professional and enthusiatic</prompt>
+#         <Cv>
+#             {aTextCV}
+#         </Cv>
+#         <roles>
+#             <role>Make the cv sound more professional</role>
+#             <role>return a text document</role>
+#         </roles>
+#     """
+#     print(prompt)
+#     aiResponse = ai.generate(prompt=prompt)
+#     print(aiResponse)
+#     return {"ai_response":aiResponse}
+    
+
+def RequireLocalID(Func):
+    def NewFunc(*args, **kwargs):
+        newkwargs = {}
+        params = list(inspect.signature(Func).parameters.values())
+        for i in params:
+            if i.name in kwargs.keys():
+                print(i.name,kwargs)
+                newkwargs[i.name] = kwargs[i.name]
+        return Func(*args, **newkwargs)
+    
+    def localIDSigFunction(localID:str = Cookie(None)):...
+    funcParams = list(inspect.signature(Func).parameters.values())
+    if "localID" not in [i.name for i in funcParams]:
+        funcParams.extend(inspect.signature(localIDSigFunction).parameters.values())
+    newFuncSignature = inspect.Signature(parameters = funcParams)
+    NewFunc.__signature__ = newFuncSignature
+
+    @functools.wraps(NewFunc)
+    def wrapper(*args,**kw):
+        if "localID" in kw.keys():
+            user  = LocalIDGetUser(kw["localID"])
+            if user:
+                return NewFunc(*args,**kw)
+            else:
+                raise HTTPException(status_code=401, detail="Invalid Access")
+        raise HTTPException(status_code=401, detail="no localID")
+    return wrapper

@@ -12,12 +12,14 @@ export default class Glow{
     soul:BaseHOC
     protected speed:number
     protected opacity:number
-    constructor ({color = "white", size = 100,speed = 0.02,opacity = 0.5}){
+    protected parent:(el:Element | null | undefined)=>Element | null
+    constructor ({color = "white", size = 100,speed = 15,opacity = 0.5,dispatcher=(el:Element | null | undefined)=>el !=null? el.parentElement:null} = {}){
         this.color = this.gradifyColor(color)
         this.size = size *2
         this.soul = new BaseHOC()
-        this.speed = speed
+        this.speed = speed/1000
         this.opacity = opacity
+        this.parent = dispatcher
     }
     protected gradifyColor(color:string){
         return `radial-gradient(circle,${color} , rgba(0, 0, 0, 0) 50%)`
@@ -40,8 +42,6 @@ export default class Glow{
                soul.set("mx",0)
                soul.set("my",0)
                soul.set("speed",this.speed)
-               parent.style.position="relative"
-               parent.style.overflow="hidden"
                function setCoords(){
                         soul.set("cx",soul.get("cx") + ((soul.get("mx") - soul.get("cx"))*soul.get("speed")))
                         soul.set("cy",soul.get("cy") + ((soul.get("my") - soul.get("cy"))*soul.get("speed")))
@@ -49,12 +49,11 @@ export default class Glow{
                         soul.style.left (`${soul.get("cx")-((soul.Element as any).clientHeight/2)}px`);
                         requestAnimationFrame(setCoords)
                }
+            //    parent.style.position = "relative"
                 setCoords()
-                parent .addEventListener('mousemove', function(event:any) {
+                this.parent(soul.Element)?.addEventListener('mousemove', function(event:any) {
                 const e = event as MouseEvent
                 soul.Execute((element)=>{
-                    parent.style.position="relative"
-                    parent.style.overflow="hidden"
                     soul.style.display("block")
                         const rect = parent.getBoundingClientRect() 
                         const x = e.clientX - rect.left;

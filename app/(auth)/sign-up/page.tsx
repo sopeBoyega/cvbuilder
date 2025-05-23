@@ -57,15 +57,15 @@ const page = (props: any) => {
             console.log(document.cookie)
             console.log("localid")
             console.log(getCookie("localid"))
-            if (data.detail == "YES"){
+            if (res.status == 201){
               alerter.Alert("Registration Successful")
-            }else if (data.detail == "EXISTS"){
-              alerter.Alert("User Exists.")
+            }else if (res.status == 409){
+              alerter.Alert(data.message)
             }else{
               alerter.Alert("Missing required fields")
 
             }
-            if (data.detail == "YES"){
+            if (res.status == 201){
               setTimeout(() => {
                 router.push('/home')
               }, 1000);

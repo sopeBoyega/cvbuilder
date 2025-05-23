@@ -53,8 +53,8 @@ const onSumbitHandler = (event :any) => {
             console.log(document.cookie)
             console.log("localid")
             console.log(getCookie("localid"))
-            alerter.Alert(data.detail == "YES"?"Login successful":"Invalid username or password")
-            if (data.detail == "YES"){
+            alerter.Alert(res.status == 200 ?"Login successful":"Invalid username or password")
+            if (res.status == 200){
               setTimeout(() => {
                 router.push('/home')
               }, 1000);

@@ -118,7 +118,7 @@ export default class Alerter{
         this.previousAlert = "LOADIFY"
     }
 
-    Render = ({...props}:BaseElementProps<HTMLDivElement>)=>{
+    Render = ({children,...props}:BaseElementProps<HTMLDivElement>)=>{
         this.update = useStateUpdate()
         return <this.wrapper.Render comment="Alerter"  background="rgba(0,0,0,0.7)" backdropFilter="blur(10px)" {...(this.wrapperStyle as dict)} position="fixed" width="100vw" height="100vh" top="0" left="0"  zIndex="1000" display={this.display} placeItems="center" onClick={
             (e)=>{
@@ -131,6 +131,7 @@ export default class Alerter{
                 })
             }
         }>
+                {children}
                 <this.control.Render minHeight="150px" transition="translate 0.4s ease-in-out, opacity 0.4s ease-in-out" opacity="1" translate="0px 0px" gap="20px" boxSizing="border-box" minWidth="200px" maxWidth="300px" width="90%" overflowX="hidden"  padding="20px" display="flex" alignItems="center" justifyContent="center" flexDirection="column" borderRadius="15px" background="rgba(80,80,80,0.3)" {...(this.controlStyle as dict)} {...(this.isloadify? this.loadingControlStyle as dict:{})} {...props}>
                     <this.info.Render width="100%" display="flex" justifyContent="center" gap="20px" alignItems="center" flexDirection="column" {...(this.infoStyle as dict)}>
                            {this.innerText != undefined && <Div width="100%" textAlign="center">{this.innerText}</Div>}
@@ -158,6 +159,7 @@ export class DangerousLoadify{
     public text:BaseHOC
     public flex
     public gap
+
     update:any
     constructor(iconClassName:string = "loadingIcon",{message = undefined as string | undefined,openOnStart = true,flex="row",gap="20px"} = {}){
         this.time = 0.5
@@ -173,6 +175,7 @@ export class DangerousLoadify{
         this._message = message
         this.flex = flex
         this.gap = gap
+
     }
     textInnerText(value:string | undefined){
         this.text.Execute((element)=>{
@@ -184,9 +187,10 @@ export class DangerousLoadify{
             }
         })
     }
-    Render =()=>{
+    Render =({children}:{children?:any})=>{
         this.update = useStateUpdate()
         return <this.wrapper.Render background="rgba(0,0,0,0.7)" zIndex="2000" backdropFilter="blur(10px)" opacity={this.openOnStart == true?"1":"0"} transition={`opacity ${this.time}s ease-in-out`} {...this.wrapperProps as any} position="fixed" top="0px" left="0px" {...HeadWind.Square("v")} {...HeadWind.GridColumnCenter("")}>
+               {children}
                 <Div {...HeadWind.Square("fit")} {...HeadWind.FlexRowAllCenter(this.gap)} flexDirection={this.flex} transform={this.openOnStart == true?"translateY(0px)":`translateY(${this.iconTranslate})`} transition={`transform ${this.time}s ease-in-out`}>
                     <this.icon.Render  className={this.loadingIconClassName}  {...this.iconProps as any}>
                         </this.icon.Render>

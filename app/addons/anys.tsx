@@ -59,7 +59,9 @@ export function getCookie(name:string) {
 
  
 export function CredentioFetch(link:string,init?:RequestInit,beforeFetch:Function =()=>{}){
-    const INIT:RequestInit = {...(init?init:{}) ,cache:"no-cache" , credentials: 'include'}
+    const INIT:RequestInit = {...(init?init:{}), headers: {
+    'Content-Type': 'application/json'
+  } ,cache:"no-cache" , credentials: 'include'}
     beforeFetch()
     return fetch(link,INIT)
 }

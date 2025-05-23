@@ -1,0 +1,51 @@
+<specifications>
+    <requirements>
+        <requirement title="cv format">
+            <command>Cv should be a 1 pager document. </command>
+        </requirement>
+        <requirement title = "Bullet format">
+            <command>2-3 lines per bullet. </command>
+            <command>3 bullets is optimal but no more than 4 bullets </command>
+        </requirement>
+        <requirement title = "Bullet formulation">
+            <command>Do not use personal pronouns ("I", "we", "she") or articles ("the", "a", or "an")</command>
+            <command> Avoid passive expressions, e.g. responsible for..., in charge of..., involved in...</command>
+            <command>Start bullets using active verbs, e.g. analysed, organized, won</command>
+            <command>Avoid vague verbs that don't specify a clear activity, e.g. "worked with", "worked on", "handled", "owned"; try to avoid "liaised with" and "leveraged"</command>
+            <command>Avoid representative qualifiers "such as...", "like..." and "e.g." to show examples; better to use "including..." followed by actual examples</command>
+            <command>Avoid indistinct quantifiers like "various", "different" and "multiple"; better to use a precise quantifier, e.g. "12", or if necessary, an indicative quantifier like "several"</command>
+            <command>Use examples:
+            Weak: Led investment deals, including deal sourcing, evaluation, structuring,
+            negotiations, government approvals and construction; prepared reports and defended
+            proposals to obtain Senior Management approval 
+            Better: Led purchase of 300-acre biotech park from India's largest real estate developer; analyzed and valued potential acquisition targets, conducted due diligence, negotiated share-purchase agreement, and secured investment committee approval to close US$200mn transaction
+            </command>
+            <command>Use characterization adjectives to specify where possible: construction project, IT implementation project, manufacturing operations, marketing and sales departments, sales campaign, division president</command>
+            <command>Avoid subjective self-assessments ("Demonstrated business acumen and ingenuity","Exhibited strong leadership and sound judgment") - indicate your results3 Job Search Tools</command>
+            <command>Highlight country-market experience relating to the role either (1) next to the job title or (2) within the bullet points. It should not be listed on the right-hand side of the CV unless you were based or lived there for a while </command>
+        </requirement>
+        <requirement title = "Number Formats">
+            <command>Avoid qualifiers of approximation: ~, approximately, roughly, about, more than; use "ca." to denote approximation where confidentiality is a significant material concern (e.g. ca. 8 plants worth US$1.2bn)</command>
+            <command>Currencies: specify currency when using a $ sign (e.g. US$, AU$, SG$); use standard abbreviations (k, m or bn / K, M or B) - e.g. US$30m, and be consistent throughout</command>
+            <command>Use commas to separate thousands: 5,000, not 5000</command>
+        </requirement>
+        <requirement title = "Interests">
+            <command>Avoid interests that don't distinguish you or communicate any interesting or meaningful information (reading, jogging...)</command>
+            <command>Use examples where possible e.g. "Reached Mt. Everest South Base Camp (5,364 meters)" - that tells the reader that you trek!</command>
+        </requirement>
+        <requirement title="Languages">
+            <command>Use INSEAD language measurement scale for proficiency levels (Native, Fluent, Business, Practical, Basic, Beginner) - Indicate the language followed by the level in brackets (e.g. English (Native), French (Fluent), German (Business), etc.)</command>
+            <command>Use "Mandarin" or "Cantonese" rather than Chinese</command>
+        </requirement>
+        <requirement title = " Work Authorisation/Nationality">
+            <command>We strongly recommend that you list all countries where you have full time work authorization (based on nationality or work permits) on your CV so recruiters are aware of your work eligibility status</command>
+        </requirement>
+    </requirements>
+    <summary>
+        In summary, each statement in the CV must have 3 components:
+            What did you do (quantify all activities)
+            How did you do It (quantify all activities)
+            Why did you do it (quantify all activities)
+            What was the impact of what you did (quantify the impact)
+    </summary>
+</specifications>

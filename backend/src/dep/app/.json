@@ -1,0 +1,80 @@
+{
+    "full_name": "John Doe",
+    "email": "johndoe@example.com",
+    "phone": "(123) 456-7890",
+    "linkedin": "https://linkedin.com/in/johndoe",
+    "portfolio": "https://johndoe.dev",
+    "summary": "Results-driven software engineer with 5+ years of experience in full-stack web development. Passionate about building scalable applications and solving complex technical problems. Proficient in JavaScript, Python, and cloud technologies.",
+    "skills": [
+    "JavaScript (React, Node.js)",
+    "Python (Django, Flask)",
+    "Database Management (MySQL, PostgreSQL)",
+    "Cloud Computing (AWS, Azure)",
+    "Version Control (Git, GitHub)"
+    ],
+    "experience": [
+    {
+    "job_title": "Software Engineer",
+    "company_name": "XYZ Tech",
+    "location": "San Francisco, CA",
+    "start_date": "2020-01-01",
+    "end_date": null,
+    "responsibilities": [
+    "Developed and maintained scalable web applications using React and Node.js.",
+    "Designed RESTful APIs to enhance system performance and interoperability.",
+    "Collaborated with cross-functional teams to optimize application architecture."
+    ]
+    },
+    {
+    "job_title": "Junior Developer",
+    "company_name": "ABC Solutions",
+    "location": "New York, NY",
+    "start_date": "2017-06-01",
+    "end_date": "2019-12-31",
+    "responsibilities": [
+    "Assisted in the development of e-commerce platforms using Django.",
+    "Implemented database solutions to improve query performance.",
+    "Conducted code reviews and optimized legacy code for efficiency."
+    ]
+    }
+    ],
+    "education": [
+    {
+    "degree": "Bachelor of Science in Computer Science",
+    "university": "University of California, Berkeley",
+    "graduation_year": 2017,
+    "relevant_coursework": ["Data Structures", "Algorithms", "Database Management"]
+    }
+    ],
+    "certifications": [
+    {
+    "name": "AWS Certified Solutions Architect",
+    "issuing_organization": "Amazon Web Services",
+    "issue_date": "2021-01-01"
+    },
+    {
+    "name": "Certified Kubernetes Administrator",
+    "issuing_organization": "The Linux Foundation",
+    "issue_date": "2022-01-01"
+    }
+    ],
+    "projects": [
+    {
+    "name": "E-commerce Platform",
+    "description": "Developed a full-stack e-commerce application with user authentication, shopping cart functionality, and a secure payment gateway.",
+    "technologies_used": ["React", "Node.js", "MongoDB"],
+    "link": null
+    },
+    {
+    "name": "AI Chatbot",
+    "description": "Built an AI-powered chatbot for customer service automation, reducing response time by 50%.",
+    "technologies_used": ["Python", "TensorFlow", "Flask"],
+    "link": null
+    }
+    ],
+    "languages": [
+    "English (Fluent)",
+    "Spanish (Intermediate)"
+    ],
+    "additional_info": "Available for relocation. Passionate about open-source contributions and mentoring junior developers."
+    }

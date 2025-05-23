@@ -72,7 +72,7 @@ export default function RightBar (props:any){
       !user && setUser(base.rootdata.access.user)
       if (!currentCv && base.rootdata.has("cvid")){
           setCurrentCv(()=>{
-            let cv = user?.Cvs.filter((c:icv)=>c.ID == base.rootdata.access.cvid)[0]
+            let cv = user?.Cvs.filter((c:icv)=>c.id == base.rootdata.access.cvid)[0]
             return cv
           })
       }

@@ -10,9 +10,11 @@ import { getUserToDataSaver } from "./anys";
 import { usePathname } from "next/navigation";
 import { FaceSharp } from "@mui/icons-material";
 import XListener from "../addons/ExtensibleListener";
-import { FiHome, FiLogOut, FiPlus, FiSearch } from "react-icons/fi";
+import { FiHome, FiLogOut, FiPlus, FiSearch, FiSettings, FiTrash } from "react-icons/fi";
 import HeadWind from "../addons/headwind";
 import Glow from "../addons/glow";
+import { Editor } from "primereact/editor";
+import React from "react";
 
 const btnt = new SpiritHOC<{href?:string}>({Component:A, soulprops:{fontSize:"12px",display:FLEX,alignItems:CENTER,justifyContent:CENTER, gap:"10px", borderRadius:"30px",width:"fit-content",paddingInline:"20px",fontWeight:"bold",paddingBlock:"8px"}})
 export const bdcolor = "rgb(226,232,240)"
@@ -22,7 +24,7 @@ export const bd = "2px solid " + bdcolor
 
 function NavBar({user, alerter}:{user:dict | undefined,alerter:Alerter}){
     const name = new BaseHOC()
-    const glow = new Glow({color:"rgba(37, 99, 235)",opacity:0.05,size:400})
+    const glow = new Glow({color:"rgba(37, 99, 235)",opacity:0.08,size:400})
     // let newbtn = btnt.CreateSoul({border:"1px solid rgb(203,213,225)"})
 
     useEffect(()=>{
@@ -37,8 +39,8 @@ function NavBar({user, alerter}:{user:dict | undefined,alerter:Alerter}){
             }
         },"dodfdfkdf")
     })
-    return <Div display="flex" minWidth="300px" justifyContent="space-between" borderBottom={bd} paddingInline="10px" paddingBlock="10px" alignItems="center">
-            <glow.Render></glow.Render>
+    return <Div display="flex" position="relative" overflow="hidden" minWidth="300px" justifyContent="space-between" borderBottom={bd} paddingInline="10px" paddingBlock="10px" alignItems="center">
+            <glow.Render display="none"></glow.Render>
         <Div zIndex="2" display="flex" gap="10px">
             <btnt.RenderSoul soulId="homebtn" background="rgb(37,99,235)" href="">
                 <FiHome size={14}/>
@@ -71,6 +73,8 @@ function Sidebar({alerter}:{alerter:Alerter}){
                     background: bdcolor,
                     color:bar.rootdata.access.bfg,
 
+                },"body":{
+                    overflow:"hidden"
                 }
                 ,".lh":{
                     transition:"border-color 0.3s ease-in-out, background 0.3s ease-in-out,color 0.3s ease-in-out"
@@ -158,10 +162,10 @@ function Sidebar({alerter}:{alerter:Alerter}){
                 </Div>
             </Div>
             <Div display="flex" flexDirection="column" gap="10px" width="100%" boxSizing="border-box" overflow="hidden">
-                <SideBarLink.RenderSoul position="relative" className="sidebarLinks"  padding="0" borderRadius="20px" height="180px" >
-                    <glow.Render display="block" />
-                    <SideBarText.RenderSoul  flexDirection="column" padding="10px"  gap="10px">
-                        
+                <SideBarLink.RenderSoul   overflow="hidden" className="sidebarLinks"  padding="0" borderRadius="20px" height="180px" >
+                    
+                    <SideBarText.RenderSoul position="relative" flexDirection="column" padding="10px"  gap="10px">
+                        <glow.Render display="block" />
                         <Div zIndex="2" fontSize="14px">Pro Plan</Div>
                         <Div zIndex="2" display="flex" fontSize="14px" alignItems="end" gap="5px"><Div fontWeight="bolder" fontSize="18px">$15.99</Div>/mo</Div>
                         <Div zIndex="2" fontSize="11px" >Enjoy unlimited access to our app with only a small price monthly.</Div>
@@ -195,9 +199,12 @@ export default function layout({children}:{children:any}){
     const datasaver = new DataSaver("user-init")
     const [user, setUser] = useState<dict | undefined>(undefined)
     const alerter = new Alerter()
+    const day = new BaseHOC({Props:{display:'inline'}})
     const base = new BaseHOC()
     const main = new BaseHOC()
+    const glowa = new Glow({color:"rgba(37, 99, 235)",opacity:0.03,speed:9, size:700})
     const loadify = new DangerousLoadify("loadingIcon6",{message:"LOADING ...",flex:"column-reverse"})
+    const setdel = new SpiritHOC({soulprops:{borderRadius:"50%",...HeadWind.FlexRowAllCenter(), className:"lh", border:"2.34px solid rgba(203, 213, 225, 1)",...HeadWind.Square("30px")}})
     loadify.iconProps = {width:"200px"}
     DocumentAddStyle(
             {
@@ -236,6 +243,7 @@ export default function layout({children}:{children:any}){
                 // console.log("sidebarwidth-min:",e.data.width)
             }
          })
+         
         base.rootdata.save("bfg","rgba(30, 41, 59, 1)")
         base.storage.save("bfg","rgba(30, 41, 59, 1)")
         base.Announce("bfg",{data:"rgba(30, 41, 59, 1)"})
@@ -244,14 +252,37 @@ export default function layout({children}:{children:any}){
             base.rootdata.save("user",datasaver.access.user)
             base.Announce("user-init",{data:{user:datasaver.access.user}})
         })
+        let date = new Date()
+        let timeName = "day"
+        let hour = date.getHours()
+        if (hour < 12){
+            timeName = "Morning"
+        }
+        else if (hour >= 12 && hour <= 16 ){
+            timeName = "Afternoon"
+        }
+        else if (hour >= 17 && hour <= 20 ){
+            timeName = "Evening"
+        }
+        else if (hour >= 21 ){
+            timeName = "Night"
+        }
+        day.innerText(timeName)
     })
     return <Div  display="grid" square="doc" bg="rgb(13,17,23)" overflow="hidden" gridTemplateColumns="auto 1fr">
         <Sidebar /* user = {user} */ alerter = {alerter}></Sidebar>
-        <alerter.Render></alerter.Render>
+        <alerter.Render><glowa.Render></glowa.Render></alerter.Render>
         <loadify.Render></loadify.Render>
         <Div overflow="hidden" minWidth="300px" display="grid" gridTemplateRows="auto 1fr">
             <NavBar user={user} alerter={alerter}></NavBar>
             <main.Render transition="opacity 0.3s ease-in-out" overflow="hidden" minWidth="300px" square="100%"  overflowX="hidden" overflowY="scroll">
+                <Div zIndex="3" padding="20px" {...HeadWind.FlexRowAlignCenterJustifyBetween("20px")}>
+                                <Div fontSize="18px" fontWeight="bolder"> Good <day.Render>Day</day.Render>, {user?user.username:""}</Div>
+                                <Div {...HeadWind.FlexRowAllCenter("20px")} marginRight="30px">
+                                    <setdel.RenderSoul soulId="settings"><FiSettings/></setdel.RenderSoul>
+                                    <setdel.RenderSoul soulId="delete"><FiTrash/></setdel.RenderSoul>
+                                </Div>
+                            </Div>
                 {children}
                 <Br></Br>
                 <Br></Br>

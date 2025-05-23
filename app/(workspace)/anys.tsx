@@ -6,7 +6,7 @@ import { ApiLinkRoute } from "@/app/steps/page";
 
 
 export function getUser(setter:BaseHOC,alerter:Alerter,update?:any){
-    if (setter.GetVariable("user") == undefined){CredentioFetch(ApiLinkRoute("auth/getuser")).then(res=>{
+    if (setter.GetVariable("user") == undefined){CredentioFetch(ApiLinkRoute("auth/user")).then(res=>{
           res.json().then(json=>{
             setter.SetVariable("user",json.user)
             console.log(json)
@@ -19,7 +19,7 @@ export function getUser(setter:BaseHOC,alerter:Alerter,update?:any){
         })}
 }
 export function getUserToDataSaver(setter:DataSaver,alerter:Alerter,update?:any){
-    if (setter.has("user") == false){CredentioFetch(ApiLinkRoute("auth/getuser"),undefined,()=>alerter.Loadify()).then(res=>{
+    if (setter.has("user") == false){CredentioFetch(ApiLinkRoute("auth/user"),undefined,()=>alerter.Loadify()).then(res=>{
           res.json().then(json=>{
             setter.save("user",json.user)
             console.log(json)

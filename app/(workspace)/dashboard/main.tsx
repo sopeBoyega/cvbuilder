@@ -45,11 +45,9 @@ import Alerter from "@/app/addons/alerter";
 export default function ({id}:{id?:string}){
     const editorListener = new XListener("editor")
     const [user, setUser] = useState<dict | undefined>(undefined)
-    const day = new BaseHOC({Props:{display:'inline'}})
     const base = new BaseHOC()
     const content = new BaseHOC()
     const title = new InputHOC({Component:Input})
-    const setdel = new SpiritHOC({soulprops:{borderRadius:"50%",...HeadWind.FlexRowAllCenter(), className:"lh", border:"2.34px solid rgba(203, 213, 225, 1)",...HeadWind.Square("30px")}})
     const [currentCv, setCurrentCv] = useState<icv | undefined>()
     const [text, setText] = useState<string>("")
     const alerter  = new Alerter()
@@ -76,41 +74,18 @@ export default function ({id}:{id?:string}){
         id && base.rootdata.save("cvid",id)
         if (!currentCv && id){
             setCurrentCv(()=>{
-            let cv = user?.Cvs.filter((c:icv)=>c.ID == id)[0]
+            let cv = user?.Cvs.filter((c:icv)=>c.id == id)[0]
             return cv
             })
         }
 
         if (!user){setUser(base.rootdata.access.user)}
-        let date = new Date()
-        let timeName = "day"
-        let hour = date.getHours()
-        if (hour < 12){
-            timeName = "Morning"
-        }
-        else if (hour >= 12 && hour <= 16 ){
-            timeName = "Afternoon"
-        }
-        else if (hour >= 17 && hour <= 20 ){
-            timeName = "Evening"
-        }
-        else if (hour >= 21 ){
-            timeName = "Night"
-        }
-        day.innerText(timeName)
+        
     })
 
     
-    return <base.Render  padding="20px" paddingInline="20px">
+    return <base.Render  paddingBottom="20px" paddingInline="20px">
         <Div>
-            <Div {...HeadWind.FlexRowAlignCenterJustifyBetween("20px")}>
-                <Div fontSize="18px" fontWeight="bolder"> Good <day.Render>Day</day.Render>, {user?user.username:""}</Div>
-                <Div {...HeadWind.FlexRowAllCenter("20px")} marginRight="30px">
-                    <setdel.RenderSoul soulId="settings"><FiSettings/></setdel.RenderSoul>
-                    <setdel.RenderSoul soulId="delete"><FiTrash/></setdel.RenderSoul>
-                </Div>
-            </Div>
-            <Br></Br>
             <content.Render gap="20px" display="grid">
                 
                 <Div minHeight="80vh" {...HeadWind.FlexColumn("30px")}>
@@ -118,7 +93,7 @@ export default function ({id}:{id?:string}){
                     <Div {...HeadWind.Square("%")} boxSizing="border-box" {...HeadWind.GridRow("auto 1fr")} padding="10px" maxHeight="600px">
                         <Div></Div>
 
-                        <Editor placeholder="Create a New CV Project" value={!base.rootdata.has("editcv")?(currentCv?currentCv.cv:""):base.rootdata.access.editcv} style={{width:"100%",height:"500px"}}  onTextChange={(e) =>{base.rootdata.save("editcv",e.htmlValue)}} />
+                        <Editor placeholder="Create a New CV Project" value={!base.rootdata.has("editcv")?(currentCv?currentCv.content:""):base.rootdata.access.editcv} style={{width:"100%",height:"500px"}}  onTextChange={(e) =>{base.rootdata.save("editcv",e.htmlValue)}} />
                     </Div>
                 </Div>
                 <Div width="100%" display="grid" placeItems="center">
