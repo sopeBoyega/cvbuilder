@@ -3,6 +3,8 @@ import { useEffect, useRef,FC } from "react"
 import { mergeText,dict } from "./anys"
 import {Div} from "./csml";
 
+
+// # Depreciated
 export interface CIEvent extends Event{
     detail:{
         channel:string,

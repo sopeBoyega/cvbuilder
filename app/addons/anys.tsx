@@ -114,7 +114,7 @@ export function DictToStringProps(Dict:dict<string>){
 
 
 export function Clientable(func:Function){
-        const interval = setInterval(() => {
+    function Windowfiy(){
             let inWindow = false
             try{
                 if (window){
@@ -124,12 +124,15 @@ export function Clientable(func:Function){
                 inWindow = false
             }
             if (inWindow == true){
-              clearInterval(interval)
                 func()
+            }else{
+              setTimeout(Windowfiy, 1);
             }
            
-        }, 0.01);
-    }
+        }
+  Windowfiy()  
+        
+}
 
 
 export function countDown(sec:number,onCount:Function = (_c:number)=>{},onDone:Function = ()=>{},onCut:Function = ()=>{}){
