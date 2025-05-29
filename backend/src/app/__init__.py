@@ -2,14 +2,16 @@ from flask import Flask , jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
+from flask_login import LoginManager
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db) 
-
+manager = LoginManager(app)
 
 #### `CORS` will be changed at deployment ####
 CORS(
@@ -25,3 +27,4 @@ from .auth import auth
 
 app.register_blueprint(view)
 app.register_blueprint(auth)
+

@@ -269,7 +269,7 @@ export default function layout({children}:{children:any}){
         }
         day.innerText(timeName)
     })
-    return <Div  display="grid" square="doc" bg="rgb(13,17,23)" overflow="hidden" gridTemplateColumns="auto 1fr">
+    return <base.Render  display="grid" square="doc" bg="rgb(13,17,23)" overflow="hidden" gridTemplateColumns="auto 1fr">
         <Sidebar /* user = {user} */ alerter = {alerter}></Sidebar>
         <alerter.Render><glowa.Render></glowa.Render></alerter.Render>
         <loadify.Render></loadify.Render>
@@ -289,6 +289,6 @@ export default function layout({children}:{children:any}){
                 <Br></Br>
                 </main.Render>
         </Div>
-    </Div>
+    </base.Render>
 
 }

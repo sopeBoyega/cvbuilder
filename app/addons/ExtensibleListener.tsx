@@ -21,16 +21,21 @@ export interface Listener{
 export default class XListener{
     events:DataSaver
     listeners:DataSaver
-    objectEvent:ObjectEvent
+    private objectEvent:ObjectEvent
     constructor(id:string){
         this.events = new DataSaver(id+"--events")
         this.listeners = new DataSaver(id+"--lnrs")
-        this.objectEvent = new ObjectEvent
+        this.objectEvent = new ObjectEvent()
     }
 
 
     Listen(key:string,func:(e:XEvent)=>void,lid?:string){
-        const listenid:string = lid || String(func)
+        if (this.objectEvent.has(key)){
+            this.objectEvent.on(key,func)
+            return
+        }
+        this.objectEvent.on(key,func)
+        const listenid:string = lid || key
         let listener:Listener = this.listeners.has(listenid)?this.listeners.load(listenid):{
                 called:0,
                 listenid:listenid,
@@ -38,7 +43,7 @@ export default class XListener{
                 key:key
             }as Listener
 
-        const Caller = func
+        const Caller = (e:XEvent)=>this.objectEvent.emit(key,e)
         let xevent:XEvent
          if (this.listeners.has(listenid)){
             if (listener.destroyed){

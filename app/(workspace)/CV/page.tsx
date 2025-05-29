@@ -49,7 +49,6 @@ export default function (){
     })
     useEffect(()=>{
         !user && setUser(base.rootdata.access.user)
-        setTimeout(()=>{console.log("user",base.rootdata.access)},4000)
     },[user])
     return <base.Render  padding="10px" width="100%">
         <Div width="fit-content" maxWidth="100%" {...HeadWind.GridColumnAutoFitMinMax("300px, 1fr","20px")}>

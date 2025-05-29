@@ -12,6 +12,9 @@ export class ObjectEvent{
         }
         this.events[eventName].push(callback);
     }
+    has(eventName:string){
+        return Object.keys(this.events).includes(eventName)
+    }
 
     off(eventName: string, callback: Function) {
         if (this.events[eventName]) {

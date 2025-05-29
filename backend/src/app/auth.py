@@ -1,8 +1,9 @@
 import uuid
 from flask import Blueprint, jsonify, request,make_response
-from . import db
+from . import db,manager
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 auth = Blueprint('auth', __name__,url_prefix='/auth')
 
@@ -13,6 +14,15 @@ def get_user_from_cookie() -> User:
         if user:
             return user
     return None
+
+@manager.user_loader
+def FetchUser(user_id):
+    current_user = get_user_from_cookie()
+    if current_user is None:
+        return jsonify({"error": "User not authenticated"}), 401
+    return current_user
+
+
 
 @auth.route('/login', methods=['POST'])
 def login():

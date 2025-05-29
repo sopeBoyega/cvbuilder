@@ -4,6 +4,7 @@ from .models import CV, User
 import json
 from .addons import *
 from .auth import get_user_from_cookie
+from flask_login import current_user
 
 view = Blueprint('view', __name__) 
 
@@ -108,3 +109,8 @@ def UpdateCVEndPoint(cvid:str):
             return jsonify({"message": "CV updated successfully"}), 200
         else:
             return jsonify({"error": "CV not found"}), 404
+        
+        
+@view.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'ok', 'message': 'Service is running'}), 200
