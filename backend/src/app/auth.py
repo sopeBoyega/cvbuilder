@@ -67,6 +67,7 @@ def logout():
 @auth.route('/user', methods=['GET'])
 def get_user():
     user = get_user_from_cookie()
+    print(user)
     if user:
         return jsonify({"user": user.toJson()}), 200
     else:

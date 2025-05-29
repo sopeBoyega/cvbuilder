@@ -8,6 +8,10 @@ import { ApiLinkRoute } from "@/app/steps/page";
 export function getUser(setter:BaseHOC,alerter:Alerter,update?:any){
     if (setter.GetVariable("user") == undefined){CredentioFetch(ApiLinkRoute("auth/user")).then(res=>{
           res.json().then(json=>{
+            if (!Object.keys(json).includes("user")){
+              window.open("/login","_self")?.focus()
+              alerter.Alert("user not authenticated") 
+            }
             setter.SetVariable("user",json.user)
             console.log(json)
             // alerter.Alert("welcome")
@@ -19,11 +23,16 @@ export function getUser(setter:BaseHOC,alerter:Alerter,update?:any){
         })}
 }
 export function getUserToDataSaver(setter:DataSaver,alerter:Alerter,update?:any){
-    if (setter.has("user") == false){CredentioFetch(ApiLinkRoute("auth/user")).then(res=>{
+    if (setter.has("user") == false){CredentioFetch(ApiLinkRoute("auth/user"),undefined,()=>alerter.Loadify()).then(res=>{
           res.json().then(json=>{
+            if (!Object.keys(json).includes("user")){
+              window.open("/login","_self")?.focus()
+              alerter.Alert("user not authenticated") 
+            }
             setter.save("user",json.user)
             console.log(json)
             // alerter.Alert("welcome")
+            alerter.close()
             update()
           })
         }).catch(()=>{
