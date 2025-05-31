@@ -1,11 +1,9 @@
 "use client"
 
 import { Clientable, dict } from "./anys"
-import { ObjectEvent } from "./ObjectEvent"
-import Enc, { Encryptor } from "./Encryptor"
-import { SixtyFpsSelect, SwipeLeftAlt } from "@mui/icons-material"
+import  { Encryptor } from "./Encryptor"
 
-export type EngineType =  "storage" | "element"
+export type EngineType =  "sessionStorage" | "localStorage" | "element"
 
 export class Engine{
     id:string
@@ -17,10 +15,10 @@ export class Engine{
         this.fault = undefined
     }
     protected  getItem(key:string){
-        return sessionStorage.getItem(key)
+        return (window[this.type as any] as any).getItem(key)
     }
     protected  setItem(key:string,val:any){
-        return sessionStorage.setItem(key,val)
+        return (window[this.type as any] as any).setItem(key,val)
     }
     get Element(){
         return document.getElementById(this.id)

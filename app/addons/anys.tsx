@@ -14,11 +14,11 @@ export function empty(str:string){
   return str.trim() == ""
 }
 
-export function FromPercent(percent:number,number:number){
-  return (percent/100) * number
+export function FromPercent(percent:number,num:number){
+  return (percent/100) * num
 }
-export function ToPercent(percent:number,number:number,max:number){
-  return (percent/number) * max
+export function ToPercent(percent:number,num:number,max:number){
+  return (percent/num) * max
 }
 
 export function pairIf(name:string,attr?:any){
@@ -29,6 +29,8 @@ export function pairIf(name:string,attr?:any){
       return {[name]:attr}
     }
 }
+
+
 
 export function filterOutDict(Dict:dict,...exclude:string[]){
   let newDict:dict = {}

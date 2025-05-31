@@ -4,7 +4,6 @@ import { mergeText,dict } from "./anys"
 import {Div} from "./csml";
 
 
-// # Depreciated
 export interface CIEvent extends Event{
     detail:{
         channel:string,
@@ -13,7 +12,10 @@ export interface CIEvent extends Event{
 }
 
 
-
+/*
+@depreciated
+use `Xlistener` instead 
+ */
 export class CEXModel{
     
     

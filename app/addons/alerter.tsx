@@ -4,7 +4,7 @@ import BaseHOC from "./HOC";
 import { BaseElementProps, Div, EButton, Pre } from "./csml";
 import { ICssHelper } from "./css";
 import { FC, ReactNode, useEffect } from "react";
-import HeadWind from "./headwind";
+import HeadWind from "./cwind";
 
 type DictButton = {innerText:ReactNode} & BaseElementProps<HTMLDivElement>
 

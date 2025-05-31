@@ -4,7 +4,7 @@ import { dict, pairIf } from "./anys";
 
 
 
- namespace HeadWind{
+ namespace CWind{
     export function Square(val:string){
         let width = val
         let height = val
@@ -288,4 +288,4 @@ import { dict, pairIf } from "./anys";
 
 
 
-export default HeadWind
+export default CWind

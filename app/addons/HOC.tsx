@@ -44,7 +44,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     public isMediaDestroyed: boolean
     public hasRendered = false
     public medias:dict<AtMedia> = {}
-    public variables:dict = {}
+    private variables:dict = {}
     public existAs
     public Addons:dict<any[]> = {}
     public cnio:IObserver
@@ -58,7 +58,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     protected EventControl = new ObjectEvent()
     protected clientLoaded = "CLIENT-LOADED"
     protected _onStyleChangeEvent = new ObjectEvent()
-    protected Props:BaseElementProps<ElementInterface> = {}
+    protected props:BaseElementProps<ElementInterface> = {}
     protected _rootData:DataSaver
     protected _rootStorage:DataSaver
     protected _rootListener:XListener
@@ -71,7 +71,9 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this._onStyleChangeEvent.events[styleKey] = []
     }
 
-   
+   get access(){
+        return this.variables
+    }
 
     get rootdata(){
         return this._rootData
@@ -168,7 +170,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     }
    
 
-    constructor ({Component = Div,existAs, refee = React.useRef(null),Props = {} }:{Component?:FC ,existAs?:Function,Props?:BaseElementProps<ElementInterface>,refee?:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>} = {}){
+    constructor ({Component = Div,existAs, refee = React.useRef(null),props = {} }:{Component?:FC ,existAs?:Function,props?:BaseElementProps<ElementInterface>,refee?:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>} = {}){
         this.isMediaDestroyed = false
         this.ref = refee
         this.existAs = existAs
@@ -176,9 +178,9 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this.Component = Component
         this.EffectifyStyle()
         this.cnio = new IObserver()
-        this.Props = Props
+        this.props = props
         this._rootData = new DataSaver("__root-data__",undefined)
-        this._rootStorage = new DataSaver("__root-data__",undefined,"storage")
+        this._rootStorage = new DataSaver("__root-data__",undefined,"localStorage")
         this._rootListener = new XListener("__root-listener__")
 
     }
@@ -331,7 +333,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
             useEffect(()=>{
                 this.EventControl.emit(this.clientLoaded)
             })
-            return <this.Component Ref = {this.ref} {...this.Props} {...props} {...this.addonProps} >
+            return <this.Component Ref = {this.ref} {...this.props} {...props} {...this.addonProps} >
                 {props.children}
                 {Object.values(this.Addons)}
             </this.Component>
@@ -347,8 +349,8 @@ export class SpiritHOC<CustomProps = {} ,ElementInterface = HTMLDivElement>{
         this.soulprops = soulprops
     }
 
-     GetSoulBySoulId(soulId:string){
-        return this.bodys[soulId]
+     GetSoulBySoulId(soulId:string){ 
+        return this.bodys[soulId] 
     }
 
     CreateSoul({soulId,...addSoulprops}:BaseElementProps<ElementInterface> & {soulId?:string} = {}){
